@@ -1,0 +1,33 @@
+# looker_group_member.member_binding:
+resource "looker_group_member" "member_binding" {
+  group_id = "4"
+  id       = "-"
+
+  user {
+    first_name = "Kermit"
+    id         = "1"
+    last_name  = "the Frog"
+  }
+  user {
+    first_name = "Mahna"
+    id         = "3"
+    last_name  = "Mahna"
+  }
+}
+
+# looker_group_member.member_binding_secundo:
+resource "looker_group_member" "member_binding_secundo" {
+  group_id = "4"
+  id       = "-"
+
+  group {
+    id   = "3"
+    name = "Lights staff"
+  }
+
+  user {
+    first_name = "Rowlf"
+    id         = "4"
+    last_name  = "the Dog"
+  }
+}

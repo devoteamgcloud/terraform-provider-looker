@@ -1,0 +1,30 @@
+% terraform show
+# data.looker_group.group_one:
+data "looker_group" "group_one" {
+    id            = "1"
+    name          = "Muppets"
+    parent_groups = [
+        "10",
+        "20",
+    ]
+    roles         = [
+        "100",
+        "200",
+    ]
+    user_count    = 0
+}
+
+# data.looker_group.group_two:
+data "looker_group" "group_two" {
+    id            = "4"
+    name          = "Sound staff"
+    parent_groups = [
+        "10",
+        "20",
+    ]
+    roles         = [
+        "100",
+        "200",
+    ]
+    user_count    = 0
+}

@@ -15,6 +15,6 @@ graph LR;
 
 ```mermaid
 graph LR;
-    CP[Create project] 
+    pc[Projects.Create] --> d 
 ```
 

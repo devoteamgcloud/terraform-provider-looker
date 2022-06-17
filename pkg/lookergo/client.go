@@ -77,9 +77,15 @@ type Client struct {
 
 	// TODO: Expand
 
+	// Optional function called after every successful request made to the DO APIs
+	onRequestCompleted RequestCompletionCallback
+
 	// Optional extra HTTP headers to set on every request to the API.
 	headers map[string]string
 }
+
+// RequestCompletionCallback defines the type of the request callback function
+type RequestCompletionCallback func(*http.Request, *http.Response)
 
 // ListOptions specifies the optional parameters to various List methods that
 // support ~~pagination~~ limit/offset querystring.
@@ -352,6 +358,11 @@ func (c *Client) NewRequest(ctx context.Context, method, urlStr string, body int
 	return req, nil
 }
 
+// OnRequestCompleted sets the DO API request completion callback
+func (c *Client) OnRequestCompleted(rc RequestCompletionCallback) {
+	c.onRequestCompleted = rc
+}
+
 // newResponse creates a new Response for the provided http.Response
 func newResponse(r *http.Response) *Response {
 	response := Response{Response: r}
@@ -385,6 +396,10 @@ func (c *Client) Do(ctx context.Context, req *http.Request, v interface{}) (*Res
 	resp, err := DoRequestWithClient(ctx, c.client, req)
 	if err != nil {
 		return nil, err
+	}
+
+	if c.onRequestCompleted != nil {
+		c.onRequestCompleted(req, resp)
 	}
 
 	defer func() {

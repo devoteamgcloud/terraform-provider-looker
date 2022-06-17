@@ -2,9 +2,9 @@ package provider
 
 import (
 	"context"
-	"fmt"
 	"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"net/http"
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -134,6 +134,10 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData, p *schema.Pr
 		return nil, diags
 	}
 
+	client.OnRequestCompleted(func(req *http.Request, resp *http.Response) {
+		tflog.Debug(ctx, "HTTP Request", map[string]interface{}{"req_url": req.URL.String(), "req_method": req.Method, "resp_status": resp.Status})
+	})
+
 	session, _, err := client.Sessions.Get(ctx)
 	if err != nil {
 		diags = append(diags, diag.Diagnostic{
@@ -160,105 +164,13 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData, p *schema.Pr
 		return nil, diags
 	}
 
-	devClient, devSession, err := client.CreateDevConnection(ctx)
-	if err != nil {
-		diags = append(diags, diag.Diagnostic{
-			Severity: diag.Error,
-			Summary:  "Unable to create Looker client",
-			Detail:   "Unable to authenticate user for authenticated Looker client: " + err.Error(),
-		})
-		return nil, diags
-	}
-
-	fmt.Printf("dc: %#v\nds: %#v\n", devClient, devSession)
-
 	return &config, nil
 }
 
-/*
-	baseUrl, _ := url.Parse(d.Get("base_url").(string))
-	clientId := d.Get("client_id").(string)
-	clientSecret := d.Get("client_secret").(string)
-
-	client := lookergo.NewFromApiv3Creds(lookergo.ApiConfig{
-		ClientId:     clientId,
-		ClientSecret: clientSecret,
-		BaseURL:      d.Get("base_url").(string),
-		ClientCtx:    ctx,
-		// ClientCtx:    context.Background(),
+func diagErrAppend(diags diag.Diagnostics, err error) diag.Diagnostics {
+	diags = append(diags, diag.Diagnostic{
+		Severity: diag.Error,
+		Summary:  err.Error(),
 	})
-	client.BaseURL = baseUrl
-	client.UserAgent = userAgent
-
-	sess, _, err := client.Sessions.Get(ctx)
-	if err != nil {
-		diags = append(diags, diag.Diagnostic{
-			Severity: diag.Error,
-			Summary:  "Unable to create Looker client",
-			Detail:   "Unable to authenticate user for authenticated Looker client: " + err.Error(),
-		})
-
-		return nil, diags
-	}
-
-	if sess.WorkspaceId == "" {
-		diags = append(diags, diag.Diagnostic{
-			Severity: diag.Error,
-			Summary:  "Session Workspace ID is empty",
-			Detail:   "Unable to find workspace ID in /session call",
-		})
-
-		return nil, diags
-	}
-
-	config := Config{Api: client}
-	return &config, nil
-*/
-
-/*
-
-// configure  -
-func configure(version string, p *schema.Provider) func(context.Context, *schema.ResourceData) (interface{}, diag.Diagnostics) {
-	return func(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
-		tflog.Info(ctx, "Configure provider", map[string]interface{}{"conninfo": d.ConnInfo()})
-
-		userAgent := p.UserAgent("terraform-provider-looker", version)
-		var diags diag.Diagnostics
-
-		baseUrl, _ := url.Parse(d.Get("base_url").(string))
-		clientId := d.Get("client_id").(string)
-		clientSecret := d.Get("client_secret").(string)
-
-		client := lookergo.NewFromApiv3Creds(lookergo.ApiConfig{
-			ClientId:     clientId,
-			ClientSecret: clientSecret,
-			BaseURL:      d.Get("base_url").(string),
-		})
-		client.BaseURL = baseUrl
-		client.UserAgent = userAgent
-
-		sess, _, err := client.Sessions.Get(ctx)
-		if err != nil {
-			diags = append(diags, diag.Diagnostic{
-				Severity: diag.Error,
-				Summary:  "Unable to create Looker client",
-				Detail:   "Unable to authenticate user for authenticated Looker client: " + err.Error(),
-			})
-
-			return nil, diags
-		}
-
-		if sess.WorkspaceId == "" {
-			diags = append(diags, diag.Diagnostic{
-				Severity: diag.Error,
-				Summary:  "Session Workspace ID is empty",
-				Detail:   "Unable to find workspace ID in /session call",
-			})
-
-			return nil, diags
-		}
-
-		return client, nil
-	}
+	return diags
 }
-*/

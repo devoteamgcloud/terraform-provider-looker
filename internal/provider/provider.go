@@ -2,7 +2,9 @@ package provider
 
 import (
 	"context"
+	"fmt"
 	"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
+	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"net/http"
 	"time"
@@ -94,8 +96,10 @@ const (
 )
 
 type Config struct {
-	Api       *lookergo.Client
-	Workspace Workspace
+	Api                       *lookergo.Client
+	DevClient                 *lookergo.Client
+	Workspace                 Workspace
+	RequestCompletionCallback lookergo.RequestCompletionCallback
 }
 
 func providerConfigure(ctx context.Context, d *schema.ResourceData, p *schema.Provider, version string) (interface{}, diag.Diagnostics) {
@@ -133,10 +137,17 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData, p *schema.Pr
 		})
 		return nil, diags
 	}
+	var config Config
 
-	client.OnRequestCompleted(func(req *http.Request, resp *http.Response) {
-		tflog.Debug(ctx, "HTTP Request", map[string]interface{}{"req_url": req.URL.String(), "req_method": req.Method, "resp_status": resp.Status})
-	})
+	config.RequestCompletionCallback = func(req *http.Request, resp *http.Response) {
+		if code := resp.StatusCode; code >= 200 && code <= 299 {
+			tflog.Debug(ctx, "HTTP Request", map[string]interface{}{"req_url": req.URL.String(), "req_method": req.Method, "resp_status": resp.Status})
+		} else {
+			tflog.Debug(ctx, "HTTP Error", map[string]interface{}{"req_url": req.URL.String(), "req_method": req.Method, "resp_status": resp.Status, "resp_length": resp.ContentLength, "resp_headers": resp.Header})
+		}
+	}
+
+	client.OnRequestCompleted(config.RequestCompletionCallback)
 
 	session, _, err := client.Sessions.Get(ctx)
 	if err != nil {
@@ -147,8 +158,6 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData, p *schema.Pr
 		})
 		return nil, diags
 	}
-
-	var config Config
 
 	switch session.WorkspaceId {
 	case "production":
@@ -168,9 +177,44 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData, p *schema.Pr
 }
 
 func diagErrAppend(diags diag.Diagnostics, err error) diag.Diagnostics {
-	diags = append(diags, diag.Diagnostic{
-		Severity: diag.Error,
-		Summary:  err.Error(),
-	})
+	switch err.(type) {
+	case *lookergo.ErrorResponse:
+		if len(err.(*lookergo.ErrorResponse).Errors) >= 1 {
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Error,
+				Summary:  err.(*lookergo.ErrorResponse).Message,
+			})
+			for _, errRespErr := range err.(*lookergo.ErrorResponse).Errors {
+				diags = append(diags, diag.Diagnostic{
+					Severity: diag.Error,
+					Summary:  fmt.Sprintf("field: %v, code: %v", errRespErr.Field, errRespErr.Code),
+					Detail:   errRespErr.Message,
+					AttributePath: cty.Path{
+						cty.GetAttrStep{Name: errRespErr.Field},
+					},
+				})
+			}
+		} else {
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Error,
+				Summary:  err.Error(),
+			})
+		}
+	default:
+		return diag.FromErr(err)
+	}
 	return diags
+}
+
+func ensureDevClient(ctx context.Context, m interface{}) error {
+	if m.(*Config).DevClient == nil {
+		tflog.Debug(ctx, fmt.Sprintf("Fn: %v, Action: create dev client connection", currFuncName()))
+		devClient, _, err := m.(*Config).Api.CreateDevConnection(ctx, m.(*Config).RequestCompletionCallback)
+		if err != nil {
+			return err
+		} else {
+			m.(*Config).DevClient = devClient
+		}
+	}
+	return nil
 }

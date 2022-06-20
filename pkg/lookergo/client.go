@@ -82,6 +82,9 @@ type Client struct {
 
 	// Optional extra HTTP headers to set on every request to the API.
 	headers map[string]string
+
+	// Production or dev workspace
+	Workspace string
 }
 
 // RequestCompletionCallback defines the type of the request callback function
@@ -144,6 +147,7 @@ func NewClient(httpClient *http.Client) *Client {
 	c.Connections = &ConnectionsResourceOp{client: c}
 
 	c.headers = make(map[string]string)
+	c.Workspace = "production"
 
 	return c
 }
@@ -266,7 +270,7 @@ func (c *Client) SetOauthStaticToken(ctx context.Context, token *oauth2.Token) e
 	return nil
 }
 
-func (c *Client) CreateDevConnection(ctx context.Context) (*Client, *Session, error) {
+func (c *Client) CreateDevConnection(ctx context.Context, rc RequestCompletionCallback) (*Client, *Session, error) {
 
 	// Get current user ID
 	user, _, err := c.Sessions.GetCurrentUser(ctx)
@@ -292,6 +296,8 @@ func (c *Client) CreateDevConnection(ctx context.Context) (*Client, *Session, er
 		return nil, nil, err
 	}
 
+	devClient.OnRequestCompleted(rc)
+
 	// Set dev workspace for dup token
 	session, _, err := devClient.Sessions.SetWorkspaceId(ctx, "dev")
 	if err != nil {
@@ -301,6 +307,8 @@ func (c *Client) CreateDevConnection(ctx context.Context) (*Client, *Session, er
 	if session.WorkspaceId != "dev" {
 		return nil, nil, fmt.Errorf("failed to set dev environment for" +
 			"duplicate dev workspace connection")
+	} else {
+		c.Workspace = "dev"
 	}
 
 	return devClient, session, err

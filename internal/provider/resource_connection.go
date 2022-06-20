@@ -2,7 +2,6 @@ package provider
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
 	"github.com/hashicorp/go-cty/cty"
@@ -256,34 +255,7 @@ func resourceConnectionCreate(ctx context.Context, d *schema.ResourceData, m int
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: test conf", currFuncName()))
 	validateConfig, _, err := c.Connections.ValidateConfig(ctx, nc)
 	if err != nil {
-		switch err.(type) {
-		case *json.InvalidUnmarshalError:
-			return diag.FromErr(err)
-		case *lookergo.ErrorResponse:
-			if len(err.(*lookergo.ErrorResponse).Errors) >= 1 {
-				for _, errRespErr := range err.(*lookergo.ErrorResponse).Errors {
-					diags = append(diags, diag.Diagnostic{
-						Severity: diag.Error,
-						Summary:  fmt.Sprintf("field: %v, code: %v, msg: %v ", errRespErr.Field, errRespErr.Code, errRespErr.Message),
-						AttributePath: cty.Path{
-							cty.GetAttrStep{Name: errRespErr.Field},
-						},
-					})
-				}
-			}
-
-			diags = append(diags, diag.Diagnostic{
-				Severity: diag.Error,
-				Summary:  err.(*lookergo.ErrorResponse).Message,
-			}, diag.Diagnostic{
-				Severity: diag.Error,
-				Summary:  err.Error(),
-			})
-		default:
-			return diag.FromErr(err)
-		}
-
-		return diags
+		return diagErrAppend(diags, err)
 	}
 
 	for i, dbcv := range validateConfig {
@@ -294,7 +266,7 @@ func resourceConnectionCreate(ctx context.Context, d *schema.ResourceData, m int
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: create", currFuncName()))
 	connection, _, err := c.Connections.Create(ctx, nc)
 	if err != nil {
-		return diag.FromErr(err)
+		return diagErrAppend(diags, err)
 	}
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: created, Name: %v", currFuncName(), connection.Name))
 

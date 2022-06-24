@@ -2,7 +2,7 @@
   "uuid": "fe7992d2-449c-49c7-a69e-0366d0d5bc37",
   "lastMigration": 20,
   "name": "Looker api 4.0.22.6",
-  "endpointPrefix": "",
+  "endpointPrefix": "api",
   "latency": 0,
   "port": 3002,
   "hostname": "0.0.0.0",
@@ -29,13 +29,812 @@
           "default": true
         }
       ],
-      "enabled": true,
+      "enabled": false,
+      "randomResponse": false,
+      "sequentialResponse": false
+    },
+    {
+      "uuid": "187762c0-8d5d-4ece-bf31-b8a7ac8fe6c4",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "4.0/login",
+      "responses": [
+        {
+          "uuid": "ce4a879c-4f65-45b5-a610-4b816b46f50a",
+          "body": "{\"access_token\":\"qr7gbW3dWC8DNwCxkQHCDSyGnxFsdNPDqdgKqX5n\",\"token_type\":\"Bearer\",\"expires_in\":3600,\"refresh_token\":null}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "connection",
+              "value": "close"
+            },
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "date",
+              "value": "Mon, 20 Jun 2022 14:35:23 GMT"
+            },
+            {
+              "key": "strict-transport-security",
+              "value": "max-age=15724800; includeSubDomains"
+            },
+            {
+              "key": "vary",
+              "value": "Accept-Encoding, Origin"
+            },
+            {
+              "key": "x-b3-parentspanid",
+              "value": "e3fbf38dd62ebe35"
+            },
+            {
+              "key": "x-b3-sampled",
+              "value": "0"
+            },
+            {
+              "key": "x-b3-spanid",
+              "value": "e3fbf38dd62ebe35"
+            },
+            {
+              "key": "x-b3-traceid",
+              "value": "62b085ab52919220e3fbf38dd62ebe35"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            },
+            {
+              "key": "content-length",
+              "value": "120"
+            }
+          ],
+          "filePath": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false
+        }
+      ],
+      "enabled": false,
+      "randomResponse": false,
+      "sequentialResponse": false
+    },
+    {
+      "uuid": "60509d40-8d0f-4b7b-9d10-df35db641097",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "4.0/session",
+      "responses": [
+        {
+          "uuid": "2397caa9-564a-4816-912e-0c78be802b04",
+          "body": "{\"workspace_id\":\"production\",\"sudo_user_id\":null,\"can\":{\"view\":true,\"update\":true}}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "connection",
+              "value": "close"
+            },
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "date",
+              "value": "Tue, 21 Jun 2022 19:06:55 GMT"
+            },
+            {
+              "key": "strict-transport-security",
+              "value": "max-age=15724800; includeSubDomains"
+            },
+            {
+              "key": "vary",
+              "value": "Accept-Encoding, Origin"
+            },
+            {
+              "key": "x-b3-parentspanid",
+              "value": "a86d70bed2c6c318"
+            },
+            {
+              "key": "x-b3-sampled",
+              "value": "0"
+            },
+            {
+              "key": "x-b3-spanid",
+              "value": "a86d70bed2c6c318"
+            },
+            {
+              "key": "x-b3-traceid",
+              "value": "62b216cf4623a62da86d70bed2c6c318"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            },
+            {
+              "key": "content-length",
+              "value": "83"
+            }
+          ],
+          "filePath": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false
+        }
+      ],
+      "enabled": false,
+      "randomResponse": false,
+      "sequentialResponse": false
+    },
+    {
+      "uuid": "a72a0efa-ce2c-4ee5-8023-c6fcbff67eed",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "4.0/user",
+      "responses": [
+        {
+          "uuid": "5b3500c9-2fe7-4264-801c-cf38502584e5",
+          "body": "{\"avatar_url\":\"https://gravatar.lookercdn.com/avatar/fc58c8810975d1f7dbad9c124411a879?s=156\\u0026d=blank\",\"avatar_url_without_sizing\":\"https://gravatar.lookercdn.com/avatar/fc58c8810975d1f7dbad9c124411a879?d=blank\",\"credentials_api3\":[{\"id\":\"6\",\"client_id\":\"RHPwzwKgKCQYhnkk83yR\",\"created_at\":\"2022-04-25T12:00:44.000+00:00\",\"type\":\"api3\",\"is_disabled\":false,\"url\":\"https://localhost:19999/api/4.0/users/123/credentials_api3/6\",\"can\":{}}],\"credentials_email\":{\"created_at\":\"2022-04-15T16:02:49.000+00:00\",\"logged_in_at\":\"2022-06-17T14:42:58.000+00:00\",\"type\":\"email\",\"email\":\"frank.meeusen@devoteam.com\",\"forced_password_reset_at_next_login\":false,\"is_disabled\":false,\"password_reset_url\":\"\",\"url\":\"https://localhost:19999/api/4.0/users/123/credentials_email\",\"user_url\":\"https://localhost:19999/api/4.0/users/123\",\"can\":{\"show_password_reset_url\":true}},\"credentials_embed\":[],\"credentials_google\":null,\"credentials_ldap\":null,\"credentials_looker_openid\":null,\"credentials_oidc\":null,\"credentials_saml\":null,\"credentials_totp\":null,\"email\":\"frank.meeusen@devoteam.com\",\"first_name\":\"Frank\",\"id\":\"123\",\"last_name\":\"Meeusen\",\"locale\":\"en\",\"looker_versions\":[\"22.4.29\",\"22.6.31\",\"22.8.32\"],\"models_dir_validated\":false,\"ui_state\":null,\"embed_group_folder_id\":null,\"home_folder_id\":\"1\",\"personal_folder_id\":\"182\",\"presumed_looker_employee\":false,\"sessions\":[{\"id\":\"647\",\"ip_address\":\"91.181.238.78\",\"browser\":\"Chrome\",\"operating_system\":\"OS X 10.15.7\",\"city\":\"Antwerp\",\"state\":\"Flanders\",\"country\":\"BE\",\"credentials_type\":\"email\",\"extended_at\":\"\",\"extended_count\":0,\"sudo_user_id\":null,\"created_at\":\"2022-06-07T09:24:04.000+00:00\",\"expires_at\":\"2022-07-07T09:24:04.000+00:00\",\"url\":\"https://localhost:19999/api/4.0/users/123/sessions/647\",\"can\":{}}],\"verified_looker_employee\":false,\"roles_externally_managed\":false,\"allow_direct_roles\":true,\"allow_normal_group_membership\":true,\"allow_roles_from_normal_groups\":true,\"display_name\":\"Frank Meeusen\",\"group_ids\":[],\"is_disabled\":false,\"role_ids\":[\"2\"],\"url\":\"https://localhost:19999/api/4.0/users/123\",\"can\":{\"show\":true,\"index\":true,\"show_details\":true,\"index_details\":true,\"sudo\":false}}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "connection",
+              "value": "close"
+            },
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "date",
+              "value": "Mon, 20 Jun 2022 14:35:28 GMT"
+            },
+            {
+              "key": "strict-transport-security",
+              "value": "max-age=15724800; includeSubDomains"
+            },
+            {
+              "key": "vary",
+              "value": "Accept-Encoding, Origin"
+            },
+            {
+              "key": "x-b3-parentspanid",
+              "value": "ff0ba0fe6b0419db"
+            },
+            {
+              "key": "x-b3-sampled",
+              "value": "0"
+            },
+            {
+              "key": "x-b3-spanid",
+              "value": "ff0ba0fe6b0419db"
+            },
+            {
+              "key": "x-b3-traceid",
+              "value": "62b085b0ab216d52ff0ba0fe6b0419db"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            },
+            {
+              "key": "content-length",
+              "value": "2134"
+            }
+          ],
+          "filePath": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false
+        }
+      ],
+      "enabled": false,
+      "randomResponse": false,
+      "sequentialResponse": false
+    },
+    {
+      "uuid": "8b682f23-94f1-4434-9e29-369e9ca59e51",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "4.0/roles",
+      "responses": [
+        {
+          "uuid": "156ef153-39a0-47dd-bea4-8cc88e60e827",
+          "body": "{\n  \"id\": \"305\",\n  \"name\": \"dummytest901\",\n  \"permission_set\": {\n    \"built_in\": false,\n    \"id\": \"3\",\n    \"all_access\": false,\n    \"name\": \"User\",\n    \"permissions\": [\n      \"access_data\",\n      \"clear_cache_refresh\",\n      \"create_alerts\",\n      \"create_custom_fields\",\n      \"create_table_calculations\",\n      \"download_without_limit\",\n      \"explore\",\n      \"login_special_email\",\n      \"manage_spaces\",\n      \"mobile_app_access\",\n      \"save_content\",\n      \"schedule_look_emails\",\n      \"see_drill_overlay\",\n      \"see_lookml\",\n      \"see_lookml_dashboards\",\n      \"see_looks\",\n      \"see_sql\",\n      \"see_user_dashboards\",\n      \"send_to_integration\"\n    ],\n    \"url\": \"https://localhost:19999/api/4.0/permission_sets/3\",\n    \"can\": {\n      \"show\": true,\n      \"index\": true,\n      \"update\": true\n    }\n  },\n  \"model_set\": {\n    \"built_in\": false,\n    \"id\": \"53\",\n    \"all_access\": false,\n    \"models\": [\n      \"sandbox-frank-1\"\n    ],\n    \"name\": \"sandbox-frank-1\",\n    \"url\": \"https://localhost:19999/api/4.0/model_sets/53\",\n    \"can\": {\n      \"show\": true,\n      \"index\": true,\n      \"update\": true\n    }\n  },\n  \"url\": \"https://localhost:19999/api/4.0/roles/305\",\n  \"users_url\": \"https://localhost:19999/api/4.0/roles/305/users\",\n  \"can\": {\n    \"show\": true,\n    \"index\": true,\n    \"update\": true\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "connection",
+              "value": "close"
+            },
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "date",
+              "value": "Mon, 20 Jun 2022 14:58:53 GMT"
+            },
+            {
+              "key": "strict-transport-security",
+              "value": "max-age=15724800; includeSubDomains"
+            },
+            {
+              "key": "vary",
+              "value": "Accept-Encoding, Origin"
+            },
+            {
+              "key": "x-b3-parentspanid",
+              "value": "a5741dce64d63a51"
+            },
+            {
+              "key": "x-b3-sampled",
+              "value": "0"
+            },
+            {
+              "key": "x-b3-spanid",
+              "value": "a5741dce64d63a51"
+            },
+            {
+              "key": "x-b3-traceid",
+              "value": "62b08b2c9843d27ea5741dce64d63a51"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            },
+            {
+              "key": "content-length",
+              "value": "964"
+            }
+          ],
+          "filePath": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false
+        }
+      ],
+      "enabled": false,
+      "randomResponse": false,
+      "sequentialResponse": false
+    },
+    {
+      "uuid": "de227de8-7949-4b01-851b-00d8b3c46e95",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "4.0/roles/305",
+      "responses": [
+        {
+          "uuid": "451ce8b9-29e2-4289-b67d-5fc1f04c285c",
+          "body": "{\n  \"id\": \"305\",\n  \"name\": \"dummytest901\",\n  \"permission_set\": {\n    \"built_in\": false,\n    \"id\": \"3\",\n    \"all_access\": false,\n    \"name\": \"User\",\n    \"permissions\": [\n      \"access_data\",\n      \"clear_cache_refresh\",\n      \"create_alerts\",\n      \"create_custom_fields\",\n      \"create_table_calculations\",\n      \"download_without_limit\",\n      \"explore\",\n      \"login_special_email\",\n      \"manage_spaces\",\n      \"mobile_app_access\",\n      \"save_content\",\n      \"schedule_look_emails\",\n      \"see_drill_overlay\",\n      \"see_lookml\",\n      \"see_lookml_dashboards\",\n      \"see_looks\",\n      \"see_sql\",\n      \"see_user_dashboards\",\n      \"send_to_integration\"\n    ],\n    \"url\": \"https://localhost:19999/api/4.0/permission_sets/3\",\n    \"can\": {\n      \"show\": true,\n      \"index\": true,\n      \"update\": true\n    }\n  },\n  \"model_set\": {\n    \"built_in\": false,\n    \"id\": \"53\",\n    \"all_access\": false,\n    \"models\": [\n      \"sandbox-frank-1\"\n    ],\n    \"name\": \"sandbox-frank-1\",\n    \"url\": \"https://localhost:19999/api/4.0/model_sets/53\",\n    \"can\": {\n      \"show\": true,\n      \"index\": true,\n      \"update\": true\n    }\n  },\n  \"url\": \"https://localhost:19999/api/4.0/roles/306\",\n  \"users_url\": \"https://localhost:19999/api/4.0/roles/306/users\",\n  \"can\": {\n    \"show\": true,\n    \"index\": true,\n    \"update\": true\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "connection",
+              "value": "close"
+            },
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "date",
+              "value": "Mon, 20 Jun 2022 15:02:27 GMT"
+            },
+            {
+              "key": "strict-transport-security",
+              "value": "max-age=15724800; includeSubDomains"
+            },
+            {
+              "key": "vary",
+              "value": "Accept-Encoding, Origin"
+            },
+            {
+              "key": "x-b3-parentspanid",
+              "value": "453b921609b338d6"
+            },
+            {
+              "key": "x-b3-sampled",
+              "value": "0"
+            },
+            {
+              "key": "x-b3-spanid",
+              "value": "453b921609b338d6"
+            },
+            {
+              "key": "x-b3-traceid",
+              "value": "62b08c034dbd9c5e453b921609b338d6"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            },
+            {
+              "key": "content-length",
+              "value": "964"
+            }
+          ],
+          "filePath": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false
+        }
+      ],
+      "enabled": false,
+      "randomResponse": false,
+      "sequentialResponse": false
+    },
+    {
+      "uuid": "0ad47556-9d55-4245-9152-1098f551c85b",
+      "documentation": "",
+      "method": "patch",
+      "endpoint": "4.0/roles/305",
+      "responses": [
+        {
+          "uuid": "c032ec42-5efc-4abe-9277-63978bd9f615",
+          "body": "{\n  \"id\": \"305\",\n  \"name\": \"dummytest903\",\n  \"permission_set\": {\n    \"built_in\": false,\n    \"id\": \"3\",\n    \"all_access\": false,\n    \"name\": \"User\",\n    \"permissions\": [\n      \"access_data\",\n      \"clear_cache_refresh\",\n      \"create_alerts\",\n      \"create_custom_fields\",\n      \"create_table_calculations\",\n      \"download_without_limit\",\n      \"explore\",\n      \"login_special_email\",\n      \"manage_spaces\",\n      \"mobile_app_access\",\n      \"save_content\",\n      \"schedule_look_emails\",\n      \"see_drill_overlay\",\n      \"see_lookml\",\n      \"see_lookml_dashboards\",\n      \"see_looks\",\n      \"see_sql\",\n      \"see_user_dashboards\",\n      \"send_to_integration\"\n    ],\n    \"url\": \"https://localhost:19999/api/4.0/permission_sets/3\",\n    \"can\": {\n      \"show\": true,\n      \"index\": true,\n      \"update\": true\n    }\n  },\n  \"model_set\": {\n    \"built_in\": false,\n    \"id\": \"53\",\n    \"all_access\": false,\n    \"models\": [\n      \"sandbox-frank-1\"\n    ],\n    \"name\": \"sandbox-frank-1\",\n    \"url\": \"https://localhost:19999/api/4.0/model_sets/53\",\n    \"can\": {\n      \"show\": true,\n      \"index\": true,\n      \"update\": true\n    }\n  },\n  \"url\": \"https://localhost:19999/api/4.0/roles/305\",\n  \"users_url\": \"https://localhost:19999/api/4.0/roles/305/users\",\n  \"can\": {\n    \"show\": true,\n    \"index\": true,\n    \"update\": true\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "connection",
+              "value": "close"
+            },
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "date",
+              "value": "Mon, 20 Jun 2022 14:59:26 GMT"
+            },
+            {
+              "key": "strict-transport-security",
+              "value": "max-age=15724800; includeSubDomains"
+            },
+            {
+              "key": "vary",
+              "value": "Accept-Encoding, Origin"
+            },
+            {
+              "key": "x-b3-parentspanid",
+              "value": "afe6ab46a55cbfe4"
+            },
+            {
+              "key": "x-b3-sampled",
+              "value": "0"
+            },
+            {
+              "key": "x-b3-spanid",
+              "value": "afe6ab46a55cbfe4"
+            },
+            {
+              "key": "x-b3-traceid",
+              "value": "62b08b4e84088876afe6ab46a55cbfe4"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            },
+            {
+              "key": "content-length",
+              "value": "964"
+            }
+          ],
+          "filePath": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false
+        }
+      ],
+      "enabled": false,
+      "randomResponse": false,
+      "sequentialResponse": false
+    },
+    {
+      "uuid": "0f2807c8-9615-4f0e-857f-48afc5b1c981",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "4.0/roles/305/groups",
+      "responses": [
+        {
+          "uuid": "09a8c1d8-eaba-4121-936b-966a9456c0aa",
+          "body": "[]",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "connection",
+              "value": "close"
+            },
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "date",
+              "value": "Mon, 20 Jun 2022 14:59:30 GMT"
+            },
+            {
+              "key": "strict-transport-security",
+              "value": "max-age=15724800; includeSubDomains"
+            },
+            {
+              "key": "vary",
+              "value": "Accept-Encoding, Origin"
+            },
+            {
+              "key": "x-b3-parentspanid",
+              "value": "4901da1ef95a452d"
+            },
+            {
+              "key": "x-b3-sampled",
+              "value": "0"
+            },
+            {
+              "key": "x-b3-spanid",
+              "value": "4901da1ef95a452d"
+            },
+            {
+              "key": "x-b3-traceid",
+              "value": "62b08b51f25995cd4901da1ef95a452d"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            },
+            {
+              "key": "content-length",
+              "value": "2"
+            }
+          ],
+          "filePath": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true
+        },
+        {
+          "uuid": "3151b239-fe2e-4e69-a75f-8bfd73167ae8",
+          "body": "[\n  {\n    \"can_add_to_content_metadata\": true,\n    \"external_group_id\": null,\n    \"id\": \"188\",\n    \"name\": \"Developer sandbox-frank-1\",\n    \"user_count\": 0,\n    \"externally_managed\": false,\n    \"include_by_default\": false,\n    \"contains_current_user\": false,\n    \"can\": {\n      \"show\": true,\n      \"create\": true,\n      \"index\": true,\n      \"update\": true,\n      \"delete\": true,\n      \"edit_in_ui\": true,\n      \"add_to_content_metadata\": true\n    }\n  },\n  {\n    \"can_add_to_content_metadata\": true,\n    \"external_group_id\": null,\n    \"id\": \"190\",\n    \"name\": \"Admin sandbox-frank-1\",\n    \"user_count\": 0,\n    \"externally_managed\": false,\n    \"include_by_default\": false,\n    \"contains_current_user\": false,\n    \"can\": {\n      \"show\": true,\n      \"create\": true,\n      \"index\": true,\n      \"update\": true,\n      \"delete\": true,\n      \"edit_in_ui\": true,\n      \"add_to_content_metadata\": true\n    }\n  }\n]",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "filePath": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false
+        }
+      ],
+      "enabled": false,
+      "randomResponse": false,
+      "sequentialResponse": true
+    },
+    {
+      "uuid": "9a1f7c66-15b7-4dae-821a-e4f3211442e1",
+      "documentation": "",
+      "method": "put",
+      "endpoint": "4.0/roles/305/groups",
+      "responses": [
+        {
+          "uuid": "0343bc8f-774e-4b80-92e9-9588101aa659",
+          "body": "[\n  {\n    \"can_add_to_content_metadata\": true,\n    \"external_group_id\": null,\n    \"id\": \"188\",\n    \"name\": \"Developer sandbox-frank-1\",\n    \"user_count\": 0,\n    \"externally_managed\": false,\n    \"include_by_default\": false,\n    \"contains_current_user\": false,\n    \"can\": {\n      \"show\": true,\n      \"create\": true,\n      \"index\": true,\n      \"update\": true,\n      \"delete\": true,\n      \"edit_in_ui\": true,\n      \"add_to_content_metadata\": true\n    }\n  },\n  {\n    \"can_add_to_content_metadata\": true,\n    \"external_group_id\": null,\n    \"id\": \"190\",\n    \"name\": \"Admin sandbox-frank-1\",\n    \"user_count\": 0,\n    \"externally_managed\": false,\n    \"include_by_default\": false,\n    \"contains_current_user\": false,\n    \"can\": {\n      \"show\": true,\n      \"create\": true,\n      \"index\": true,\n      \"update\": true,\n      \"delete\": true,\n      \"edit_in_ui\": true,\n      \"add_to_content_metadata\": true\n    }\n  }\n]",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "connection",
+              "value": "close"
+            },
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "date",
+              "value": "Mon, 20 Jun 2022 14:59:35 GMT"
+            },
+            {
+              "key": "strict-transport-security",
+              "value": "max-age=15724800; includeSubDomains"
+            },
+            {
+              "key": "vary",
+              "value": "Accept-Encoding, Origin"
+            },
+            {
+              "key": "x-b3-parentspanid",
+              "value": "7d3f411542d725bb"
+            },
+            {
+              "key": "x-b3-sampled",
+              "value": "0"
+            },
+            {
+              "key": "x-b3-spanid",
+              "value": "7d3f411542d725bb"
+            },
+            {
+              "key": "x-b3-traceid",
+              "value": "62b08b57c4c31afa7d3f411542d725bb"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            },
+            {
+              "key": "content-length",
+              "value": "659"
+            }
+          ],
+          "filePath": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "body",
+              "modifier": "",
+              "value": "[\"188\",\"190\"] ",
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false
+        }
+      ],
+      "enabled": false,
+      "randomResponse": false,
+      "sequentialResponse": false
+    },
+    {
+      "uuid": "15b5f005-35e1-4f59-a305-e287eab96ad5",
+      "documentation": "",
+      "method": "delete",
+      "endpoint": "4.0/roles/305",
+      "responses": [
+        {
+          "uuid": "d1663d7d-21d5-4084-a259-b65d4e225fee",
+          "body": "",
+          "latency": 0,
+          "statusCode": 204,
+          "label": "",
+          "headers": [
+            {
+              "key": "connection",
+              "value": "close"
+            },
+            {
+              "key": "content-type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "date",
+              "value": "Mon, 20 Jun 2022 15:00:28 GMT"
+            },
+            {
+              "key": "strict-transport-security",
+              "value": "max-age=15724800; includeSubDomains"
+            },
+            {
+              "key": "vary",
+              "value": "Origin"
+            },
+            {
+              "key": "x-b3-parentspanid",
+              "value": "1d95f5f3565d0c0f"
+            },
+            {
+              "key": "x-b3-sampled",
+              "value": "0"
+            },
+            {
+              "key": "x-b3-spanid",
+              "value": "1d95f5f3565d0c0f"
+            },
+            {
+              "key": "x-b3-traceid",
+              "value": "62b08b8cf2a13e471d95f5f3565d0c0f"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            }
+          ],
+          "filePath": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false
+        }
+      ],
+      "enabled": false,
+      "randomResponse": false,
+      "sequentialResponse": false
+    },
+    {
+      "uuid": "90680aee-ab22-4764-b883-ecc703d5d9bd",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "4.0/permission_sets",
+      "responses": [
+        {
+          "uuid": "e6e845ef-f624-4fa7-b733-84cdfbadcfd3",
+          "body": "[{\"built_in\":true,\"id\":\"1\",\"all_access\":true,\"name\":\"Admin\",\"permissions\":[\"access_data\",\"see_lookml_dashboards\",\"see_looks\",\"see_user_dashboards\",\"explore\",\"create_table_calculations\",\"create_custom_fields\",\"save_content\",\"create_public_looks\",\"download_with_limit\",\"download_without_limit\",\"schedule_look_emails\",\"schedule_external_look_emails\",\"create_alerts\",\"follow_alerts\",\"send_to_s3\",\"send_to_sftp\",\"send_outgoing_webhook\",\"send_to_integration\",\"see_sql\",\"see_lookml\",\"develop\",\"deploy\",\"support_access_toggle\",\"use_sql_runner\",\"clear_cache_refresh\",\"can_copy_print\",\"see_drill_overlay\",\"manage_spaces\",\"manage_homepage\",\"manage_models\",\"manage_stereo\",\"create_prefetches\",\"login_special_email\",\"embed_browse_spaces\",\"embed_save_shared_space\",\"see_alerts\",\"see_queries\",\"see_logs\",\"see_users\",\"sudo\",\"see_schedules\",\"see_pdts\",\"see_datagroups\",\"update_datagroups\",\"see_system_activity\",\"administer\",\"mobile_app_access\"],\"url\":\"https://localhost:19999/api/4.0/permission_sets/1\",\"can\":{\"show\":true,\"index\":true,\"update\":true}},{\"built_in\":false,\"id\":\"2\",\"all_access\":false,\"name\":\"Developer\",\"permissions\":[\"access_data\",\"clear_cache_refresh\",\"create_alerts\",\"create_custom_fields\",\"create_public_looks\",\"create_table_calculations\",\"deploy\",\"develop\",\"download_without_limit\",\"explore\",\"follow_alerts\",\"login_special_email\",\"manage_spaces\",\"mobile_app_access\",\"save_content\",\"schedule_look_emails\",\"see_drill_overlay\",\"see_lookml\",\"see_lookml_dashboards\",\"see_looks\",\"see_sql\",\"see_user_dashboards\",\"send_to_integration\",\"use_sql_runner\"],\"url\":\"https://localhost:19999/api/4.0/permission_sets/2\",\"can\":{\"show\":true,\"index\":true,\"update\":true}},{\"built_in\":false,\"id\":\"3\",\"all_access\":false,\"name\":\"User\",\"permissions\":[\"access_data\",\"clear_cache_refresh\",\"create_alerts\",\"create_custom_fields\",\"create_table_calculations\",\"download_without_limit\",\"explore\",\"login_special_email\",\"manage_spaces\",\"mobile_app_access\",\"save_content\",\"schedule_look_emails\",\"see_drill_overlay\",\"see_lookml\",\"see_lookml_dashboards\",\"see_looks\",\"see_sql\",\"see_user_dashboards\",\"send_to_integration\"],\"url\":\"https://localhost:19999/api/4.0/permission_sets/3\",\"can\":{\"show\":true,\"index\":true,\"update\":true}},{\"built_in\":false,\"id\":\"4\",\"all_access\":false,\"name\":\"LookML Dashboard User\",\"permissions\":[\"access_data\",\"clear_cache_refresh\",\"mobile_app_access\",\"see_lookml_dashboards\"],\"url\":\"https://localhost:19999/api/4.0/permission_sets/4\",\"can\":{\"show\":true,\"index\":true,\"update\":true}},{\"built_in\":false,\"id\":\"5\",\"all_access\":false,\"name\":\"User who can't view LookML\",\"permissions\":[\"access_data\",\"clear_cache_refresh\",\"create_custom_fields\",\"create_table_calculations\",\"download_without_limit\",\"explore\",\"manage_spaces\",\"mobile_app_access\",\"save_content\",\"schedule_look_emails\",\"see_lookml_dashboards\",\"see_looks\",\"see_user_dashboards\",\"send_to_integration\"],\"url\":\"https://localhost:19999/api/4.0/permission_sets/5\",\"can\":{\"show\":true,\"index\":true,\"update\":true}},{\"built_in\":false,\"id\":\"6\",\"all_access\":false,\"name\":\"Viewer\",\"permissions\":[\"access_data\",\"clear_cache_refresh\",\"create_alerts\",\"download_without_limit\",\"follow_alerts\",\"login_special_email\",\"mobile_app_access\",\"schedule_look_emails\",\"see_drill_overlay\",\"see_lookml_dashboards\",\"see_looks\",\"see_user_dashboards\",\"send_to_integration\"],\"url\":\"https://localhost:19999/api/4.0/permission_sets/6\",\"can\":{\"show\":true,\"index\":true,\"update\":true}},{\"built_in\":false,\"id\":\"7\",\"all_access\":false,\"name\":\"Permission Set\",\"permissions\":[\"access_data\",\"download_with_limit\",\"schedule_external_look_emails\",\"schedule_look_emails\",\"see_user_dashboards\"],\"url\":\"https://localhost:19999/api/4.0/permission_sets/7\",\"can\":{\"show\":true,\"index\":true,\"update\":true}},{\"built_in\":false,\"id\":\"8\",\"all_access\":false,\"name\":\"Client Admin\",\"permissions\":[\"access_data\",\"clear_cache_refresh\",\"create_alerts\",\"create_custom_fields\",\"create_prefetches\",\"create_public_looks\",\"create_table_calculations\",\"deploy\",\"develop\",\"download_with_limit\",\"download_without_limit\",\"explore\",\"follow_alerts\",\"login_special_email\",\"manage_spaces\",\"save_content\",\"schedule_external_look_emails\",\"schedule_look_emails\",\"see_drill_overlay\",\"see_lookml\",\"see_lookml_dashboards\",\"see_looks\",\"see_sql\",\"see_user_dashboards\",\"support_access_toggle\",\"use_sql_runner\"],\"url\":\"https://localhost:19999/api/4.0/permission_sets/8\",\"can\":{\"show\":true,\"index\":true,\"update\":true}},{\"built_in\":false,\"id\":\"9\",\"all_access\":false,\"name\":\"testdummy-x_X'a🤯\\u003e \\u003c~\",\"permissions\":[\"login_special_email\"],\"url\":\"https://localhost:19999/api/4.0/permission_sets/9\",\"can\":{\"show\":true,\"index\":true,\"update\":true}}]",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "connection",
+              "value": "close"
+            },
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "date",
+              "value": "Tue, 21 Jun 2022 19:57:03 GMT"
+            },
+            {
+              "key": "strict-transport-security",
+              "value": "max-age=15724800; includeSubDomains"
+            },
+            {
+              "key": "vary",
+              "value": "Accept-Encoding, Origin"
+            },
+            {
+              "key": "x-b3-parentspanid",
+              "value": "beac29dbc3c1ff81"
+            },
+            {
+              "key": "x-b3-sampled",
+              "value": "0"
+            },
+            {
+              "key": "x-b3-spanid",
+              "value": "beac29dbc3c1ff81"
+            },
+            {
+              "key": "x-b3-traceid",
+              "value": "62b2228fd9f6f6d9beac29dbc3c1ff81"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            },
+            {
+              "key": "content-length",
+              "value": "4605"
+            }
+          ],
+          "filePath": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false
+        }
+      ],
+      "enabled": false,
+      "randomResponse": false,
+      "sequentialResponse": false
+    },
+    {
+      "uuid": "15c3056f-4562-4c83-8005-6f791231cfe7",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "4.0/model_sets/53",
+      "responses": [
+        {
+          "uuid": "d0ac7b69-2b85-4e0d-ba49-59a0c90a3bab",
+          "body": "{\n  \"built_in\": false,\n  \"id\": \"53\",\n  \"all_access\": false,\n  \"models\": [\n    \"sandbox-frank-1\"\n  ],\n  \"name\": \"sandbox-frank-1\",\n  \"url\": \"https://localhost:19999/api/4.0/model_sets/53\",\n  \"can\": {\n    \"show\": true,\n    \"index\": true,\n    \"update\": true\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "connection",
+              "value": "close"
+            },
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "date",
+              "value": "Tue, 21 Jun 2022 23:06:40 GMT"
+            },
+            {
+              "key": "strict-transport-security",
+              "value": "max-age=15724800; includeSubDomains"
+            },
+            {
+              "key": "vary",
+              "value": "Accept-Encoding, Origin"
+            },
+            {
+              "key": "x-b3-parentspanid",
+              "value": "05392f517a431f77"
+            },
+            {
+              "key": "x-b3-sampled",
+              "value": "0"
+            },
+            {
+              "key": "x-b3-spanid",
+              "value": "05392f517a431f77"
+            },
+            {
+              "key": "x-b3-traceid",
+              "value": "62b24f00b8c13ef405392f517a431f77"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            },
+            {
+              "key": "content-length",
+              "value": "202"
+            }
+          ],
+          "filePath": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false
+        }
+      ],
+      "enabled": false,
       "randomResponse": false,
       "sequentialResponse": false
     }
   ],
-  "proxyMode": false,
-  "proxyHost": "",
+  "proxyMode": true,
+  "proxyHost": "https://reprise.cloud.looker.com:19999/",
   "proxyRemovePrefix": false,
   "tlsOptions": {
     "enabled": false,
@@ -53,12 +852,7 @@
       "value": "application/json"
     }
   ],
-  "proxyReqHeaders": [
-    {
-      "key": "",
-      "value": ""
-    }
-  ],
+  "proxyReqHeaders": [],
   "proxyResHeaders": [
     {
       "key": "",

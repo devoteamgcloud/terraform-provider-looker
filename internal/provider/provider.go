@@ -3,10 +3,15 @@ package provider
 import (
 	"context"
 	"fmt"
+	md "github.com/JohannesKaufmann/html-to-markdown"
 	"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
 	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"golang.org/x/oauth2"
 	"net/http"
+	"net/url"
+	"reflect"
+	"strconv"
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -61,22 +66,21 @@ func New(version string) func() *schema.Provider {
 				},
 			},
 			DataSourcesMap: map[string]*schema.Resource{
-				"looker_user":           dataSourceUser(),
-				"looker_group":          dataSourceGroup(),
-				"looker_permission_set": {},
+				"looker_user":  dataSourceUser(),
+				"looker_group": dataSourceGroup(),
 			},
 			ResourcesMap: map[string]*schema.Resource{
 				"looker_user":                   resourceUser(),
 				"looker_group":                  resourceGroup(),
 				"looker_group_member":           resourceGroupMember(),
-				"looker_role":                   {},
-				"looker_role_member":            {},
+				"looker_role":                   resourceRole(),
+				"looker_role_member":            resourceRoleMember(),
 				"looker_connection":             resourceConnection(),
 				"looker_project":                resourceProject(),
-				"looker_project_git_deploy_key": {},
-				"looker_project_git_repo":       {},
-				"looker_lookml_model":           {},
-				"looker_model_set":              {},
+				"looker_project_git_deploy_key": resourceProjectGitDeployKey(),
+				"looker_project_git_repo":       resourceProjectGitRepo(),
+				"looker_lookml_model":           resourceLookMlModel(),
+				"looker_model_set":              resourceModelSet(),
 			},
 		}
 
@@ -97,6 +101,7 @@ const (
 
 type Config struct {
 	Api                       *lookergo.Client
+	ApiUserID                 string
 	DevClient                 *lookergo.Client
 	Workspace                 Workspace
 	RequestCompletionCallback lookergo.RequestCompletionCallback
@@ -110,6 +115,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData, p *schema.Pr
 	var diags diag.Diagnostics
 
 	client := lookergo.NewClient(nil)
+	devClient := lookergo.NewClient(nil)
 
 	if err := client.SetBaseURL(d.Get("base_url").(string)); err != nil {
 		diags = append(diags, diag.Diagnostic{
@@ -119,6 +125,8 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData, p *schema.Pr
 		})
 		return nil, diags
 	}
+	devClient.SetBaseURL(d.Get("base_url").(string))
+
 	clientId := d.Get("client_id").(string)
 	clientSecret := d.Get("client_secret").(string)
 	if err := client.SetOauthCredentials(ctx, clientId, clientSecret); err != nil {
@@ -133,10 +141,12 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData, p *schema.Pr
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,
 			Summary:  "Unable to set looker API user-agent",
-			Detail:   "Err: " + err.Error(),
+			Detail:   "Err: " + err.(*lookergo.ErrorResponse).Message,
 		})
 		return nil, diags
 	}
+	devClient.SetUserAgent(userAgent)
+
 	var config Config
 
 	config.RequestCompletionCallback = func(req *http.Request, resp *http.Response) {
@@ -148,22 +158,41 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData, p *schema.Pr
 	}
 
 	client.OnRequestCompleted(config.RequestCompletionCallback)
+	devClient.OnRequestCompleted(config.RequestCompletionCallback)
 
 	session, _, err := client.Sessions.Get(ctx)
 	if err != nil {
+		errMsg := err.Error()
+		var errBodyMd string
+		// Otherwise the error is the full html doc. :O
+		if reflect.TypeOf(err).Elem() == reflect.TypeOf((*url.Error)(nil)).Elem() {
+			if reflect.TypeOf(err.(*url.Error).Err).Elem() == reflect.TypeOf((*oauth2.RetrieveError)(nil)).Elem() {
+				errMsg = fmt.Sprintf("oauth2: cannot fetch token: %v", err.(*url.Error).Err.(*oauth2.RetrieveError).Response.Status)
+				converter := md.NewConverter("", true, nil)
+				mdBytes, _ := converter.ConvertBytes(err.(*url.Error).Err.(*oauth2.RetrieveError).Body)
+				errBodyMd = string(mdBytes)
+				// errBodyMd = string(err.(*url.Error).Err.(*oauth2.RetrieveError).Body)
+			}
+		}
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,
-			Summary:  "Unable to create Looker client",
-			Detail:   "Unable to authenticate user for authenticated Looker client: " + err.Error(),
+			Summary:  "Unable to create Looker client: " + errMsg,
+			Detail:   "Unable to authenticate user for authenticated Looker client\n" + errBodyMd,
 		})
 		return nil, diags
 	}
 
+	// Get current user ID
+	user, _, err := client.Sessions.GetCurrentUser(ctx)
+	if err != nil {
+		return nil, diagErrAppend(diags, err)
+	}
+
 	switch session.WorkspaceId {
 	case "production":
-		config = Config{Api: client, Workspace: WorkspaceProduction}
+		config = Config{Api: client, ApiUserID: strconv.Itoa(user.Id), DevClient: devClient, Workspace: WorkspaceProduction}
 	case "dev":
-		config = Config{Api: client, Workspace: WorkspaceDev}
+		config = Config{Api: client, ApiUserID: strconv.Itoa(user.Id), DevClient: devClient, Workspace: WorkspaceDev}
 	default:
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,
@@ -209,7 +238,13 @@ func diagErrAppend(diags diag.Diagnostics, err error) diag.Diagnostics {
 func ensureDevClient(ctx context.Context, m interface{}) error {
 	if m.(*Config).DevClient == nil {
 		tflog.Debug(ctx, fmt.Sprintf("Fn: %v, Action: create dev client connection", currFuncName()))
-		devClient, _, err := m.(*Config).Api.CreateDevConnection(ctx, m.(*Config).RequestCompletionCallback)
+		devClient, _, err := m.(*Config).Api.CreateDevConnection(ctx, func(req *http.Request, resp *http.Response) {
+			if code := resp.StatusCode; code >= 200 && code <= 299 {
+				tflog.Debug(ctx, "DevClient: HTTP Request", map[string]interface{}{"req_url": req.URL.String(), "req_method": req.Method, "resp_status": resp.Status})
+			} else {
+				tflog.Debug(ctx, "DevClient: HTTP Error", map[string]interface{}{"req_url": req.URL.String(), "req_method": req.Method, "resp_status": resp.Status, "resp_length": resp.ContentLength, "resp_headers": resp.Header})
+			}
+		})
 		if err != nil {
 			return err
 		} else {

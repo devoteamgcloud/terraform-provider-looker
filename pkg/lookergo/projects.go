@@ -1,7 +1,12 @@
 package lookergo
 
 import (
+	"bytes"
 	"context"
+	"fmt"
+	"golang.org/x/crypto/ssh"
+	"io"
+	"net/http"
 	"net/url"
 )
 
@@ -10,22 +15,26 @@ const projectsBasePath = "4.0/projects"
 // Ref: https://developers.looker.com/api/explorer/4.0/types/Project
 
 type ProjectsResource interface {
-	Get(ctx context.Context, projectId string) (*Project, *Response, error)
+	Get(ctx context.Context, projectName string) (*Project, *Response, error)
 	// !!! NOT rest compliant !!!
 	// name is required. git_remote_url is not allowed.
 	// To configure Git for the newly created project, follow the instructions in update_project.
 	Create(ctx context.Context, proj *Project) (*Project, *Response, error)
-	Update(ctx context.Context, projectId string, proj *Project) (*Project, *Response, error)
-	Delete(ctx context.Context, projectId string) (*Response, error)
-	GitBranchesList(ctx context.Context, projectId string, opt *ListOptions) ([]GitBranch, *Response, error)
-	GitBranchActiveGet(ctx context.Context, projectId string) (*GitBranch, *Response, error)
-	GitBranchCheckout(ctx context.Context, projectId string, gbr *GitBranchRef) (*GitBranch, *Response, error)
-	GitBranchUpdate(ctx context.Context, projectId string, gbr *GitBranchRef) (*GitBranch, *Response, error)
-	GitBranchListByName(ctx context.Context, projectId string, branchName string) (*GitBranch, *Response, error)
-	GitBranchDelete(ctx context.Context, projectId string, branchName string) (*Response, error)
-	GitBranchDeployToProduction(ctx context.Context, projectId string, branch string) (*string, *Response, error)
-	GitRefDeployToProduction(ctx context.Context, projectId string, ref string) (*string, *Response, error)
-	DeployToProduction(ctx context.Context, projectId string) (*string, *Response, error)
+	Update(ctx context.Context, projectName string, proj *Project) (*Project, *Response, error)
+	Delete(ctx context.Context, projectName string) (*Response, error)
+	DeleteGitRepo(ctx context.Context, projectName string) (*Response, error)
+	GitBranchesList(ctx context.Context, projectName string, opt *ListOptions) ([]GitBranch, *Response, error)
+	GitBranchActiveGet(ctx context.Context, projectName string) (*GitBranch, *Response, error)
+	GitBranchCheckout(ctx context.Context, projectName string, gbr *GitBranchRef) (*GitBranch, *Response, error)
+	GitBranchUpdate(ctx context.Context, projectName string, gbr *GitBranchRef) (*GitBranch, *Response, error)
+	GitBranchListByName(ctx context.Context, projectName string, branchName string) (*GitBranch, *Response, error)
+	GitBranchDelete(ctx context.Context, projectName string, branchName string) (*Response, error)
+	GitBranchDeployToProduction(ctx context.Context, projectName string, branch string) (*string, *Response, error)
+	GitRefDeployToProduction(ctx context.Context, projectName string, ref string) (*string, *Response, error)
+	DeployToProduction(ctx context.Context, projectName string) (*string, *Response, error)
+	GitDeployKeyGet(ctx context.Context, projectName string) (*string, *Response, error)
+	GitDeployKeyCreate(ctx context.Context, projectName string) (*string, *Response, error)
+	// GitDeployKeyDelete(ctx context.Context, projectName string) (*Response, error) // Doesn't exist
 }
 
 type ProjectsResourceOp struct {
@@ -122,8 +131,8 @@ type GitBranchRef struct {
 	Ref  string `json:"ref"`
 }
 
-func (s *ProjectsResourceOp) Get(ctx context.Context, projectId string) (*Project, *Response, error) {
-	return doGet(ctx, s.client, projectsBasePath, new(Project), projectId)
+func (s *ProjectsResourceOp) Get(ctx context.Context, projectName string) (*Project, *Response, error) {
+	return doGet(ctx, s.client, projectsBasePath, new(Project), projectName)
 }
 
 /*
@@ -163,52 +172,141 @@ func (s *ProjectsResourceOp) Create(ctx context.Context, proj *Project) (*Projec
 	Call update_session to select the 'dev' workspace.
 	Call update_project setting git_remote_url to null and git_service_name to "bare".
 */
-func (s *ProjectsResourceOp) Update(ctx context.Context, projectId string, proj *Project) (*Project, *Response, error) {
-	return doUpdate(ctx, s.client, projectsBasePath, projectId, proj, new(Project))
+func (s *ProjectsResourceOp) Update(ctx context.Context, projectName string, proj *Project) (*Project, *Response, error) {
+	return doUpdate(ctx, s.client, projectsBasePath, projectName, proj, new(Project))
 }
 
-func (s *ProjectsResourceOp) Delete(ctx context.Context, projectId string) (*Response, error) {
-	return doDelete(ctx, s.client, projectsBasePath, projectId)
+func (s *ProjectsResourceOp) Delete(ctx context.Context, projectName string) (*Response, error) {
+	return doDelete(ctx, s.client, projectsBasePath, projectName)
 }
 
-func (s *ProjectsResourceOp) GitBranchesList(ctx context.Context, projectId string, opt *ListOptions) ([]GitBranch, *Response, error) {
-	return doList(ctx, s.client, projectsBasePath, opt, new([]GitBranch), projectId, "git_branches")
+func (s *ProjectsResourceOp) GitBranchesList(ctx context.Context, projectName string, opt *ListOptions) ([]GitBranch, *Response, error) {
+	return doList(ctx, s.client, projectsBasePath, opt, new([]GitBranch), projectName, "git_branches")
 }
 
-func (s *ProjectsResourceOp) GitBranchActiveGet(ctx context.Context, projectId string) (*GitBranch, *Response, error) {
-	return doGet(ctx, s.client, projectsBasePath, new(GitBranch), projectId, "git_branch")
+func (s *ProjectsResourceOp) GitBranchActiveGet(ctx context.Context, projectName string) (*GitBranch, *Response, error) {
+	return doGet(ctx, s.client, projectsBasePath, new(GitBranch), projectName, "git_branch")
 }
 
-func (s *ProjectsResourceOp) GitBranchCheckout(ctx context.Context, projectId string, gbr *GitBranchRef) (*GitBranch, *Response, error) {
-	return doCreate(ctx, s.client, projectsBasePath, new(GitBranchRef), new(GitBranch), projectId, "git_branch")
+func (s *ProjectsResourceOp) GitBranchCheckout(ctx context.Context, projectName string, gbr *GitBranchRef) (*GitBranch, *Response, error) {
+	return doCreate(ctx, s.client, projectsBasePath, new(GitBranchRef), new(GitBranch), projectName, "git_branch")
 }
 
-func (s *ProjectsResourceOp) GitBranchUpdate(ctx context.Context, projectId string, gbr *GitBranchRef) (*GitBranch, *Response, error) {
-	return doUpdate(ctx, s.client, projectsBasePath, projectId, gbr, new(GitBranch), projectId, "git_branch")
+func (s *ProjectsResourceOp) GitBranchUpdate(ctx context.Context, projectName string, gbr *GitBranchRef) (*GitBranch, *Response, error) {
+	return doUpdate(ctx, s.client, projectsBasePath, projectName, gbr, new(GitBranch), projectName, "git_branch")
 }
 
-func (s *ProjectsResourceOp) GitBranchListByName(ctx context.Context, projectId string, branchName string) (*GitBranch, *Response, error) {
+func (s *ProjectsResourceOp) GitBranchListByName(ctx context.Context, projectName string, branchName string) (*GitBranch, *Response, error) {
 	panic("Not implemented")
 }
 
-func (s *ProjectsResourceOp) GitBranchDelete(ctx context.Context, projectId string, branchName string) (*Response, error) {
-	return doDelete(ctx, s.client, projectsBasePath, projectId, "git_branch", branchName)
+func (s *ProjectsResourceOp) GitBranchDelete(ctx context.Context, projectName string, branchName string) (*Response, error) {
+	return doDelete(ctx, s.client, projectsBasePath, projectName, "git_branch", branchName)
 }
 
-func (s *ProjectsResourceOp) GitBranchDeployToProduction(ctx context.Context, projectId string, branch string) (*string, *Response, error) {
+func (s *ProjectsResourceOp) GitBranchDeployToProduction(ctx context.Context, projectName string, branch string) (*string, *Response, error) {
 	qs := url.Values{}
 	qs.Add("branch", branch)
 
-	return doCreateX(ctx, s.client, projectsBasePath, new(string), qs, projectId, "deploy_ref_to_production")
+	return doCreateX(ctx, s.client, projectsBasePath, new(string), qs, projectName, "deploy_ref_to_production")
 }
 
-func (s *ProjectsResourceOp) GitRefDeployToProduction(ctx context.Context, projectId string, ref string) (*string, *Response, error) {
+func (s *ProjectsResourceOp) GitRefDeployToProduction(ctx context.Context, projectName string, ref string) (*string, *Response, error) {
 	qs := url.Values{}
 	qs.Add("ref", ref)
 
-	return doCreateX(ctx, s.client, projectsBasePath, new(string), qs, projectId, "deploy_ref_to_production")
+	return doCreateX(ctx, s.client, projectsBasePath, new(string), qs, projectName, "deploy_ref_to_production")
 }
 
-func (s *ProjectsResourceOp) DeployToProduction(ctx context.Context, projectId string) (*string, *Response, error) {
-	return doCreateX(ctx, s.client, projectsBasePath, new(string), nil, projectId, "deploy_to_production")
+func (s *ProjectsResourceOp) DeployToProduction(ctx context.Context, projectName string) (*string, *Response, error) {
+	return doCreateX(ctx, s.client, projectsBasePath, new(string), nil, projectName, "deploy_to_production")
 }
+
+func (s *ProjectsResourceOp) GitDeployKeyGet(ctx context.Context, projectName string) (*string, *Response, error) {
+	path := fmt.Sprintf("%s/%s/%s", projectsBasePath, projectName, "git/deploy_key")
+	var gitPubKey string
+
+	req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var buf bytes.Buffer
+	resp, err := s.client.Do(ctx, req, &buf)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	if resp.StatusCode == http.StatusOK {
+		bodyBytes, err := io.ReadAll(&buf)
+		if err != nil {
+			return nil, resp, err
+		}
+		publicKey, _, _, _, err := ssh.ParseAuthorizedKey(bodyBytes)
+		if err != nil {
+			panic(err)
+		}
+
+		gitPubKey = string(ssh.MarshalAuthorizedKey(publicKey))
+	}
+
+	return &gitPubKey, resp, err
+}
+
+func (s *ProjectsResourceOp) GitDeployKeyCreate(ctx context.Context, projectName string) (*string, *Response, error) {
+	path := fmt.Sprintf("%s/%s/%s", projectsBasePath, projectName, "git/deploy_key")
+	var gitPubKey string
+
+	req, err := s.client.NewRequest(ctx, http.MethodPost, path, nil)
+	if err != nil {
+		return &gitPubKey, nil, err
+	}
+
+	var buf bytes.Buffer
+	resp, err := s.client.Do(ctx, req, &buf)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	if resp.StatusCode == http.StatusOK {
+		bodyBytes, err := io.ReadAll(&buf)
+		if err != nil {
+			return nil, resp, err
+		}
+		publicKey, _, _, _, err := ssh.ParseAuthorizedKey(bodyBytes)
+		if err != nil {
+			panic(err)
+		}
+
+		gitPubKey = string(ssh.MarshalAuthorizedKey(publicKey))
+	}
+
+	return &gitPubKey, resp, err
+
+}
+
+func (s *ProjectsResourceOp) DeleteGitRepo(ctx context.Context, projectName string) (*Response, error) {
+	path := fmt.Sprintf("%s/%s", projectsBasePath, projectName)
+
+	gsn := "bare"
+	b := map[string]*string{
+		"git_remote_url":   nil,
+		"git_service_name": &gsn,
+	}
+
+	req, err := s.client.NewRequest(ctx, http.MethodPost, path, b)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(ctx, req, nil)
+	if err != nil {
+		return resp, err
+	}
+
+	return nil, err
+}
+
+// func (s *ProjectsResourceOp) GitDeployKeyDelete(ctx context.Context, projectName string) (*Response, error) {
+//
+// }

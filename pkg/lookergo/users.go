@@ -110,7 +110,7 @@ type UsersResource interface {
 	CreatePasswordReset(context.Context, int) (*CredentialEmail, *Response, error)
 	SendPasswordReset(context.Context, int) (*CredentialEmail, *Response, error)
 	GetRoles(context.Context, int) ([]Role, *Response, error)
-	SetRoles(context.Context, int, []int) ([]Role, *Response, error)
+	SetRoles(context.Context, int, []string) ([]Role, *Response, error)
 }
 
 // UsersResourceOp handles operations between User related methods of the API.
@@ -216,6 +216,6 @@ func (s *UsersResourceOp) GetRoles(ctx context.Context, id int) ([]Role, *Respon
 }
 
 // SetRoles -
-func (s *UsersResourceOp) SetRoles(ctx context.Context, id int, roleIds []int) ([]Role, *Response, error) {
+func (s *UsersResourceOp) SetRoles(ctx context.Context, id int, roleIds []string) ([]Role, *Response, error) {
 	return doSet(ctx, s.client, userBasePath, roleIds, new([]Role), strconv.Itoa(id), "roles")
 }

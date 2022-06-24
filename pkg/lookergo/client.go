@@ -63,6 +63,8 @@ type Client struct {
 	Rate    Rate
 	ratemtx sync.Mutex
 
+	mu sync.Mutex
+
 	// Resources used for communicating with the API
 	Groups         GroupsResource
 	Users          UsersResource
@@ -267,6 +269,35 @@ func (c *Client) SetOauthStaticToken(ctx context.Context, token *oauth2.Token) e
 
 	tokenSource := oauth2.StaticTokenSource(token)
 	c.client = oauth2.NewClient(ctx, tokenSource)
+	return nil
+}
+
+func (c *Client) EnsureStaticToken(ctx context.Context, parentClient *Client, apiUserID string) error {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	if c.client.Transport == nil && c.Workspace != "dev" {
+		// Get duplicate API token for current user
+		token, _, err := parentClient.Sessions.GetLoginUserToken(ctx, apiUserID)
+		if err != nil {
+			return err
+		}
+
+		err = c.SetOauthStaticToken(ctx, token)
+		if err != nil {
+			return err
+		}
+
+		// Set dev workspace for dup token
+		session, _, err := c.Sessions.SetWorkspaceId(ctx, "dev")
+		if err != nil {
+			return err
+		} else if session.WorkspaceId == "production" || session.WorkspaceId == "" {
+			return fmt.Errorf("did not find dev workspace")
+		} else {
+			c.Workspace = session.WorkspaceId
+		}
+	}
+
 	return nil
 }
 
@@ -582,7 +613,7 @@ func doGet[T any](ctx context.Context, client *Client, basePath string, svc *T, 
 	return svc, resp, err
 }
 
-func doGetById[T service](ctx context.Context, client *Client, basePath string, id any, svc *T) (*T, *Response, error) {
+func doGetById[T any](ctx context.Context, client *Client, basePath string, id any, svc *T) (*T, *Response, error) {
 	switch id.(type) {
 	case int:
 		if id.(int) < 1 {
@@ -593,7 +624,7 @@ func doGetById[T service](ctx context.Context, client *Client, basePath string, 
 		panic("Invalid type for ID. Has to be either int or string")
 	}
 
-	path := fmt.Sprintf("%s/%d", basePath, id)
+	path := fmt.Sprintf("%s/%v", basePath, id)
 
 	req, err := client.NewRequest(ctx, http.MethodGet, path, nil)
 	if err != nil {
@@ -709,7 +740,7 @@ func doUpdate[T any, U any](ctx context.Context, client *Client, basePath string
 	return uSvc, resp, err
 }
 
-func doSet[T any](ctx context.Context, client *Client, basePath string, ids []int, svc *[]T, pathSuffix ...string) ([]T, *Response, error) {
+func doSet[T any](ctx context.Context, client *Client, basePath string, ids []string, svc *[]T, pathSuffix ...string) ([]T, *Response, error) {
 	if len(ids) < 1 {
 		return nil, nil, NewArgError("ids", "cannot be less than 1")
 	}

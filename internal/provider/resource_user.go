@@ -91,10 +91,10 @@ func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface
 	roles := d.Get("roles").(*schema.Set)
 	var newRoles []lookergo.Role
 	if roles.Len() >= 1 {
-		var r []int
+		var r []string
 		for _, role := range roles.List() {
 			i, _ := strconv.Atoi(role.(string))
-			r = append(r, i)
+			r = append(r, idAsString(i))
 		}
 
 		newRoles, _, err = c.Users.SetRoles(ctx, newUser.Id, r)

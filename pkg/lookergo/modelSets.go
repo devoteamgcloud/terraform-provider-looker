@@ -31,8 +31,7 @@ func (s ModelSetsResourceOp) List(ctx context.Context) ([]ModelSet, *Response, e
 }
 
 func (s ModelSetsResourceOp) Get(ctx context.Context, modelSetId string) (*ModelSet, *Response, error) {
-	// TODO implement me
-	panic("implement me")
+	return doGetById(ctx, s.client, modelSetsBasePath, modelSetId, new(ModelSet))
 }
 
 func (s ModelSetsResourceOp) Create(ctx context.Context, modelSet *ModelSet) (*ModelSet, *Response, error) {

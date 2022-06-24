@@ -64,10 +64,17 @@ func resourceProject() *schema.Resource {
 
 func resourceProjectCreate(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
 	// c := m.(*Config).Api // .(*lookergo.Client)
-	if err := ensureDevClient(ctx, m); err != nil {
+	dc := m.(*Config).DevClient
+	// Refresh token for dev Api connection if not used before.
+	err := dc.EnsureStaticToken(ctx, m.(*Config).Api, m.(*Config).ApiUserID)
+	if err != nil {
 		return diagErrAppend(diags, err)
 	}
-	dc := m.(*Config).DevClient
+	/*	if err := ensureDevClient(ctx, m); err != nil {
+			return diagErrAppend(diags, err)
+		}
+		dc := m.(*Config).DevClient*/
+
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: start", currFuncName()))
 
 	project := &lookergo.Project{
@@ -101,12 +108,18 @@ func resourceProjectRead(ctx context.Context, d *schema.ResourceData, m interfac
 	if err := ensureDevClient(ctx, m); err != nil {
 		return diagErrAppend(diags, err)
 	}
+	c := m.(*Config).Api // .(*lookergo.Client)
 	dc := m.(*Config).DevClient
+	// Refresh token for dev Api connection if not used before.
+	err := dc.EnsureStaticToken(ctx, c, m.(*Config).ApiUserID)
+	if err != nil {
+		return diagErrAppend(diags, err)
+	}
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: start", currFuncName()))
 
 	projectId := d.Id()
 	var project *lookergo.Project
-	project, _, err := dc.Projects.Get(ctx, projectId)
+	project, _, err = dc.Projects.Get(ctx, projectId)
 	if err != nil {
 		return diagErrAppend(diags, err)
 	}

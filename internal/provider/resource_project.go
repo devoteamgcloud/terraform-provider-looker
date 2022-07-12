@@ -104,7 +104,6 @@ func resourceProjectCreate(ctx context.Context, d *schema.ResourceData, m interf
 }
 
 func resourceProjectRead(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
-	// c := m.(*Config).Api // .(*lookergo.Client)
 	if err := ensureDevClient(ctx, m); err != nil {
 		return diagErrAppend(diags, err)
 	}

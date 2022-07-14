@@ -3,11 +3,14 @@ package lookergo
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
-	"golang.org/x/crypto/ssh"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
+
+	"golang.org/x/crypto/ssh"
 )
 
 const projectsBasePath = "4.0/projects"
@@ -286,14 +289,16 @@ func (s *ProjectsResourceOp) GitDeployKeyCreate(ctx context.Context, projectName
 }
 
 func (s *ProjectsResourceOp) DeleteGitRepo(ctx context.Context, projectName string) (*Response, error) {
-	path := fmt.Sprintf("%s/%s", projectsBasePath, projectName)
-
+	path := fmt.Sprintf("%s/%s/", projectsBasePath, projectName)
+	log.Printf("[DEBUG] Trying to delete git repo for project %s to path %s", projectName, path)
 	gsn := "bare"
 	b := map[string]*string{
 		"git_remote_url":   nil,
 		"git_service_name": &gsn,
 	}
-
+	buf := new(bytes.Buffer)
+	json.NewEncoder(buf).Encode(b)
+	log.Printf("[DEBUG] Adding body %s", buf)
 	req, err := s.client.NewRequest(ctx, http.MethodPost, path, b)
 	if err != nil {
 		return nil, err

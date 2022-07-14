@@ -3,12 +3,6 @@ package provider
 import (
 	"context"
 	"fmt"
-	"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
-	"github.com/gocolly/colly/v2"
-	"github.com/hashicorp/go-cty/cty"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"math/rand"
 	"net/http"
 	"net/url"
@@ -16,6 +10,13 @@ import (
 	"regexp"
 	"sync"
 	"time"
+
+	"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
+	"github.com/gocolly/colly/v2"
+	"github.com/hashicorp/go-cty/cty"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceProject() *schema.Resource {
@@ -25,6 +26,7 @@ func resourceProject() *schema.Resource {
 		UpdateContext: resourceProjectUpdate,
 		DeleteContext: resourceProjectDelete,
 		Schema: map[string]*schema.Schema{
+			// TODO: this is not used, either remove it, or use it
 			"rename_when_delete": {
 				Description: "The looker API doesn't provide means to delete a project" +
 					"however, we can rename the project from orig_name to deleteme-orig_name-X1Y2",
@@ -146,15 +148,20 @@ func resourceProjectUpdate(ctx context.Context, d *schema.ResourceData, m interf
 }
 
 func resourceProjectDelete(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
-	// c := m.(*Config).Api // .(*lookergo.Client)
+	c := m.(*Config).Api // .(*lookergo.Client)
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: start", currFuncName()))
 	if err := ensureDevClient(ctx, m); err != nil {
 		return diagErrAppend(diags, err)
 	}
 	dc := m.(*Config).DevClient
+	err := dc.EnsureStaticToken(ctx, c, m.(*Config).ApiUserID)
+	if err != nil {
+		return diagErrAppend(diags, err)
+	}
 
 	projectId := d.Id()
 
+	tflog.Debug(ctx, fmt.Sprintf("Trying to get project details for %s", projectId))
 	project, _, err := dc.Projects.Get(ctx, projectId)
 	if err != nil {
 		return diagErrAppend(diags, err)
@@ -197,7 +204,8 @@ func resourceProjectDelete(ctx context.Context, d *schema.ResourceData, m interf
 	time.Sleep(5 * time.Second)
 
 	renamedProject, _, err := dc.Projects.Get(ctx, deletedProject.Name)
-	if renamedProject != nil && err != nil {
+	tflog.Debug(ctx, fmt.Sprintf("Found renamed project %v. Err is %v", renamedProject.Name, err))
+	if renamedProject != nil && err == nil {
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Warning,
 			Summary:  fmt.Sprintf("Renamed project '%v' was found, so it's safe to assume '%s' has been deleted", deletedProject.Name, project.Name),
@@ -208,6 +216,7 @@ func resourceProjectDelete(ctx context.Context, d *schema.ResourceData, m interf
 	}
 
 	// if it works, it works ...
+	// Successor note: I haven't gotten it to work
 	uaccEmail := os.Getenv("LOOKER_USERACC_EMAIL")
 	uaccPass := os.Getenv("LOOKER_USERACC_PASS")
 	if uaccPass != "" && uaccEmail != "" {
@@ -220,6 +229,7 @@ func resourceProjectDelete(ctx context.Context, d *schema.ResourceData, m interf
 			diags = append(diags, diag.Diagnostic{
 				Severity: diag.Warning,
 				Summary:  "Could not delete using private API",
+				Detail:   err.Error(),
 			})
 		} else {
 			diags = append(diags, diag.Diagnostic{

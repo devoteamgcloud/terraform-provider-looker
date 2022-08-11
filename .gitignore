@@ -4,8 +4,11 @@
 *.dll
 *.so
 *.dylib
-
+deploy.sh
 *.idea
 
 # Dev testing samples
 dev_test/**
+test/
+*.log
+.vscode

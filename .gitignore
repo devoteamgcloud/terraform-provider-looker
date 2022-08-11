@@ -4,11 +4,13 @@
 *.dll
 *.so
 *.dylib
-deploy.sh
 *.idea
+.vscode
+*.log
+tfplugindocs
 
-# Dev testing samples
+
+# Dev testing samples and scripts
+*.sh
 dev_test/**
 test/
-*.log
-.vscode

@@ -13,20 +13,17 @@ description: |-
 
 ### Required
 
-- **group** (Block Set, Min: 1) (see [below for nested schema](#nestedblock--group))
-- **target_role_id** (String)
+- `group` (Block Set, Min: 1) (see [below for nested schema](#nestedblock--group))
+- `target_role_id` (String)
 
-### Optional
+### Read-Only
 
-- **id** (String) The ID of this resource.
+- `id` (String) The ID of this resource.
 
 <a id="nestedblock--group"></a>
 ### Nested Schema for `group`
 
-Required:
-
-- **id** (String) The ID of this resource.
-
 Read-Only:
 
-- **name** (String)
+- `id` (String) The ID of this resource.
+- `name` (String)

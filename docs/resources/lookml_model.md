@@ -13,10 +13,10 @@ description: |-
 
 ### Required
 
-- **allowed_db_connection_names** (Set of String) List of allowed db connections (looker_connection)
-- **name** (String) LookML Model name
-- **project_name** (String) Project name LookML Model belongs to
+- `allowed_db_connection_names` (Set of String) List of allowed db connections (looker_connection)
+- `name` (String) LookML Model name
+- `project_name` (String) Project name LookML Model belongs to
 
-### Optional
+### Read-Only
 
-- **id** (String) The ID of this resource.
+- `id` (String) The ID of this resource.

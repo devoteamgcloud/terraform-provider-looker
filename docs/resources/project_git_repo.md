@@ -13,17 +13,20 @@ description: |-
 
 ### Required
 
-- **git_remote_url** (String)
-- **git_service_name** (String) Name of the git service provider
-- **project_name** (String)
+- `git_remote_url` (String)
+- `git_service_name` (String) Name of the git service provider
+- `project_name` (String)
 
 ### Optional
 
-- **allow_warnings** (Boolean)
-- **git_production_branch_name** (String) Git production branch name. Defaults to ~~master~~ main. Supported only in Looker 21.0 and higher.
-- **git_username** (String)
-- **id** (String) The ID of this resource.
-- **is_example** (Boolean)
-- **pull_request_mode** (String) The git pull request policy for this project. Valid values are: `off`, `links`, `recommended`, `required`.
-- **use_git_cookie_auth** (Boolean) If true, the project uses a git cookie for authentication.
-- **validation_required** (Boolean)
+- `allow_warnings` (Boolean)
+- `git_production_branch_name` (String) Git production branch name. Defaults to ~~master~~ main. Supported only in Looker 21.0 and higher.
+- `git_username` (String)
+- `is_example` (Boolean)
+- `pull_request_mode` (String) The git pull request policy for this project. Valid values are: `off`, `links`, `recommended`, `required`.
+- `use_git_cookie_auth` (Boolean) If true, the project uses a git cookie for authentication.
+- `validation_required` (Boolean)
+
+### Read-Only
+
+- `id` (String) The ID of this resource.

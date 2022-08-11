@@ -28,10 +28,13 @@ resource "looker_project" "example" {
 
 ### Required
 
-- **name** (String) Name of the project. => lowercase letters, numbers, underscores, and dashes
+- `name` (String) Name of the project. => lowercase letters, numbers, underscores, and dashes
 
 ### Optional
 
-- **id** (String) The ID of this resource.
-- **is_example** (Boolean)
-- **rename_when_delete** (Boolean) The looker API doesn't provide means to delete a projecthowever, we can rename the project from orig_name to deleteme-orig_name-X1Y2
+- `is_example` (Boolean)
+- `rename_when_delete` (Boolean) The looker API doesn't provide means to delete a projecthowever, we can rename the project from orig_name to deleteme-orig_name-X1Y2
+
+### Read-Only
+
+- `id` (String) The ID of this resource.

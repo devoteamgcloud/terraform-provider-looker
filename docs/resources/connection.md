@@ -43,38 +43,41 @@ resource "looker_connection" "example" {
 
 ### Required
 
-- **dialect_name** (String)
-- **name** (String) Name of the connection. Also used as the unique identifier
+- `dialect_name` (String)
+- `name` (String) Name of the connection. Also used as the unique identifier
 
 ### Optional
 
-- **after_connect_statements** (String)
-- **always_retry_failed_builds** (Boolean)
-- **certificate** (String, Sensitive)
-- **cost_estimate_enabled** (Boolean)
-- **database** (String)
-- **db_timezone** (String)
-- **disable_context_comment** (Boolean)
-- **file_type** (String)
-- **host** (String)
-- **id** (String) The ID of this resource.
-- **jdbc_additional_params** (String)
-- **maintenance_cron** (String)
-- **max_billing_gigabytes** (String)
-- **max_connections** (Number)
-- **oauth_application_id** (String)
-- **password** (String, Sensitive)
-- **pdt_api_control_enabled** (Boolean)
-- **pdt_concurrency** (Number)
-- **pool_timeout** (Number)
-- **port** (String)
-- **query_timezone** (String)
-- **schema** (String)
-- **sql_runner_precache_tables** (Boolean)
-- **sql_writing_with_info_schema** (Boolean)
-- **ssl** (Boolean)
-- **tmp_db_name** (String)
-- **tunnel_id** (String)
-- **user_db_credentials** (Boolean)
-- **username** (String)
-- **verify_ssl** (Boolean)
+- `after_connect_statements` (String)
+- `always_retry_failed_builds` (Boolean)
+- `certificate` (String, Sensitive)
+- `cost_estimate_enabled` (Boolean)
+- `database` (String)
+- `db_timezone` (String)
+- `disable_context_comment` (Boolean)
+- `file_type` (String)
+- `host` (String)
+- `jdbc_additional_params` (String)
+- `maintenance_cron` (String)
+- `max_billing_gigabytes` (String)
+- `max_connections` (Number)
+- `oauth_application_id` (String)
+- `password` (String, Sensitive)
+- `pdt_api_control_enabled` (Boolean)
+- `pdt_concurrency` (Number)
+- `pool_timeout` (Number)
+- `port` (String)
+- `query_timezone` (String)
+- `schema` (String)
+- `sql_runner_precache_tables` (Boolean)
+- `sql_writing_with_info_schema` (Boolean)
+- `ssl` (Boolean)
+- `tmp_db_name` (String)
+- `tunnel_id` (String)
+- `user_db_credentials` (Boolean)
+- `username` (String)
+- `verify_ssl` (Boolean)
+
+### Read-Only
+
+- `id` (String) The ID of this resource.

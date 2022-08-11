@@ -32,15 +32,15 @@ resource "looker_user" "user_a" {
 
 ### Required
 
-- **first_name** (String)
+- `first_name` (String)
 
 ### Optional
 
-- **email** (String)
-- **last_name** (String)
-- **last_updated** (String)
-- **roles** (Set of String)
+- `email` (String)
+- `last_name` (String)
+- `last_updated` (String)
+- `roles` (Set of String)
 
 ### Read-Only
 
-- **id** (String) The ID of this resource.
+- `id` (String) The ID of this resource.

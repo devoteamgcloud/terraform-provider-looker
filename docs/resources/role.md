@@ -13,11 +13,14 @@ description: |-
 
 ### Required
 
-- **model_set_id** (String) Modelset name
-- **name** (String) Role name
+- `model_set_id` (String) Modelset name
+- `name` (String) Role name
 
 ### Optional
 
-- **id** (String) The ID of this resource.
-- **permission_set_id** (String) PermissionSet ID
-- **permission_set_name** (String) PermissionSet Name
+- `permission_set_id` (String) PermissionSet ID
+- `permission_set_name` (String) PermissionSet Name
+
+### Read-Only
+
+- `id` (String) The ID of this resource.

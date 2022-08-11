@@ -13,34 +13,31 @@ description: |-
 
 ### Required
 
-- **target_group_id** (String)
+- `target_group_id` (String)
 
 ### Optional
 
-- **group** (Block Set) (see [below for nested schema](#nestedblock--group))
-- **id** (String) The ID of this resource.
-- **user** (Block Set) (see [below for nested schema](#nestedblock--user))
+- `group` (Block Set) (see [below for nested schema](#nestedblock--group))
+- `user` (Block Set) (see [below for nested schema](#nestedblock--user))
+
+### Read-Only
+
+- `id` (String) The ID of this resource.
 
 <a id="nestedblock--group"></a>
 ### Nested Schema for `group`
 
-Required:
-
-- **id** (String) The ID of this resource.
-
 Read-Only:
 
-- **name** (String)
+- `id` (String) The ID of this resource.
+- `name` (String)
 
 
 <a id="nestedblock--user"></a>
 ### Nested Schema for `user`
 
-Required:
-
-- **id** (String) The ID of this resource.
-
 Read-Only:
 
-- **first_name** (String)
-- **last_name** (String)
+- `first_name` (String)
+- `id` (String) The ID of this resource.
+- `last_name` (String)

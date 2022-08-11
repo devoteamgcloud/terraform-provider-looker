@@ -38,6 +38,6 @@ provider "looker" {
 
 ### Optional
 
-- **base_url** (String) For base_url, provide the URL including /api/ ! Normally, a REST API should not have api in it's path, therefore we don't add the /api/ inside the provider.
-- **client_id** (String)
-- **client_secret** (String, Sensitive)
+- `base_url` (String) For base_url, provide the URL including /api/ ! Normally, a REST API should not have api in it's path, therefore we don't add the /api/ inside the provider.
+- `client_id` (String)
+- `client_secret` (String, Sensitive)

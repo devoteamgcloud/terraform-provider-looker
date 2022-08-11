@@ -23,9 +23,9 @@ locals {
 
 ### Required
 
-- **models** (List of String) List of LookML Model names
-- **name** (String) Name for ModelSet of LookML Models
+- `models` (List of String) List of LookML Model names
+- `name` (String) Name for ModelSet of LookML Models
 
-### Optional
+### Read-Only
 
-- **id** (String) The ID of this resource.
+- `id` (String) The ID of this resource.

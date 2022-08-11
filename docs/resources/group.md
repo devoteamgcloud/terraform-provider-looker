@@ -32,15 +32,15 @@ resource "looker_group" "group_a" {
 
 ### Required
 
-- **name** (String)
+- `name` (String)
 
 ### Optional
 
-- **last_updated** (String)
-- **soft_delete** (Boolean) Only delete terraform reference to resource, keep actual resource on remote.
+- `last_updated` (String)
+- `soft_delete` (Boolean) Only delete terraform reference to resource, keep actual resource on remote.
 
 ### Read-Only
 
-- **id** (String) The ID of this resource.
-- **parent_groups** (Set of String)
-- **roles** (Set of String)
+- `id` (String) The ID of this resource.
+- `parent_groups` (Set of String)
+- `roles` (Set of String)

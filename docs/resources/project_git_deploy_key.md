@@ -13,12 +13,9 @@ description: |-
 
 ### Required
 
-- **project_name** (String)
-
-### Optional
-
-- **id** (String) The ID of this resource.
+- `project_name` (String)
 
 ### Read-Only
 
-- **pub_key** (String)
+- `id` (String) The ID of this resource.
+- `pub_key` (String)

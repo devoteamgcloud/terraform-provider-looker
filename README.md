@@ -14,4 +14,5 @@ Another way to do this -> environment variable:
 ```
 export TF_CLI_ARGS_apply="-parallelism=1"
 ```
-If parallelism is not limited, the Looker API will return 500 exceptions for heavy operations.
+If parallelism is not limited, the Looker API will return 500 exceptions for heavy operations. <br>
+<img src="./media/500-error.png" alt="drawing" width="600"/>

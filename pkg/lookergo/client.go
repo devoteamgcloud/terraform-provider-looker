@@ -32,7 +32,7 @@ const (
 var rl *rate.RateLimiter
 
 func init() {
-	rl = rate.New(1, 50*time.Millisecond) // Once per second
+	rl = rate.New(1, 1000*time.Millisecond) // Once per second
 }
 
 // Rate contains the rate limit for the current client.

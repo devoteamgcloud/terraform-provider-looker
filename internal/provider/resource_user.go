@@ -131,7 +131,6 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}
 	if err = d.Set("last_name", user.LastName); err != nil {
 		return diag.FromErr(err)
 	}
-
 	if user.RoleIds != nil {
 		err = d.Set("roles", user.RoleIds.ToSliceOfStrings())
 		if err != nil {
@@ -141,7 +140,7 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}
 
 	email, _, err := c.Users.GetEmail(ctx, userID)
 	if err != nil {
-		return diag.FromErr(err)
+		return diags
 	} else if email != nil {
 		if err = d.Set("email", email.Email); err != nil {
 			return diag.FromErr(err)
@@ -206,7 +205,7 @@ func resourceUserDelete(ctx context.Context, d *schema.ResourceData, m interface
 
 	email, _, err := c.Users.GetEmail(ctx, userID)
 	if err != nil {
-		return diag.FromErr(err)
+		return diags
 	} else if email != nil {
 		_, err = c.Users.DeleteEmail(ctx, userID)
 		if err != nil {

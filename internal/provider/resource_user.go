@@ -9,6 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	"strconv"
 	"time"
+	"strings"
 )
 
 // -
@@ -31,7 +32,7 @@ func resourceUser() *schema.Resource {
 			"first_name": &schema.Schema{
 				Type:         schema.TypeString,
 				Computed:     false,
-				Required:     true,
+				Optional:     true,
 				ValidateFunc: validation.StringLenBetween(1, 255),
 			},
 			"last_name": &schema.Schema{
@@ -52,6 +53,10 @@ func resourceUser() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
+			"already_exists_ok": &schema.Schema{
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
 		},
 		Importer: &schema.ResourceImporter{
 			// State: schema.ImportStatePassthrough,
@@ -60,13 +65,39 @@ func resourceUser() *schema.Resource {
 	}
 }
 
+func checkUserAlreadyExists(ctx context.Context, d *schema.ResourceData, c *lookergo.Client, email string) (lookergo.User, error) {
+	users, _, err := c.Users.ListByEmail(ctx, email, &lookergo.ListOptions{})
+	if err != nil {
+		return lookergo.User{}, err
+	}
+	for _, user := range users {
+		if strings.EqualFold(user.CredentialEmail.Email, email) {
+			return user, nil
+		}
+	} 
+	return lookergo.User{}, nil
+}
+
 func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*Config).Api // .(*lookergo.Client)
-
-	tflog.Info(ctx, "Creating Looker user")
-
-	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
+
+	if d.Get("already_exists_ok") == true {
+		if d.Get("email") != nil {
+			user, err := checkUserAlreadyExists(ctx, d, c, d.Get("email").(string))
+			if err != nil {
+				return diag.FromErr(err)
+			}
+			if user.Id >= 0{
+				d.SetId(strconv.Itoa(user.Id))
+				resourceUserRead(ctx, d, m)
+				return diags
+			}
+			return diag.FromErr(lookergo.NewArgError("Given email", "user is not found."))
+		}
+	}
+	tflog.Info(ctx, "Creating Looker user")
+	// Warning or errors can be collected in a slice type
 
 	var userOptions = lookergo.User{
 		FirstName: d.Get("first_name").(string),
@@ -114,7 +145,6 @@ func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface
 func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*Config).Api // .(*lookergo.Client)
 	var diags diag.Diagnostics
-
 	userID := idAsInt(d.Id())
 
 	user, _, err := c.Users.Get(ctx, userID)

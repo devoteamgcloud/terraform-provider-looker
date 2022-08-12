@@ -9,8 +9,8 @@
 *.log
 tfplugindocs
 
-
 # Dev testing samples and scripts
 *.sh
 dev_test/**
 test/
+terraform-provider-looker

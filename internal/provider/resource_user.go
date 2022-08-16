@@ -57,6 +57,10 @@ func resourceUser() *schema.Resource {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
+			"delete_on_destroy": &schema.Schema{
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
 		},
 		Importer: &schema.ResourceImporter{
 			// State: schema.ImportStatePassthrough,
@@ -242,22 +246,24 @@ func resourceUserDelete(ctx context.Context, d *schema.ResourceData, m interface
 		return diag.FromErr(err)
 	}
 
-	email, _, err := c.Users.GetEmail(ctx, userID)
-	if err != nil {
-		return diags
-	} else if email != nil {
-		_, err = c.Users.DeleteEmail(ctx, userID)
+	
+	if d.Get("delete_on_destroy") == true {
+		_, err = c.Users.Delete(ctx, userID)
 		if err != nil {
 			return diag.FromErr(err)
 		}
+		email, _, err := c.Users.GetEmail(ctx, userID)
+		if err != nil {
+			return diags
+		} else if email != nil {
+			_, err = c.Users.DeleteEmail(ctx, userID)
+			if err != nil {
+				return diag.FromErr(err)
+			}
+		}
+		d.SetId("")
+	} else {
+		d.SetId("")
 	}
-
-	_, err = c.Users.Delete(ctx, userID)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-
-	d.SetId("")
-
 	return diags
 }

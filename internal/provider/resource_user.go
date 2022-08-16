@@ -88,12 +88,11 @@ func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface
 			if err != nil {
 				return diag.FromErr(err)
 			}
-			if user.Id >= 0{
+			if user.Id > 0{
 				d.SetId(strconv.Itoa(user.Id))
 				resourceUserRead(ctx, d, m)
 				return diags
 			}
-			return diag.FromErr(lookergo.NewArgError("Given email", "user is not found."))
 		}
 	}
 	tflog.Info(ctx, "Creating Looker user")
@@ -145,6 +144,17 @@ func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface
 func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*Config).Api // .(*lookergo.Client)
 	var diags diag.Diagnostics
+	if d.Get("already_exists_ok") == true {
+		user, _, err := c.Users.Get(ctx, idAsInt(d.Id()))
+		if err != nil {
+			return diag.FromErr(err)
+		}
+		d.Set("email", user.CredentialEmail.Email)
+		d.Set("first_name", user.FirstName)
+		d.Set("last_name", user.LastName)
+		d.Set("roles", user.RoleIds.ToSliceOfStrings())
+		return diags
+	}
 	userID := idAsInt(d.Id())
 
 	user, _, err := c.Users.Get(ctx, userID)
@@ -182,7 +192,6 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}
 
 func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*Config).Api // .(*lookergo.Client)
-
 	userID, err := strconv.Atoi(d.Id())
 	if err != nil {
 		return diag.FromErr(err)

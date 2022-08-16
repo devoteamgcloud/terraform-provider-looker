@@ -55,10 +55,12 @@ func resourceUser() *schema.Resource {
 			},
 			"already_exists_ok": &schema.Schema{
 				Type:     schema.TypeBool,
+				Default: false,
 				Optional: true,
 			},
 			"delete_on_destroy": &schema.Schema{
 				Type:     schema.TypeBool,
+				Default: true,
 				Optional: true,
 			},
 		},
@@ -244,9 +246,7 @@ func resourceUserDelete(ctx context.Context, d *schema.ResourceData, m interface
 	userID, err := strconv.Atoi(d.Id())
 	if err != nil {
 		return diag.FromErr(err)
-	}
-
-	
+	}	
 	if d.Get("delete_on_destroy") == true {
 		_, err = c.Users.Delete(ctx, userID)
 		if err != nil {

@@ -92,9 +92,25 @@ func resourceModelSetUpdate(ctx context.Context, d *schema.ResourceData, m inter
 	c := m.(*Config).Api // .(*lookergo.Client)
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: start", currFuncName()))
 
-	// TODO
-	_ = c
+	var id = d.Id()
+	currentModel, _, err := c.ModelSets.Get(ctx, id)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	
+	var interfaceModel = d.Get("models").(*schema.Set)
+	var model_list []string
+	for _, raw := range interfaceModel.List() {
+		model_list = append(model_list, raw.(string))
+	}
 
+	currentModel.Name = d.Get("name").(string)
+	currentModel.Models = model_list
+	_, _, err = c.ModelSets.Update(ctx, id, currentModel)
+	if err != nil{
+		return diag.FromErr(err)
+	}
+	resourceModelSetRead(ctx, d, m)
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: end", currFuncName()))
 	return resourceModelSetRead(ctx, d, m)
 }

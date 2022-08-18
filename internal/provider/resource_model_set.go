@@ -1,8 +1,10 @@
 package provider
 
 import (
+	"container/list"
 	"context"
 	"fmt"
+	"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -38,10 +40,12 @@ func resourceModelSet() *schema.Resource {
 func resourceModelSetCreate(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
 	c := m.(*Config).Api // .(*lookergo.Client)
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: start", currFuncName()))
-
-	// TODO
-	_ = c
-
+	var modelSet = lookergo.ModelSet{Name: d.Get("name").(string), Models: d.Get("models").([]string) }
+	newSet, _, err := c.ModelSets.Create(ctx,&modelSet)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	d.SetId(newSet.Id)
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: end", currFuncName()))
 	return diags
 }

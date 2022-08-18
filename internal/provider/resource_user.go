@@ -254,6 +254,7 @@ func resourceUserDelete(ctx context.Context, d *schema.ResourceData, m interface
 		}
 		email, _, err := c.Users.GetEmail(ctx, userID)
 		if err != nil {
+			d.SetId("")
 			return diags
 		} else if email != nil {
 			_, err = c.Users.DeleteEmail(ctx, userID)

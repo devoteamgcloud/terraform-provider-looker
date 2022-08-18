@@ -36,19 +36,21 @@ func resourceLookMlModel() *schema.Resource {
 			"unlimited_db_connections": {
 				Description: "Is this model allowed to use all current and future connections?",
 				Type:        schema.TypeBool,
+				Optional:	 true,
 				Required:    false,
+
 			},
 			"label": {
 				Description: "UI-friendly name for this model",
 				Type:        schema.TypeString,
 				Required:    false,
-				Computed: true,
+				Computed:    true,
 			},
 			"has_content": {
 				Description: "Does this model declaration have have lookml content?",
 				Type:        schema.TypeBool,
 				Required:    false,
-				Computed: true,
+				Computed:    true,
 			},
 		},
 		Importer: &schema.ResourceImporter{

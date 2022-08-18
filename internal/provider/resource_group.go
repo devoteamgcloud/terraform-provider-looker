@@ -20,35 +20,35 @@ func resourceGroup() *schema.Resource {
 		UpdateContext: resourceGroupUpdate,
 		DeleteContext: resourceGroupDelete,
 		Schema: map[string]*schema.Schema{
-			"last_updated": &schema.Schema{
+			"last_updated": {
 				Type:     schema.TypeString,
 				Optional: true,
 				Computed: true,
 			},
-			"id": &schema.Schema{
+			"id": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"name": &schema.Schema{
+			"name": {
 				Type:         schema.TypeString,
 				Computed:     false,
 				Required:     true,
 				ValidateFunc: validation.StringLenBetween(1, 255),
 			},
-			"soft_delete": &schema.Schema{
+			"soft_delete": {
 				Description: "Only delete terraform reference to resource, keep actual resource on remote.",
 				Type:        schema.TypeBool,
 				Optional:    true,
 				Default:     false,
 			},
-			"roles": &schema.Schema{
+			"roles": {
 				Type:     schema.TypeSet,
 				Computed: true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
 			},
-			"parent_groups": &schema.Schema{
+			"parent_groups": {
 				Type:     schema.TypeSet,
 				Computed: true,
 				Elem: &schema.Schema{

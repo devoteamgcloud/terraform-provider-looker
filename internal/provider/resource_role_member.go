@@ -19,22 +19,22 @@ func resourceRoleMember() *schema.Resource {
 		UpdateContext: resourceRoleMemberUpdate,
 		DeleteContext: resourceRoleMemberDelete,
 		Schema: map[string]*schema.Schema{
-			"target_role_id": &schema.Schema{
+			"target_role_id": {
 				Type:     schema.TypeString,
 				Computed: false,
 				Required: true,
 				ForceNew: true,
 			},
-			"group": &schema.Schema{
+			"group": {
 				Type:     schema.TypeSet,
 				Required: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"id": &schema.Schema{
+						"id": {
 							Type:     schema.TypeString,
 							Required: true,
 						},
-						"name": &schema.Schema{
+						"name": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},

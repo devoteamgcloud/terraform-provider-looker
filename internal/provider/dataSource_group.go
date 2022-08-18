@@ -19,30 +19,30 @@ func dataSourceGroup() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceGroupRead,
 		Schema: map[string]*schema.Schema{
-			"id": &schema.Schema{
+			"id": {
 				Description:  "Search group based on id",
 				Type:         schema.TypeString,
 				Optional:     true,
 				ExactlyOneOf: queryKey,
 			},
-			"name": &schema.Schema{
+			"name": {
 				Description:  "Search group based on name",
 				Type:         schema.TypeString,
 				Optional:     true,
 				ExactlyOneOf: queryKey,
 			},
-			"user_count": &schema.Schema{
+			"user_count": {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
-			"parent_groups": &schema.Schema{
+			"parent_groups": {
 				Type:     schema.TypeSet,
 				Computed: true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
 			},
-			"roles": &schema.Schema{
+			"roles": {
 				Type:     schema.TypeSet,
 				Computed: true,
 				Elem: &schema.Schema{

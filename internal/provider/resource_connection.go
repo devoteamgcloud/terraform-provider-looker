@@ -314,7 +314,7 @@ func resourceConnectionUpdate(ctx context.Context, d *schema.ResourceData, m int
 		return diag.FromErr(err)
 	}
 
-	diags = append(diags, diag.Diagnostic{
+	_ = append(diags, diag.Diagnostic{
 		Severity: diag.Warning,
 		Summary:  "WARNING connection update is not implemented",
 		AttributePath: cty.Path{

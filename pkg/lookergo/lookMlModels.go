@@ -23,7 +23,8 @@ type LookMlModelsResource interface {
 
 func (s LookMlModelsResourceOp) List(ctx context.Context) ([]LookMLModel, *Response, error) {
 	// TODO implement me
-	panic("implement me")
+	//return doList(ctx, s.client, lookMlModelsBasePath, )
+	panic("Not implemented")
 }
 
 func (s LookMlModelsResourceOp) Get(ctx context.Context, LookMLModelName string) (*LookMLModel, *Response, error) {

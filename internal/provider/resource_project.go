@@ -181,7 +181,7 @@ func resourceProjectDelete(ctx context.Context, d *schema.ResourceData, m interf
 				"We will check if the previous resource still exists to verify it has been renamed.\n"+
 				"Err:%v", `¯\_(ツ)_/¯`, err.Error()),
 		})
-		tflog.Debug(ctx, fmt.Sprintf("Action: tried renaming project, but got err 500"),
+		tflog.Debug(ctx, "Action: tried renaming project, but got err 500",
 			map[string]interface{}{"orig_name": project.Name, "new_name": deletedProject.Name})
 		time.Sleep(5 * time.Second)
 	} else if 300 <= resp.StatusCode && err != nil {

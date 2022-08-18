@@ -45,7 +45,7 @@ func New(version string) func() *schema.Provider {
 	return func() *schema.Provider {
 		p := &schema.Provider{
 			Schema: map[string]*schema.Schema{
-				"base_url": &schema.Schema{
+				"base_url": {
 					Description: "For base_url, provide the URL including /api/ ! " +
 						"Normally, a REST API should not have api in it's path, " +
 						"therefore we don't add the /api/ inside the provider. ",
@@ -53,12 +53,12 @@ func New(version string) func() *schema.Provider {
 					Optional:    true,
 					DefaultFunc: schema.EnvDefaultFunc("LOOKER_BASE_URL", nil),
 				},
-				"client_id": &schema.Schema{
+				"client_id": {
 					Type:        schema.TypeString,
 					Optional:    true,
 					DefaultFunc: schema.EnvDefaultFunc("LOOKER_API_CLIENT_ID", nil),
 				},
-				"client_secret": &schema.Schema{
+				"client_secret": {
 					Type:        schema.TypeString,
 					Optional:    true,
 					Sensitive:   true,

@@ -16,22 +16,39 @@ func resourceLookMlModel() *schema.Resource {
 		DeleteContext: resourceLookMlModelDelete,
 		Schema: map[string]*schema.Schema{
 			"name": {
-				Description: "LookML Model name",
+				Description: "Name of the model. Also used as the unique identifier",
 				Type:        schema.TypeString,
 				Required:    true,
 			},
 			"project_name": {
-				Description: "Project name LookML Model belongs to",
+				Description: "Name of project containing the model",
 				Type:        schema.TypeString,
 				Required:    true,
 			},
 			"allowed_db_connection_names": {
-				Description: "List of allowed db connections (looker_connection)",
+				Description: "Array of names of connections this model is allowed to use (looker_connection)",
 				Type:        schema.TypeSet,
 				Required:    true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
+			},
+			"unlimited_db_connections": {
+				Description: "Is this model allowed to use all current and future connections?",
+				Type:        schema.TypeBool,
+				Required:    false,
+			},
+			"label": {
+				Description: "UI-friendly name for this model",
+				Type:        schema.TypeString,
+				Required:    false,
+				Computed: true,
+			},
+			"has_content": {
+				Description: "Does this model declaration have have lookml content?",
+				Type:        schema.TypeBool,
+				Required:    false,
+				Computed: true,
 			},
 		},
 		Importer: &schema.ResourceImporter{

@@ -12,6 +12,13 @@ import (
 	"strings"
 )
 
+var (
+	userKey = []string{
+		"first_name",
+		"email",
+	}
+)
+
 // -
 func resourceUser() *schema.Resource {
 	return &schema.Resource{
@@ -33,6 +40,7 @@ func resourceUser() *schema.Resource {
 				Type:         schema.TypeString,
 				Computed:     false,
 				Optional:     true,
+				AtLeastOneOf: userKey,
 				ValidateFunc: validation.StringLenBetween(1, 255),
 			},
 			"last_name": &schema.Schema{
@@ -44,6 +52,7 @@ func resourceUser() *schema.Resource {
 			"email": &schema.Schema{
 				Type:         schema.TypeString,
 				Optional:     true,
+				AtLeastOneOf: userKey,
 				ValidateFunc: validation.StringLenBetween(0, 255),
 			},
 			"roles": &schema.Schema{

@@ -43,6 +43,5 @@ func (s ModelSetsResourceOp) Update(ctx context.Context, modelSetId string, mode
 }
 
 func (s ModelSetsResourceOp) Delete(ctx context.Context, modelSetId string) (*Response, error) {
-	// TODO implement me
-	panic("implement me")
+	return doDelete(ctx, s.client, modelSetsBasePath, modelSetId)
 }

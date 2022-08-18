@@ -118,10 +118,11 @@ func resourceModelSetUpdate(ctx context.Context, d *schema.ResourceData, m inter
 func resourceModelSetDelete(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
 	c := m.(*Config).Api // .(*lookergo.Client)
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: start", currFuncName()))
-
-	// TODO
-	_ = c
-
+	var Id = d.Id()
+	_, err := c.ModelSets.Delete(ctx, Id)
+	if err != nil {
+		return diag.FromErr(err)
+	}
 	// Finally mark as deleted
 	d.SetId("")
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: end", currFuncName()))

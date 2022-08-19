@@ -76,6 +76,7 @@ type Client struct {
 	Sessions       SessionsResource
 	ModelSets      ModelSetsResource
 	Connections    ConnectionsResource
+	LookMLModel	   LookMlModelsResource
 
 	// TODO: Expand
 
@@ -147,6 +148,7 @@ func NewClient(httpClient *http.Client) *Client {
 	c.Sessions = &SessionsResourceOp{client: c}
 	c.ModelSets = &ModelSetsResourceOp{client: c}
 	c.Connections = &ConnectionsResourceOp{client: c}
+	c.LookMLModel = &LookMlModelsResourceOp{client: c}
 
 	c.headers = make(map[string]string)
 	c.Workspace = "production"

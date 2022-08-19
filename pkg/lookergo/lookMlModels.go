@@ -5,12 +5,11 @@ import "context"
 const lookMlModelsBasePath = "4.0/lookml_models"
 
 type LookMLModel struct {
-	name                        string   `json:"name,string,omitempty"`
-	project_name                string   `json:"project_name,omitempty"`
-	label                       string   `json:"label,omitempty"`
-	allowed_db_connection_names []string `json:"allowed_db_connection_names,omitempty"`
-	unlimited_db_connections    bool     `json:"unlimited_db_connections,omitempty" `
-	has_content                 bool     `json:"has_content,omitempty"`
+	Name                        string   `json:"name,string,omitempty"`
+	Project_name                string   `json:"project_name,omitempty"`
+	Label                       string   `json:"label,omitempty"`
+	Allowed_db_connection_names []string `json:"allowed_db_connection_names,omitempty"`
+	Unlimited_db_connections    bool     `json:"unlimited_db_connections,omitempty" `
 }
 
 type LookMlModelsResource interface {

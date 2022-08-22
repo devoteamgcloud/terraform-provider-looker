@@ -15,13 +15,13 @@ func resourceProjectGitDeployKey() *schema.Resource {
 		// UpdateContext: resourceProjectGitDeployKeyUpdate,
 		DeleteContext: resourceProjectGitDeployKeyDelete,
 		Schema: map[string]*schema.Schema{
-			"project_name": &schema.Schema{
+			"project_name": {
 				Type:     schema.TypeString,
 				Computed: false,
 				Required: true,
 				ForceNew: true,
 			},
-			"pub_key": &schema.Schema{
+			"pub_key": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},

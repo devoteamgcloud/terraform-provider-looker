@@ -12,23 +12,23 @@ func dataSourceUser() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceUserRead,
 		Schema: map[string]*schema.Schema{
-			"id": &schema.Schema{
+			"id": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"first_name": &schema.Schema{
+			"first_name": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"last_name": &schema.Schema{
+			"last_name": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"email": &schema.Schema{
+			"email": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"roles": &schema.Schema{
+			"roles": {
 				Type:     schema.TypeSet,
 				Computed: true,
 				Elem: &schema.Schema{

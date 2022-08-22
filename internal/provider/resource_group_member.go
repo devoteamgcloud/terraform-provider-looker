@@ -15,42 +15,42 @@ func resourceGroupMember() *schema.Resource {
 		UpdateContext: resourceGroupMemberUpdate,
 		DeleteContext: resourceGroupMemberDelete,
 		Schema: map[string]*schema.Schema{
-			"target_group_id": &schema.Schema{
+			"target_group_id": {
 				Type:     schema.TypeString,
 				Computed: false,
 				Required: true,
 				ForceNew: true,
 			},
-			"user": &schema.Schema{
+			"user": {
 				Type:     schema.TypeSet,
 				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"id": &schema.Schema{
+						"id": {
 							Type:     schema.TypeString,
 							Required: true,
 						},
-						"first_name": &schema.Schema{
+						"first_name": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"last_name": &schema.Schema{
+						"last_name": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
 					},
 				},
 			},
-			"group": &schema.Schema{
+			"group": {
 				Type:     schema.TypeSet,
 				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"id": &schema.Schema{
+						"id": {
 							Type:     schema.TypeString,
 							Required: true,
 						},
-						"name": &schema.Schema{
+						"name": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},

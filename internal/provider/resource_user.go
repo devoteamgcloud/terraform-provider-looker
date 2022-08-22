@@ -8,8 +8,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	"strconv"
-	"time"
 	"strings"
+	"time"
 )
 
 var (
@@ -27,49 +27,49 @@ func resourceUser() *schema.Resource {
 		UpdateContext: resourceUserUpdate,
 		DeleteContext: resourceUserDelete,
 		Schema: map[string]*schema.Schema{
-			"last_updated": &schema.Schema{
+			"last_updated": {
 				Type:     schema.TypeString,
 				Optional: true,
 				Computed: true,
 			},
-			"id": &schema.Schema{
+			"id": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"first_name": &schema.Schema{
+			"first_name": {
 				Type:         schema.TypeString,
 				Computed:     false,
 				Optional:     true,
 				AtLeastOneOf: userKey,
 				ValidateFunc: validation.StringLenBetween(1, 255),
 			},
-			"last_name": &schema.Schema{
+			"last_name": {
 				Type:         schema.TypeString,
 				Computed:     false,
 				Optional:     true,
 				ValidateFunc: validation.StringLenBetween(1, 255),
 			},
-			"email": &schema.Schema{
+			"email": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				AtLeastOneOf: userKey,
 				ValidateFunc: validation.StringLenBetween(0, 255),
 			},
-			"roles": &schema.Schema{
+			"roles": {
 				Type:     schema.TypeSet,
 				Optional: true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
 			},
-			"already_exists_ok": &schema.Schema{
+			"already_exists_ok": {
 				Type:     schema.TypeBool,
-				Default: false,
+				Default:  false,
 				Optional: true,
 			},
-			"delete_on_destroy": &schema.Schema{
+			"delete_on_destroy": {
 				Type:     schema.TypeBool,
-				Default: true,
+				Default:  true,
 				Optional: true,
 			},
 		},
@@ -89,7 +89,7 @@ func checkUserAlreadyExists(ctx context.Context, d *schema.ResourceData, c *look
 		if strings.EqualFold(user.CredentialEmail.Email, email) {
 			return user, nil
 		}
-	} 
+	}
 	return lookergo.User{}, nil
 }
 
@@ -103,7 +103,7 @@ func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface
 			if err != nil {
 				return diag.FromErr(err)
 			}
-			if user.Id > 0{
+			if user.Id > 0 {
 				d.SetId(strconv.Itoa(user.Id))
 				resourceUserRead(ctx, d, m)
 				return diags
@@ -255,7 +255,7 @@ func resourceUserDelete(ctx context.Context, d *schema.ResourceData, m interface
 	userID, err := strconv.Atoi(d.Id())
 	if err != nil {
 		return diag.FromErr(err)
-	}	
+	}
 	if d.Get("delete_on_destroy") == true {
 		_, err = c.Users.Delete(ctx, userID)
 		if err != nil {

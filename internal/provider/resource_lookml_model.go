@@ -3,9 +3,18 @@ package provider
 import (
 	"context"
 	"fmt"
+
+	"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+)
+
+var (
+	connectionKey = []string{
+		"allowed_db_connection_names",
+		"unlimited_db_connections",
+	}
 )
 
 func resourceLookMlModel() *schema.Resource {
@@ -16,22 +25,37 @@ func resourceLookMlModel() *schema.Resource {
 		DeleteContext: resourceLookMlModelDelete,
 		Schema: map[string]*schema.Schema{
 			"name": {
-				Description: "LookML Model name",
+				Description: "Name of the model. Also used as the unique identifier",
 				Type:        schema.TypeString,
 				Required:    true,
 			},
 			"project_name": {
-				Description: "Project name LookML Model belongs to",
+				Description: "Name of project containing the model",
 				Type:        schema.TypeString,
 				Required:    true,
 			},
 			"allowed_db_connection_names": {
-				Description: "List of allowed db connections (looker_connection)",
+				Description: "Array of names of connections this model is allowed to use (looker_connection)",
 				Type:        schema.TypeSet,
-				Required:    true,
+				Optional:    true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
+				ExactlyOneOf: connectionKey,
+			},
+			"unlimited_db_connections": {
+				Description: "Is this model allowed to use all current and future connections?",
+				Type:        schema.TypeBool,
+				Required:    false,
+				Optional:    true,
+				Default:     false,
+				ExactlyOneOf: connectionKey,
+			},
+			"label": {
+				Description: "UI-friendly name for this model",
+				Type:        schema.TypeString,
+				Required:    false,
+				Computed:    true,
 			},
 		},
 		Importer: &schema.ResourceImporter{
@@ -46,27 +70,50 @@ func resourceLookMlModelCreate(ctx context.Context, d *schema.ResourceData, m in
 	lmlMdlName := d.Get("name").(string)
 	projectName := d.Get("project_name").(string)
 	dbConnNames := schemaSetToStringSlice(d.Get("allowed_db_connection_names").(*schema.Set))
+	unlimitedConn := d.Get("unlimited_db_connections").(bool)
 
-	logDebug(ctx, "Create MlModel", "lmlMdlName", lmlMdlName, "projectName", projectName, "dbConnNames", dbConnNames)
+	//logDebug(ctx, "Create MlModel", "lmlMdlName", lmlMdlName, "projectName", projectName, "dbConnNames", dbConnNames, "unlimitedConnections", unlimitedConn)
+	var lookmlModelOptions = lookergo.LookMLModel{Name: lmlMdlName, Project_name: projectName, Allowed_db_connection_names: dbConnNames, Unlimited_db_connections: unlimitedConn}
 
-	_ = c
-
+	lookmlModel, _, err := c.LookMLModel.Create(ctx, &lookmlModelOptions)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	d.Set("name", lookmlModel.Name)
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: end", currFuncName()))
+	resourceLookMlModelRead(ctx, d, m)
 	return diags
 }
 
 func resourceLookMlModelRead(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
 	c := m.(*Config).Api // .(*lookergo.Client)
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: start", currFuncName()))
-
 	lmlMdlName := d.Get("name").(string)
-	projectName := d.Get("project_name").(string)
-	dbConnNames := schemaSetToStringSlice(d.Get("allowed_db_connection_names").(*schema.Set))
 
-	logDebug(ctx, "Create MlModel", "lmlMdlName", lmlMdlName, "projectName", projectName, "dbConnNames", dbConnNames)
+	//logDebug(ctx, "Create MlModel", "lmlMdlName", lmlMdlName, "projectName", projectName, "dbConnNames", dbConnNames)
 
-	_ = c
-
+	newModel, _, err := c.LookMLModel.Get(ctx, lmlMdlName)
+	if err != nil {
+		diag.FromErr(err)
+	}
+	if newModel == nil {
+		return diag.FromErr(new(lookergo.ArgError))
+	}
+	if err = d.Set("name", newModel.Name); err != nil {
+		return diag.FromErr(err)
+	}
+	if err = d.Set("project_name", newModel.Project_name); err != nil {
+		return diag.FromErr(err)
+	}
+	if err = d.Set("allowed_db_connections", newModel.Allowed_db_connection_names); err != nil {
+		return diag.FromErr(err)
+	}
+	if err = d.Set("unlimited_db_connections", newModel.Unlimited_db_connections); err != nil {
+		return diag.FromErr(err)
+	}
+	if err = d.Set("label", newModel.Label); err != nil {
+		return diag.FromErr(err)
+	}
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: end", currFuncName()))
 	return diags
 }

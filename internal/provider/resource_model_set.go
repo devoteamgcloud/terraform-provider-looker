@@ -97,7 +97,7 @@ func resourceModelSetUpdate(ctx context.Context, d *schema.ResourceData, m inter
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	
+
 	var interfaceModel = d.Get("models").(*schema.Set)
 	var model_list []string
 	for _, raw := range interfaceModel.List() {
@@ -107,7 +107,7 @@ func resourceModelSetUpdate(ctx context.Context, d *schema.ResourceData, m inter
 	currentModel.Name = d.Get("name").(string)
 	currentModel.Models = model_list
 	_, _, err = c.ModelSets.Update(ctx, id, currentModel)
-	if err != nil{
+	if err != nil {
 		return diag.FromErr(err)
 	}
 	resourceModelSetRead(ctx, d, m)

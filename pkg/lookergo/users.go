@@ -146,7 +146,7 @@ func (s *UsersResourceOp) ListById(ctx context.Context, ids []int, opt *ListOpti
 }
 func (s *UsersResourceOp) ListByEmail(ctx context.Context, email string, opt *ListOptions) ([]User, *Response, error) {
 	if email == "" {
-		return nil, nil, NewArgError("name", "has to be non-empty")
+		return nil, nil, NewArgError("email", "has to be non-empty")
 	}
 
 	qs := url.Values{}

@@ -23,7 +23,7 @@ locals {
 
 ### Required
 
-- `models` (List of String) List of LookML Model names
+- `models` (Set of String) List of LookML Model names
 - `name` (String) Name for ModelSet of LookML Models
 
 ### Read-Only

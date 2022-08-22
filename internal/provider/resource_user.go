@@ -9,6 +9,14 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	"strconv"
 	"time"
+	"strings"
+)
+
+var (
+	userKey = []string{
+		"first_name",
+		"email",
+	}
 )
 
 // -
@@ -31,7 +39,8 @@ func resourceUser() *schema.Resource {
 			"first_name": &schema.Schema{
 				Type:         schema.TypeString,
 				Computed:     false,
-				Required:     true,
+				Optional:     true,
+				AtLeastOneOf: userKey,
 				ValidateFunc: validation.StringLenBetween(1, 255),
 			},
 			"last_name": &schema.Schema{
@@ -43,6 +52,7 @@ func resourceUser() *schema.Resource {
 			"email": &schema.Schema{
 				Type:         schema.TypeString,
 				Optional:     true,
+				AtLeastOneOf: userKey,
 				ValidateFunc: validation.StringLenBetween(0, 255),
 			},
 			"roles": &schema.Schema{
@@ -52,6 +62,16 @@ func resourceUser() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
+			"already_exists_ok": &schema.Schema{
+				Type:     schema.TypeBool,
+				Default: false,
+				Optional: true,
+			},
+			"delete_on_destroy": &schema.Schema{
+				Type:     schema.TypeBool,
+				Default: true,
+				Optional: true,
+			},
 		},
 		Importer: &schema.ResourceImporter{
 			// State: schema.ImportStatePassthrough,
@@ -60,13 +80,38 @@ func resourceUser() *schema.Resource {
 	}
 }
 
+func checkUserAlreadyExists(ctx context.Context, d *schema.ResourceData, c *lookergo.Client, email string) (lookergo.User, error) {
+	users, _, err := c.Users.ListByEmail(ctx, email, &lookergo.ListOptions{})
+	if err != nil {
+		return lookergo.User{}, err
+	}
+	for _, user := range users {
+		if strings.EqualFold(user.CredentialEmail.Email, email) {
+			return user, nil
+		}
+	} 
+	return lookergo.User{}, nil
+}
+
 func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*Config).Api // .(*lookergo.Client)
-
-	tflog.Info(ctx, "Creating Looker user")
-
-	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
+
+	if d.Get("already_exists_ok") == true {
+		if d.Get("email") != nil {
+			user, err := checkUserAlreadyExists(ctx, d, c, d.Get("email").(string))
+			if err != nil {
+				return diag.FromErr(err)
+			}
+			if user.Id > 0{
+				d.SetId(strconv.Itoa(user.Id))
+				resourceUserRead(ctx, d, m)
+				return diags
+			}
+		}
+	}
+	tflog.Info(ctx, "Creating Looker user")
+	// Warning or errors can be collected in a slice type
 
 	var userOptions = lookergo.User{
 		FirstName: d.Get("first_name").(string),
@@ -114,7 +159,17 @@ func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface
 func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*Config).Api // .(*lookergo.Client)
 	var diags diag.Diagnostics
-
+	if d.Get("already_exists_ok") == true {
+		user, _, err := c.Users.Get(ctx, idAsInt(d.Id()))
+		if err != nil {
+			return diag.FromErr(err)
+		}
+		d.Set("email", user.CredentialEmail.Email)
+		d.Set("first_name", user.FirstName)
+		d.Set("last_name", user.LastName)
+		d.Set("roles", user.RoleIds.ToSliceOfStrings())
+		return diags
+	}
 	userID := idAsInt(d.Id())
 
 	user, _, err := c.Users.Get(ctx, userID)
@@ -152,7 +207,6 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}
 
 func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*Config).Api // .(*lookergo.Client)
-
 	userID, err := strconv.Atoi(d.Id())
 	if err != nil {
 		return diag.FromErr(err)
@@ -201,24 +255,25 @@ func resourceUserDelete(ctx context.Context, d *schema.ResourceData, m interface
 	userID, err := strconv.Atoi(d.Id())
 	if err != nil {
 		return diag.FromErr(err)
-	}
-
-	email, _, err := c.Users.GetEmail(ctx, userID)
-	if err != nil {
-		return diags
-	} else if email != nil {
-		_, err = c.Users.DeleteEmail(ctx, userID)
+	}	
+	if d.Get("delete_on_destroy") == true {
+		_, err = c.Users.Delete(ctx, userID)
 		if err != nil {
 			return diag.FromErr(err)
 		}
+		email, _, err := c.Users.GetEmail(ctx, userID)
+		if err != nil {
+			d.SetId("")
+			return diags
+		} else if email != nil {
+			_, err = c.Users.DeleteEmail(ctx, userID)
+			if err != nil {
+				return diag.FromErr(err)
+			}
+		}
+		d.SetId("")
+	} else {
+		d.SetId("")
 	}
-
-	_, err = c.Users.Delete(ctx, userID)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-
-	d.SetId("")
-
 	return diags
 }

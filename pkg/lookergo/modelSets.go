@@ -35,16 +35,13 @@ func (s ModelSetsResourceOp) Get(ctx context.Context, modelSetId string) (*Model
 }
 
 func (s ModelSetsResourceOp) Create(ctx context.Context, modelSet *ModelSet) (*ModelSet, *Response, error) {
-	// TODO implement me
-	panic("implement me")
+	return doCreate(ctx, s.client, modelSetsBasePath, modelSet, new(ModelSet))
 }
 
 func (s ModelSetsResourceOp) Update(ctx context.Context, modelSetId string, modelSet *ModelSet) (*ModelSet, *Response, error) {
-	// TODO implement me
-	panic("implement me")
+	return doUpdate(ctx, s.client, modelSetsBasePath, modelSetId, modelSet, new(ModelSet))
 }
 
 func (s ModelSetsResourceOp) Delete(ctx context.Context, modelSetId string) (*Response, error) {
-	// TODO implement me
-	panic("implement me")
+	return doDelete(ctx, s.client, modelSetsBasePath, modelSetId)
 }

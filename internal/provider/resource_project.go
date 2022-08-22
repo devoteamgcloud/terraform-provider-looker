@@ -53,6 +53,11 @@ func resourceProject() *schema.Resource {
 					return diags
 				},
 			},
+			"allow_warnings": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default: false,
+			},
 			"is_example": {
 				Type:     schema.TypeBool,
 				Optional: true,
@@ -94,10 +99,11 @@ func resourceProjectCreate(ctx context.Context, d *schema.ResourceData, m interf
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: project created, Id: %v", currFuncName(), response.Id))
 	d.SetId(project.Name)
 
-	resourceProjectRead(ctx, d, m)
+	_, err = dc.Projects.AllowWarnings(ctx, project.Name, boolPtr(d.Get("allow_warnings").(bool)))
 
-	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: project created, Id: %v", currFuncName(), project.Id))
-	d.SetId(project.Name)
+	if err != nil {
+		return diagErrAppend(diags, err)
+	}
 
 	resourceProjectRead(ctx, d, m)
 
@@ -137,11 +143,26 @@ func resourceProjectRead(ctx context.Context, d *schema.ResourceData, m interfac
 }
 
 func resourceProjectUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
-	c := m.(*Config).Api // .(*lookergo.Client)
+	dc := m.(*Config).DevClient // .(*lookergo.Client)
+	err := dc.EnsureStaticToken(ctx, m.(*Config).Api, m.(*Config).ApiUserID)
+	if err != nil {
+		return diagErrAppend(diags, err)
+	}
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: start", currFuncName()))
+	allow_warnings := boolPtr(d.Get("allow_warnings").(bool))
+	project := &lookergo.Project{
+		Name:      d.Get("name").(string),
+		IsExample: boolPtr(d.Get("is_example").(bool)),
+	}
+	project, _, err = dc.Projects.Update(ctx, project.Name, project)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	_, err = dc.Projects.AllowWarnings(ctx, project.Name, allow_warnings)
 
-	// TODO
-	_ = c
+	if err != nil {
+		return diag.FromErr(err)
+	}
 
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: end", currFuncName()))
 	return resourceProjectRead(ctx, d, m)

@@ -32,6 +32,7 @@ resource "looker_project" "example" {
 
 ### Optional
 
+- `allow_warnings` (Boolean)
 - `is_example` (Boolean)
 - `rename_when_delete` (Boolean) The looker API doesn't provide means to delete a projecthowever, we can rename the project from orig_name to deleteme-orig_name-X1Y2
 

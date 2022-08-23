@@ -24,7 +24,7 @@ type ProjectsResource interface {
 	Create(ctx context.Context, proj *Project) (*Project, *Response, error)
 	Update(ctx context.Context, projectName string, proj *Project) (*Project, *Response, error)
 	Delete(ctx context.Context, projectName string) (*Response, error)
-	AllowWarnings(ctx context.Context, projectName string, value *bool) (*Response, error)
+	AllowWarnings(ctx context.Context, projectName string, value bool) (*Response, error)
 	DeleteGitRepo(ctx context.Context, projectName string) (*Response, error)
 	GitBranchesList(ctx context.Context, projectName string, opt *ListOptions) ([]GitBranch, *Response, error)
 	GitBranchActiveGet(ctx context.Context, projectName string) (*GitBranch, *Response, error)
@@ -312,30 +312,12 @@ func (s *ProjectsResourceOp) DeleteGitRepo(ctx context.Context, projectName stri
 	return nil, err
 }
 
-// func (s *ProjectsResourceOp) SetDevMode(ctx context.Context) (*Response, error) {
-// 	path := fmt.Sprintf("%s/%s", api_version, "session")
-// 	b := map[string]string{
-// 		"workspace_id": "dev",
-// 	}
-// 	req, err := s.client.NewRequest(ctx, http.MethodPatch, path, b)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	var buf bytes.Buffer
-// 	resp, err := s.client.Do(ctx, req, &buf)
-// 	if resp.StatusCode == http.StatusOK {
-// 		_, err := io.ReadAll(&buf)
-// 		if err != nil {
-// 			return nil, err
-// 		}
-// 	}
-// 	return nil, nil
-// }
 
-func (s *ProjectsResourceOp) AllowWarnings(ctx context.Context, projectName string, value *bool) (*Response, error) {
+
+func (s *ProjectsResourceOp) AllowWarnings(ctx context.Context, projectName string, value bool) (*Response, error) {
 	path := fmt.Sprintf("%s/%s", projectsBasePath, projectName)
 
-	b := map[string]*bool{
+	b := map[string]bool{
 		"allow_warnings": value,
 	}
 

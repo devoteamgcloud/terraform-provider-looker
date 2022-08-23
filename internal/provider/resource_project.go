@@ -56,7 +56,6 @@ func resourceProject() *schema.Resource {
 			"allow_warnings": {
 				Type:     schema.TypeBool,
 				Optional: true,
-				Default: false,
 			},
 			"is_example": {
 				Type:     schema.TypeBool,
@@ -99,7 +98,10 @@ func resourceProjectCreate(ctx context.Context, d *schema.ResourceData, m interf
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: project created, Id: %v", currFuncName(), response.Id))
 	d.SetId(project.Name)
 
-	_, err = dc.Projects.AllowWarnings(ctx, project.Name, boolPtr(d.Get("allow_warnings").(bool)))
+	if d.Get("allow_warnings") != nil {
+
+		_, err = dc.Projects.AllowWarnings(ctx, project.Name, d.Get("allow_warnings").(bool))
+	}
 
 	if err != nil {
 		return diagErrAppend(diags, err)
@@ -149,7 +151,6 @@ func resourceProjectUpdate(ctx context.Context, d *schema.ResourceData, m interf
 		return diagErrAppend(diags, err)
 	}
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: start", currFuncName()))
-	allow_warnings := boolPtr(d.Get("allow_warnings").(bool))
 	project := &lookergo.Project{
 		Name:      d.Get("name").(string),
 		IsExample: boolPtr(d.Get("is_example").(bool)),
@@ -158,8 +159,10 @@ func resourceProjectUpdate(ctx context.Context, d *schema.ResourceData, m interf
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	_, err = dc.Projects.AllowWarnings(ctx, project.Name, allow_warnings)
+	if d.Get("allow_warnings") != nil {
 
+		_, err = dc.Projects.AllowWarnings(ctx, project.Name, d.Get("allow_warnings").(bool))
+	}
 	if err != nil {
 		return diag.FromErr(err)
 	}

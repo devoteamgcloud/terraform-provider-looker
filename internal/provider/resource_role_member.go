@@ -9,6 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"golang.org/x/exp/slices"
 	_ "golang.org/x/exp/slices"
+	"strconv"
 	"net/http"
 )
 
@@ -96,7 +97,11 @@ func resourceRoleMemberCreate(ctx context.Context, d *schema.ResourceData, m int
 	managedGroupIds := getSetIds(d, "group")
 
 	var unmanagedGroupIds []string
-	roleMemberGroups, _, err := c.Roles.RoleGroupsList(ctx, idAsInt(d.Get("target_role_id")), nil)
+	role_id, err := strconv.Atoi(d.Get("target_role_id").(string))
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	roleMemberGroups, _, err := c.Roles.RoleGroupsList(ctx, role_id, nil)
 	if err == nil {
 		for _, group := range roleMemberGroups {
 			unmanagedGroupIds = append(unmanagedGroupIds, idAsString(group.Id))
@@ -106,8 +111,11 @@ func resourceRoleMemberCreate(ctx context.Context, d *schema.ResourceData, m int
 	groupIds := append(managedGroupIds, unmanagedGroupIds...)
 	slices.Sort(groupIds)
 	groupIds = slices.Compact(groupIds)
-
-	if _, _, err = c.Roles.RoleGroupsSet(ctx, idAsInt(d.Id()), groupIds); err != nil {
+	role_id, err = strconv.Atoi(d.Get("target_role_id").(string))
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	if _, _, err = c.Roles.RoleGroupsSet(ctx, role_id, groupIds); err != nil {
 		return logErrDiag(ctx, diags, "Failed to update Role member Groups", "err", err)
 	}
 
@@ -117,9 +125,12 @@ func resourceRoleMemberCreate(ctx context.Context, d *schema.ResourceData, m int
 
 func resourceRoleMemberUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
 	c := m.(*Config).Api // .(*lookergo.Client)
-
+	role_id, err := strconv.Atoi(d.Get("target_role_id").(string))
+	if err != nil {
+		return diag.FromErr(err)
+	}
 	var currentGroupIds []string
-	roleMemberGroups, _, err := c.Roles.RoleGroupsList(ctx, idAsInt(d.Get("target_role_id")), nil)
+	roleMemberGroups, _, err := c.Roles.RoleGroupsList(ctx, role_id, nil)
 	if err == nil {
 		for _, group := range roleMemberGroups {
 			currentGroupIds = append(currentGroupIds, idAsString(group.Id))
@@ -135,8 +146,8 @@ func resourceRoleMemberUpdate(ctx context.Context, d *schema.ResourceData, m int
 	}
 	slices.Sort(finalTemp)
 	finalIds := slices.Compact(finalTemp)
-
-	_, _, err = c.Roles.RoleGroupsSet(ctx, idAsInt(d.Id()), finalIds)
+	
+	_, _, err = c.Roles.RoleGroupsSet(ctx, role_id, finalIds)
 	if err != nil {
 		return logErrDiag(ctx, diags, "Failed to update Role member Groups", "err", err)
 	}
@@ -149,9 +160,12 @@ func resourceRoleMemberUpdate(ctx context.Context, d *schema.ResourceData, m int
 
 func resourceRoleMemberDelete(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
 	c := m.(*Config).Api // .(*lookergo.Client)
-
+	role_id, err := strconv.Atoi(d.Get("target_role_id").(string))
+	if err != nil {
+		return diag.FromErr(err)
+	}
 	var currentGroupIds []string
-	roleMemberGroups, _, err := c.Roles.RoleGroupsList(ctx, idAsInt(d.Get("target_role_id")), nil)
+	roleMemberGroups, _, err := c.Roles.RoleGroupsList(ctx, role_id, nil)
 	if err == nil {
 		for _, group := range roleMemberGroups {
 			currentGroupIds = append(currentGroupIds, idAsString(group.Id))
@@ -166,7 +180,7 @@ func resourceRoleMemberDelete(ctx context.Context, d *schema.ResourceData, m int
 		}
 	}
 
-	_, _, err = c.Roles.RoleGroupsSet(ctx, idAsInt(d.Id()), finalIds)
+	_, _, err = c.Roles.RoleGroupsSet(ctx, role_id, finalIds)
 	if err != nil {
 		return logErrDiag(ctx, diags, "Failed to update Role member Groups", "err", err)
 	}

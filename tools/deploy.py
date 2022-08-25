@@ -99,12 +99,23 @@ def main():
     sha_file = ""
     release_file = ""
     for file in os.listdir("dist"):
-        if file[-14:] == "SHA256SUMS.sig":
-            sig_file = file
-        if file[-10:] == "SHA256SUMS":
-            sha_file = file
-        if file[-15] == "linux_amd64.zip":
-            release_file = file
+        try:
+            if file[-14:] == "SHA256SUMS.sig":
+                sig_file = file
+        except IndexError:
+            pass
+        try:
+            if file[-10:] == "SHA256SUMS":
+                sha_file = file
+        except IndexError:
+            pass
+        try:
+            if file[-15] == "linux_amd64.zip":
+                release_file = file
+        except IndexError:
+            pass
+        
+
     index_start, index_end = find_index("_", sha_file)
     version = sig_file[index_start:index_end]
     sha_file = os.path.abspath(f"dist/{sha_file}")

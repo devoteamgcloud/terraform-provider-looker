@@ -19,7 +19,7 @@ import (
 var (
 	// these will be set by the goreleaser configuration
 	// to appropriate values for the compiled binary
-	version string = "0.0.1"
+	version string = "0.0.3"
 
 	// goreleaser can also pass the specific commit if you want
 	// commit  string = ""
@@ -35,7 +35,7 @@ func main() {
 		Debug: debugMode,
 
 		// TODO: update this string with the full name of your provider as used in your configs
-		ProviderAddr: "registry.terraform.io/devoteamgcloud/looker",
+		ProviderAddr: "registry.terraform.io/reprise-digital/looker",
 
 		ProviderFunc: provider.New(version),
 	});

@@ -1,17 +1,17 @@
 import os
 import re
 import sys
-import requests
 import hashlib
+import requests
 
 
 PUBLIC_GPG = os.environ.get("GPG_PUBLIC_KEY").replace("\n", "\\n")
 PRIVATE_GPG = os.environ.get("GPG_PRIVATE_KEY").replace("\n", "\\n")
 TF_TOKEN = os.environ.get("TF_TOKEN")
 KEY_ID = os.environ.get("KEY_ID")
-base_url = "https://app.terraform.io/api"
-workspace = "reprise-digital"
-provider = "looker"
+BASE_URL = "https://app.terraform.io/api"
+WORKSPACE = "reprise-digital"
+PROVIDER = "looker"
 
 def get_headers() -> dict:
     return {
@@ -32,7 +32,7 @@ def add_platform_endpoint(filename: str, shasum: str, version: str) -> str:
             }
         }
     }
-    response = requests.post(base_url+f"/v2/organizations/{workspace}/registry-providers/private/{workspace}/{provider}/versions/{version}/platforms", headers=headers, json = payload)
+    response = requests.post(BASE_URL+f"/v2/organizations/{WORKSPACE}/registry-providers/private/{WORKSPACE}/{PROVIDER}/versions/{version}/platforms", headers=headers, json = payload)
     if 200 <= response.status_code < 300:
         result = response.json()
         upload_link = result["data"]["links"]["provider-binary-upload"]
@@ -52,7 +52,7 @@ def add_version_endpoint(version: str) -> tuple:
             }
         }
     }
-    response = requests.post(base_url+f"/v2/organizations/{workspace}/registry-providers/private/{workspace}/{provider}/versions", headers=headers, json=payload)
+    response = requests.post(BASE_URL+f"/v2/organizations/{WORKSPACE}/registry-providers/private/{WORKSPACE}/{PROVIDER}/versions", headers=headers, json=payload)
     if 200 <= response.status_code < 300:
         result = response.json()
         shasums = result["data"]["links"]["shasums-upload"]
@@ -91,7 +91,7 @@ def find_index(term: str, string: str) -> tuple:
 def get_sha256(path: str) -> str:
     with open(path,"rb") as f:
         bytes = f.read() # read entire file as bytes
-        readable_hash = hashlib.sha256(bytes).hexdigest();
+        readable_hash = hashlib.sha256(bytes).hexdigest()
         return readable_hash
 
 def main():

@@ -111,10 +111,6 @@ func resourceRoleMemberCreate(ctx context.Context, d *schema.ResourceData, m int
 	groupIds := append(managedGroupIds, unmanagedGroupIds...)
 	slices.Sort(groupIds)
 	groupIds = slices.Compact(groupIds)
-	role_id, err = strconv.Atoi(d.Get("target_role_id").(string))
-	if err != nil {
-		return diag.FromErr(err)
-	}
 	if _, _, err = c.Roles.RoleGroupsSet(ctx, role_id, groupIds); err != nil {
 		return logErrDiag(ctx, diags, "Failed to update Role member Groups", "err", err)
 	}

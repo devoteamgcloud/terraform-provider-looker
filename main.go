@@ -1,8 +1,6 @@
 package main
 
 import (
-	"flag"
-
 	"github.com/devoteamgcloud/terraform-provider-looker/internal/provider"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
@@ -21,7 +19,7 @@ import (
 var (
 	// these will be set by the goreleaser configuration
 	// to appropriate values for the compiled binary
-	version string = "dev"
+	version string = "0.0.1"
 
 	// goreleaser can also pass the specific commit if you want
 	// commit  string = ""
@@ -30,17 +28,15 @@ var (
 func main() {
 	var debugMode bool
 
-	flag.BoolVar(&debugMode, "debug", false, "set to true to run the provider with support for debuggers like delve")
-	flag.Parse()
+	// flag.BoolVar(&debugMode, "debug", false, "set to true to run the provider with support for debuggers like delve")
+	// flag.Parse()
 
-	opts := &plugin.ServeOpts{
+	plugin.Serve(&plugin.ServeOpts{
 		Debug: debugMode,
 
 		// TODO: update this string with the full name of your provider as used in your configs
 		ProviderAddr: "registry.terraform.io/devoteamgcloud/looker",
 
 		ProviderFunc: provider.New(version),
-	}
-
-	plugin.Serve(opts)
+	});
 }

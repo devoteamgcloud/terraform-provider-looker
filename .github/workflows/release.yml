@@ -52,11 +52,10 @@ jobs:
       -
         name: Prepare deployment
         python-version: 3.8
-        - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r tools/requirements.txt
-      -
+      - 
         name: Deploy to private registry
         run: |
           python tools/deploy.py

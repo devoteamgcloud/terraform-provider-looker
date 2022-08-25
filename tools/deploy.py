@@ -65,14 +65,14 @@ def add_version_endpoint(version: str) -> tuple:
 
 def upload_shasums(path_sha: str, path_sha_sig: str, link_sha: str, link_sha_sig: str) -> None:
     with open(path_sha, "rb") as file:
-        response = requests.post(link_sha, files = {"upload_file": file})
+        response = requests.put(link_sha, files = {"upload_file": file})
         if response.status_code >= 300:
             print(response.content)
             print(f"Error uploading {path_sha} to {link_sha}.")
             sys.exit(1)
 
     with open(path_sha_sig, "rb") as file:
-        response = requests.post(link_sha_sig, files = {"upload_file": file})
+        response = requests.put(link_sha_sig, files = {"upload_file": file})
         if response.status_code >= 300:
             print(response.content)
             print(f"Error uploading {path_sha_sig} to {link_sha_sig}.")
@@ -80,7 +80,7 @@ def upload_shasums(path_sha: str, path_sha_sig: str, link_sha: str, link_sha_sig
 
 def upload_file(file_path: str, link: str):
     with open(file_path, "rb") as file:
-        response = requests.post(link, files = {"upload_file": file})
+        response = requests.put(link, files = {"upload_file": file})
         if response.status_code >= 300:
             print(response.content)
             print(f"Error uploading {file_path} to {link}.")

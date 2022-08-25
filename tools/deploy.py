@@ -37,6 +37,7 @@ def add_platform_endpoint(filename: str, shasum: str, version: str) -> str:
         result = response.json()
         upload_link = result["data"]["links"]["provider-binary-upload"]
         return upload_link
+    print(response.content)
     print("Error creating version, check if version already exists.")
     sys.exit(1)
 
@@ -58,6 +59,7 @@ def add_version_endpoint(version: str) -> tuple:
         shasums = result["data"]["links"]["shasums-upload"]
         shasums_sig = result["data"]["links"]["shasums-sig-upload"]
         return shasums, shasums_sig
+    print(response.content)
     print("Error creating version, check if version already exists.")
     sys.exit(1)
 
@@ -65,12 +67,14 @@ def upload_shasums(path_sha: str, path_sha_sig: str, link_sha: str, link_sha_sig
     with open(path_sha, "rb") as file:
         response = requests.post(link_sha, files = {"form_field_name": file})
         if response.status_code >= 300:
+            print(response.content)
             print(f"Error uploading {path_sha} to {link_sha}.")
             sys.exit(1)
 
     with open(path_sha_sig, "rb") as file:
         response = requests.post(link_sha_sig, files = {"form_field_name": file})
         if response.status_code >= 300:
+            print(response.content)
             print(f"Error uploading {path_sha_sig} to {link_sha_sig}.")
             sys.exit(1)
 
@@ -78,6 +82,7 @@ def upload_file(file_path: str, link: str):
     with open(file_path, "rb") as file:
         response = requests.post(link, files = {"form_field_name": file})
         if response.status_code >= 300:
+            print(response.content)
             print(f"Error uploading {file_path} to {link}.")
             sys.exit(1)
     

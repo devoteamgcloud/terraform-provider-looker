@@ -16,7 +16,7 @@ func resourceProjectGitRepo() *schema.Resource {
 		UpdateContext: resourceProjectGitRepoUpdate,
 		DeleteContext: resourceProjectGitRepoDelete,
 		Schema: map[string]*schema.Schema{
-			"project_name": {
+			"project_id": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
@@ -95,7 +95,7 @@ func resourceProjectGitRepoRead(ctx context.Context, d *schema.ResourceData, m i
 		return diagErrAppend(diags, err)
 	}
 
-	projectName := d.Get("project_name").(string)
+	projectName := d.Get("project_id").(string)
 
 	project, _, err := dc.Projects.Get(ctx, projectName)
 	if err != nil {
@@ -129,7 +129,7 @@ func resourceProjectGitRepoCreate(ctx context.Context, d *schema.ResourceData, m
 	if err != nil {
 		return diagErrAppend(diags, err)
 	}
-	projectName := d.Get("project_name").(string)
+	projectName := d.Get("project_id").(string)
 
 	projectGitRepoUpdate := lookergo.Project{}
 	if value, ok := d.GetOk("allow_warnings"); ok {
@@ -179,7 +179,7 @@ func resourceProjectGitRepoUpdate(ctx context.Context, d *schema.ResourceData, m
 	if err != nil {
 		return diagErrAppend(diags, err)
 	}
-	projectName := d.Get("project_name").(string)
+	projectName := d.Get("project_id").(string)
 
 	projectGitRepoUpdate := lookergo.Project{}
 	if value, ok := d.GetOk("allow_warnings"); ok {
@@ -230,7 +230,7 @@ func resourceProjectGitRepoDelete(ctx context.Context, d *schema.ResourceData, m
 	if err != nil {
 		return diagErrAppend(diags, err)
 	}
-	projectName := d.Get("project_name").(string)
+	projectName := d.Get("project_id").(string)
 
 	_, err = dc.Projects.DeleteGitRepo(ctx, projectName)
 	if err != nil {

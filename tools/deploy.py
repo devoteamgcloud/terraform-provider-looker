@@ -115,7 +115,7 @@ def main():
         except IndexError:
             pass
         try:
-            if file[-15] == "linux_amd64.zip":
+            if file[-15:] == "linux_amd64.zip":
                 release_file = file
         except IndexError:
             pass

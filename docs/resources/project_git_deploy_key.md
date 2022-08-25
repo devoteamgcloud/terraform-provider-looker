@@ -13,9 +13,9 @@ description: |-
 
 ### Required
 
-- `project_name` (String)
+- `project_id` (String)
 
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-- `pub_key` (String)
+- `public_key` (String)

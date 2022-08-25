@@ -15,13 +15,13 @@ func resourceProjectGitDeployKey() *schema.Resource {
 		// UpdateContext: resourceProjectGitDeployKeyUpdate,
 		DeleteContext: resourceProjectGitDeployKeyDelete,
 		Schema: map[string]*schema.Schema{
-			"project_name": {
+			"project_id": {
 				Type:     schema.TypeString,
 				Computed: false,
 				Required: true,
 				ForceNew: true,
 			},
-			"pub_key": {
+			"public_key": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
@@ -41,7 +41,7 @@ func resourceProjectGitDeployKeyCreate(ctx context.Context, d *schema.ResourceDa
 		return diagErrAppend(diags, err)
 	}
 
-	projectName := d.Get("project_name").(string)
+	projectName := d.Get("project_id").(string)
 
 	pubKey, _, err := dc.Projects.GitDeployKeyCreate(ctx, projectName)
 	if err != nil {
@@ -49,10 +49,10 @@ func resourceProjectGitDeployKeyCreate(ctx context.Context, d *schema.ResourceDa
 		if err != nil {
 			return diag.FromErr(err)
 		} else if pubKey != nil {
-			d.Set("pub_key", pubKey)
+			d.Set("public_key", pubKey)
 		}
 	} else {
-		d.Set("pub_key", pubKey)
+		d.Set("public_key", pubKey)
 	}
 
 	d.SetId("-")
@@ -71,7 +71,7 @@ func resourceProjectGitDeployKeyRead(ctx context.Context, d *schema.ResourceData
 	}
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: start", currFuncName()))
 
-	projectName := d.Get("project_name").(string)
+	projectName := d.Get("project_id").(string)
 
 	pubKey := new(string)
 	pubKey, _, err = c.Projects.GitDeployKeyGet(ctx, projectName)
@@ -82,7 +82,7 @@ func resourceProjectGitDeployKeyRead(ctx context.Context, d *schema.ResourceData
 		}
 	}
 
-	d.Set("pub_key", *pubKey)
+	d.Set("public_key", *pubKey)
 
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: end", currFuncName()))
 	return diags

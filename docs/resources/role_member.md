@@ -14,7 +14,7 @@ description: |-
 ### Required
 
 - `group` (Block Set, Min: 1) (see [below for nested schema](#nestedblock--group))
-- `target_role_id` (String)
+- `role_id` (String)
 
 ### Read-Only
 

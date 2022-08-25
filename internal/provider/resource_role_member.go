@@ -20,7 +20,7 @@ func resourceRoleMember() *schema.Resource {
 		UpdateContext: resourceRoleMemberUpdate,
 		DeleteContext: resourceRoleMemberDelete,
 		Schema: map[string]*schema.Schema{
-			"target_role_id": {
+			"role_id": {
 				Type:     schema.TypeString,
 				Computed: false,
 				Required: true,
@@ -56,16 +56,16 @@ func resourceRoleMemberRead(ctx context.Context, d *schema.ResourceData, m inter
 	roleMemberGroupsSet, ok := d.GetOk("group")
 	if ok {
 		// Fetch and verify existence
-		roleMemberGroups, _, err := c.Roles.RoleGroupsList(ctx, idAsInt(d.Get("target_role_id")), nil)
+		roleMemberGroups, _, err := c.Roles.RoleGroupsList(ctx, idAsInt(d.Get("role_id")), nil)
 		switch err.(type) {
 		case *lookergo.ErrorResponse:
 			if errResp := err.(*lookergo.ErrorResponse).Response; errResp.StatusCode == http.StatusNotFound {
-				logTrace(ctx, "role not found", "role_id", d.Get("target_role_id").(string))
+				logTrace(ctx, "role not found", "role_id", d.Get("role_id").(string))
 				d.SetId("")
 				return // Resource was not found.
 			}
 		case error:
-			return logErrDiag(ctx, diags, "unable to query role", "role_id", d.Get("target_role_id").(string)) // Connection error.
+			return logErrDiag(ctx, diags, "unable to query role", "role_id", d.Get("role_id").(string)) // Connection error.
 		default:
 			logTrace(ctx, "role group members", "roleMemberGroups", roleMemberGroups)
 		}
@@ -97,7 +97,7 @@ func resourceRoleMemberCreate(ctx context.Context, d *schema.ResourceData, m int
 	managedGroupIds := getSetIds(d, "group")
 
 	var unmanagedGroupIds []string
-	role_id, err := strconv.Atoi(d.Get("target_role_id").(string))
+	role_id, err := strconv.Atoi(d.Get("role_id").(string))
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -121,7 +121,7 @@ func resourceRoleMemberCreate(ctx context.Context, d *schema.ResourceData, m int
 
 func resourceRoleMemberUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
 	c := m.(*Config).Api // .(*lookergo.Client)
-	role_id, err := strconv.Atoi(d.Get("target_role_id").(string))
+	role_id, err := strconv.Atoi(d.Get("role_id").(string))
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -156,7 +156,7 @@ func resourceRoleMemberUpdate(ctx context.Context, d *schema.ResourceData, m int
 
 func resourceRoleMemberDelete(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
 	c := m.(*Config).Api // .(*lookergo.Client)
-	role_id, err := strconv.Atoi(d.Get("target_role_id").(string))
+	role_id, err := strconv.Atoi(d.Get("role_id").(string))
 	if err != nil {
 		return diag.FromErr(err)
 	}

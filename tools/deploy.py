@@ -127,9 +127,10 @@ def main():
     sig_file = os.path.abspath(f"dist/{sig_file}")
     sha_link, sig_link = add_version_endpoint(version)
     upload_shasums(sha_file, sig_file, sha_link, sig_link)
-    release_sha256 = get_sha256(release_file)
-    upload_link = add_platform_endpoint(release_file, release_sha256, version)
+    release_file_name = release_file
     release_file = os.path.abspath(f"dist/{release_file}")
+    release_sha256 = get_sha256(release_file)
+    upload_link = add_platform_endpoint(release_file_name, release_sha256, version)
     upload_file(release_file, upload_link)
 
 

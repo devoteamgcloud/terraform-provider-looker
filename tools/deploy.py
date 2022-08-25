@@ -8,7 +8,7 @@ import hashlib
 PUBLIC_GPG = os.environ.get("GPG_PUBLIC_KEY").replace("\n", "\\n")
 PRIVATE_GPG = os.environ.get("GPG_PRIVATE_KEY").replace("\n", "\\n")
 TF_TOKEN = os.environ.get("TF_TOKEN")
-KEY_ID = os.envrion.get("KEY_ID")
+KEY_ID = os.environ.get("KEY_ID")
 base_url = "https://app.terraform.io/api"
 workspace = "reprise-digital"
 provider = "looker"

@@ -5,7 +5,7 @@ import "context"
 const lookMlModelsBasePath = "api/4.0/lookml_models"
 
 type LookMLModel struct {
-	Name                        string   `json:"name,string,omitempty"`
+	Name                        string   `json:"name,omitempty"`
 	Project_name                string   `json:"project_name,omitempty"`
 	Label                       string   `json:"label,omitempty"`
 	Allowed_db_connection_names []string `json:"allowed_db_connection_names,omitempty"`

@@ -37,7 +37,7 @@
       "uuid": "187762c0-8d5d-4ece-bf31-b8a7ac8fe6c4",
       "documentation": "",
       "method": "post",
-      "endpoint": "4.0/login",
+      "endpoint": "api/4.0/login",
       "responses": [
         {
           "uuid": "ce4a879c-4f65-45b5-a610-4b816b46f50a",
@@ -108,7 +108,7 @@
       "uuid": "60509d40-8d0f-4b7b-9d10-df35db641097",
       "documentation": "",
       "method": "get",
-      "endpoint": "4.0/session",
+      "endpoint": "api/4.0/session",
       "responses": [
         {
           "uuid": "2397caa9-564a-4816-912e-0c78be802b04",
@@ -179,7 +179,7 @@
       "uuid": "a72a0efa-ce2c-4ee5-8023-c6fcbff67eed",
       "documentation": "",
       "method": "get",
-      "endpoint": "4.0/user",
+      "endpoint": "api/4.0/user",
       "responses": [
         {
           "uuid": "5b3500c9-2fe7-4264-801c-cf38502584e5",
@@ -250,7 +250,7 @@
       "uuid": "8b682f23-94f1-4434-9e29-369e9ca59e51",
       "documentation": "",
       "method": "post",
-      "endpoint": "4.0/roles",
+      "endpoint": "api/4.0/roles",
       "responses": [
         {
           "uuid": "156ef153-39a0-47dd-bea4-8cc88e60e827",
@@ -321,7 +321,7 @@
       "uuid": "de227de8-7949-4b01-851b-00d8b3c46e95",
       "documentation": "",
       "method": "get",
-      "endpoint": "4.0/roles/305",
+      "endpoint": "api/4.0/roles/305",
       "responses": [
         {
           "uuid": "451ce8b9-29e2-4289-b67d-5fc1f04c285c",
@@ -392,7 +392,7 @@
       "uuid": "0ad47556-9d55-4245-9152-1098f551c85b",
       "documentation": "",
       "method": "patch",
-      "endpoint": "4.0/roles/305",
+      "endpoint": "api/4.0/roles/305",
       "responses": [
         {
           "uuid": "c032ec42-5efc-4abe-9277-63978bd9f615",
@@ -463,7 +463,7 @@
       "uuid": "0f2807c8-9615-4f0e-857f-48afc5b1c981",
       "documentation": "",
       "method": "get",
-      "endpoint": "4.0/roles/305/groups",
+      "endpoint": "api/4.0/roles/305/groups",
       "responses": [
         {
           "uuid": "09a8c1d8-eaba-4121-936b-966a9456c0aa",
@@ -549,7 +549,7 @@
       "uuid": "9a1f7c66-15b7-4dae-821a-e4f3211442e1",
       "documentation": "",
       "method": "put",
-      "endpoint": "4.0/roles/305/groups",
+      "endpoint": "api/4.0/roles/305/groups",
       "responses": [
         {
           "uuid": "0343bc8f-774e-4b80-92e9-9588101aa659",
@@ -627,7 +627,7 @@
       "uuid": "15b5f005-35e1-4f59-a305-e287eab96ad5",
       "documentation": "",
       "method": "delete",
-      "endpoint": "4.0/roles/305",
+      "endpoint": "api/4.0/roles/305",
       "responses": [
         {
           "uuid": "d1663d7d-21d5-4084-a259-b65d4e225fee",
@@ -694,7 +694,7 @@
       "uuid": "90680aee-ab22-4764-b883-ecc703d5d9bd",
       "documentation": "",
       "method": "get",
-      "endpoint": "4.0/permission_sets",
+      "endpoint": "api/4.0/permission_sets",
       "responses": [
         {
           "uuid": "e6e845ef-f624-4fa7-b733-84cdfbadcfd3",
@@ -765,7 +765,7 @@
       "uuid": "15c3056f-4562-4c83-8005-6f791231cfe7",
       "documentation": "",
       "method": "get",
-      "endpoint": "4.0/model_sets/53",
+      "endpoint": "api/4.0/model_sets/53",
       "responses": [
         {
           "uuid": "d0ac7b69-2b85-4e0d-ba49-59a0c90a3bab",

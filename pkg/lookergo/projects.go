@@ -9,9 +9,11 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+
 	"golang.org/x/crypto/ssh"
 )
-const api_version = "4.0"
+
+const api_version = "api/4.0"
 const projectsBasePath = api_version + "/projects"
 
 // Ref: https://developers.looker.com/api/explorer/4.0/types/Project
@@ -312,15 +314,12 @@ func (s *ProjectsResourceOp) DeleteGitRepo(ctx context.Context, projectName stri
 	return nil, err
 }
 
-
-
 func (s *ProjectsResourceOp) AllowWarnings(ctx context.Context, projectName string, value bool) (*Response, error) {
 	path := fmt.Sprintf("%s/%s", projectsBasePath, projectName)
 
 	b := map[string]bool{
 		"allow_warnings": value,
 	}
-
 
 	req, err := s.client.NewRequest(ctx, http.MethodPatch, path, b)
 	if err != nil {

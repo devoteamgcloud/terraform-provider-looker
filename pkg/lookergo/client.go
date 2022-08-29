@@ -5,15 +5,16 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/beefsack/go-rate"
-	"github.com/google/go-querystring/query"
-	"golang.org/x/oauth2"
-	"golang.org/x/oauth2/clientcredentials"
 	"path"
 	"reflect"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/beefsack/go-rate"
+	"github.com/google/go-querystring/query"
+	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/clientcredentials"
 
 	"io"
 	"io/ioutil"
@@ -76,7 +77,7 @@ type Client struct {
 	Sessions       SessionsResource
 	ModelSets      ModelSetsResource
 	Connections    ConnectionsResource
-	LookMLModel	   LookMlModelsResource
+	LookMLModel    LookMlModelsResource
 
 	// TODO: Expand
 
@@ -250,7 +251,7 @@ func (c *Client) SetOauthCredentials(ctx context.Context, clientId string, clien
 		u, _ := url.Parse(defaultBaseURL)
 		loginUrl = *u
 	}
-	loginUrl.Path = path.Join(loginUrl.Path, "4.0", "login")
+	loginUrl.Path = path.Join(loginUrl.Path, "api/4.0", "login")
 
 	oauthConfig := clientcredentials.Config{
 		ClientID:     strings.Trim(strings.TrimSpace(clientId), "'"),

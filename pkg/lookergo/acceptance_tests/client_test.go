@@ -2,13 +2,15 @@ package acceptance_tests
 
 import (
 	"context"
+
 	"github.com/k0kubun/pp/v3"
 	_ "github.com/stretchr/testify/assert"
 
-	lookergo "github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
 	"net/http"
 	"os"
 	"testing"
+
+	lookergo "github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
 )
 
 // export LOOKER_API_CLIENT_ID="dFNmbP4jzXqp" LOOKER_API_CLIENT_SECRET="KFwpLkMf393z" LOOKER_API_ENDPOINT="https://dev.l0c4l.host:9443/api"
@@ -46,7 +48,7 @@ func TestAcceptance_Panic(t *testing.T) {
 func TestAcceptance_Demo(t *testing.T) {
 	setup()
 
-	url := ac.BaseURL + "4.0/users/1"
+	url := ac.BaseURL + "api/4.0/users/1"
 	req, _ := client.NewRequest(ctx, http.MethodGet, url, nil)
 
 	body := new(lookergo.User)

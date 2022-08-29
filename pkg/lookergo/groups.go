@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-const groupBasePath = "4.0/groups"
+const groupBasePath = "api/4.0/groups"
 
 // GroupsResource is an interface for interfacing with the Group resource endpoints of the API.
 // Ref: https://developers.looker.com/api/explorer/4.0/methods/Group

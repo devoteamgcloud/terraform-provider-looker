@@ -11,7 +11,7 @@ func TestRolesResourceOp_ModelSetsList(t *testing.T) {
 	setup()
 	defer teardown()
 
-	mux.HandleFunc("/4.0/model_sets", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/api/4.0/model_sets", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodGet)
 		fmt.Fprint(w, `[
   { "built_in": true, "id": "1", "all_access": true, "models": ["another_dink", "dink_th_test"], "name": "All", "url": "https://localhost:19999/api/4.0/model_sets/1", "can": { "show": true, "index": true, "update": true } },

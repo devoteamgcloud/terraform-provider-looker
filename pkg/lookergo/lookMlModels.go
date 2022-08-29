@@ -2,7 +2,7 @@ package lookergo
 
 import "context"
 
-const lookMlModelsBasePath = "4.0/lookml_models"
+const lookMlModelsBasePath = "api/4.0/lookml_models"
 
 type LookMLModel struct {
 	Name                        string   `json:"name,string,omitempty"`

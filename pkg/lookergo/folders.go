@@ -1,6 +1,6 @@
 package lookergo
 
-const foldersSetBasePath = "4.0/folders"
+const foldersSetBasePath = "api/4.0/folders"
 
 type FoldersResource interface {
 }

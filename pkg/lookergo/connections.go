@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-const connectionsBasePath = "4.0/connections"
+const connectionsBasePath = "api/4.0/connections"
 
 type ConnectionsResource interface {
 	Get(ctx context.Context, connectionName string) (*DBConnection, *Response, error)

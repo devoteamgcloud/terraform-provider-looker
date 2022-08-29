@@ -11,7 +11,7 @@ func TestConnectionsResourceOp_Get(t *testing.T) {
 	setup()
 	defer teardown()
 
-	mux.HandleFunc("/4.0/connections/testingpsql", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/api/4.0/connections/testingpsql", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodGet)
 		fmt.Fprint(w, `  {
     "name": "testingpsql",

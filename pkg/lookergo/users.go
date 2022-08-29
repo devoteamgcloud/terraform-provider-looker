@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-const userBasePath = "4.0/users"
+const userBasePath = "api/4.0/users"
 
 // CredentialEmail -
 type CredentialEmail struct {

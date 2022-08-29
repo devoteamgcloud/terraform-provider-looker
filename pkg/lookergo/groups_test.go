@@ -3,17 +3,18 @@ package lookergo
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"net/http"
 	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGroups_ListGroups(t *testing.T) {
 	setup()
 	defer teardown()
 
-	mux.HandleFunc("/4.0/groups", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/api/4.0/groups", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodGet)
 		fmt.Fprint(w, `[
   {
@@ -75,7 +76,7 @@ func TestGroupsResourceOp_Get(t *testing.T) {
 	setup()
 	defer teardown()
 
-	mux.HandleFunc("/4.0/groups/202", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/api/4.0/groups/202", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodGet)
 		fmt.Fprint(w, `{
   "can_add_to_content_metadata": true,
@@ -114,7 +115,7 @@ func TestGroupsResourceOp_ListByName(t *testing.T) {
 	setup()
 	defer teardown()
 
-	mux.HandleFunc("/4.0/groups/search/with_hierarchy", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/api/4.0/groups/search/with_hierarchy", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Query().Get("name") == "Demo GROUP" {
 			testMethod(t, r, http.MethodGet)
 			fmt.Fprint(w, `[{
@@ -186,7 +187,7 @@ func TestGroupsResourceOp_ListById(t *testing.T) {
 	setup()
 	defer teardown()
 
-	mux.HandleFunc("/4.0/groups/search/with_hierarchy", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/api/4.0/groups/search/with_hierarchy", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Query().Get("id") == "101" {
 			testMethod(t, r, http.MethodGet)
 			fmt.Fprint(w, `[{
@@ -258,7 +259,7 @@ func TestGroupsResourceOp_Create(t *testing.T) {
 	setup()
 	defer teardown()
 
-	mux.HandleFunc("/4.0/groups", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/api/4.0/groups", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodPost)
 		fmt.Fprint(w, `{
   "can_add_to_content_metadata": true,
@@ -298,7 +299,7 @@ func TestGroupsResourceOp_Update(t *testing.T) {
 	setup()
 	defer teardown()
 
-	mux.HandleFunc("/4.0/groups/202", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/api/4.0/groups/202", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodPatch)
 		fmt.Fprint(w, `{
   "can_add_to_content_metadata": true,
@@ -337,7 +338,7 @@ func TestGroupsResourceOp_Delete(t *testing.T) {
 	setup()
 	defer teardown()
 
-	mux.HandleFunc("/4.0/groups/202", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/api/4.0/groups/202", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodDelete)
 		w.WriteHeader(http.StatusNoContent)
 	})
@@ -354,7 +355,7 @@ func TestGroups_ListMemberGroups(t *testing.T) {
 	setup()
 	defer teardown()
 
-	mux.HandleFunc("/4.0/groups/99/groups", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/api/4.0/groups/99/groups", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodGet)
 		fmt.Fprint(w, `[
   {
@@ -419,7 +420,7 @@ func TestGroupsResourceOp_AddMemberGroup(t *testing.T) {
 	createRequest := &NewGroupMemberGroup{GroupID: 202}
 	createResponse := &Group{Id: 202, Name: "Admin saturn-wfs", CanAddToContentMetadata: true}
 
-	mux.HandleFunc("/4.0/groups/999/groups", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/api/4.0/groups/999/groups", func(w http.ResponseWriter, r *http.Request) {
 		v := new(NewGroupMemberGroup)
 		err := json.NewDecoder(r.Body).Decode(v)
 		if err != nil {
@@ -466,7 +467,7 @@ func TestGroupsResourceOp_RemoveMemberGroup(t *testing.T) {
 	setup()
 	defer teardown()
 
-	mux.HandleFunc("/4.0/groups/202/groups/999", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/api/4.0/groups/202/groups/999", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodDelete)
 		w.WriteHeader(http.StatusNoContent)
 	})

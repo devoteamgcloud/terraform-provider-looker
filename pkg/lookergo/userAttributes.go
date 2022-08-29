@@ -1,6 +1,6 @@
 package lookergo
 
-const userAttributesSetBasePath = "4.0/user_attributes"
+const userAttributesSetBasePath = "api/4.0/user_attributes"
 
 type UserAttributesResource interface {
 }

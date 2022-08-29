@@ -94,13 +94,10 @@ func resourceLookMlModelRead(ctx context.Context, d *schema.ResourceData, m inte
 
 	newModel, _, err := c.LookMLModel.Get(ctx, lmlMdlName)
 	if err != nil {
-		diag.FromErr(err)
+		//
 	}
 	if newModel == nil {
 		return diag.FromErr(new(lookergo.ArgError))
-	}
-	if err = d.Set("name", newModel.Name); err != nil {
-		return diag.FromErr(err)
 	}
 	if err = d.Set("project_name", newModel.Project_name); err != nil {
 		return diag.FromErr(err)
@@ -121,10 +118,18 @@ func resourceLookMlModelRead(ctx context.Context, d *schema.ResourceData, m inte
 func resourceLookMlModelUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
 	c := m.(*Config).Api // .(*lookergo.Client)
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: start", currFuncName()))
-
-	// TODO
-	_ = c
-
+	lmlMdlName := d.Get("name").(string)
+	projectName := d.Get("project_name").(string)
+	dbConnNames := schemaSetToStringSlice(d.Get("allowed_db_connection_names").(*schema.Set))
+	unlimitedConn := d.Get("unlimited_db_connections").(bool)
+	oldLookMl := lookergo.LookMLModel{Name: lmlMdlName, Project_name: projectName, Allowed_db_connection_names: dbConnNames,Unlimited_db_connections: unlimitedConn}
+	lookerML, _, err := c.LookMLModel.Update(ctx, d.Get("name").(string), &oldLookMl)
+	if err != nil {
+		
+	}
+	if err = d.Set("project_name", lookerML.Project_name); err != nil {
+		return diag.FromErr(err)
+	}
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: end", currFuncName()))
 	return resourceLookMlModelRead(ctx, d, m)
 }
@@ -134,8 +139,10 @@ func resourceLookMlModelDelete(ctx context.Context, d *schema.ResourceData, m in
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: start", currFuncName()))
 
 	// TODO
-	_ = c
-
+	_, err := c.LookMLModel.Delete(ctx, d.Get("name").(string))
+	if err != nil {
+		
+	}
 	// Finally mark as deleted
 	d.SetId("")
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: end", currFuncName()))

@@ -4,13 +4,6 @@ import "context"
 
 const lookMlModelsBasePath = "api/4.0/lookml_models"
 
-type LookMLModel struct {
-	Name                        string   `json:"name,omitempty"`
-	Project_name                string   `json:"project_name,omitempty"`
-	Label                       string   `json:"label,omitempty"`
-	Allowed_db_connection_names []string `json:"allowed_db_connection_names,omitempty"`
-	Unlimited_db_connections    bool     `json:"unlimited_db_connections,omitempty" `
-}
 
 type LookMlModelsResource interface {
 	List(ctx context.Context) ([]LookMLModel, *Response, error)
@@ -18,6 +11,14 @@ type LookMlModelsResource interface {
 	Create(ctx context.Context, LookMLModel *LookMLModel) (*LookMLModel, *Response, error)
 	Update(ctx context.Context, LookMLModelName string, LookMLModel *LookMLModel) (*LookMLModel, *Response, error)
 	Delete(ctx context.Context, LookMLModelName string) (*Response, error)
+}
+
+type LookMLModel struct {
+	Name                        string   `json:"name,omitempty"`
+	Project_name                string   `json:"project_name,omitempty"`
+	Label                       string   `json:"label,omitempty"`
+	Allowed_db_connection_names []string `json:"allowed_db_connection_names,omitempty"`
+	Unlimited_db_connections    bool     `json:"unlimited_db_connections,omitempty" `
 }
 
 func (s LookMlModelsResourceOp) List(ctx context.Context) ([]LookMLModel, *Response, error) {

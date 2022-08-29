@@ -37,11 +37,10 @@ func resourceLookMlModel() *schema.Resource {
 			"allowed_db_connection_names": {
 				Description: "Array of names of connections this model is allowed to use (looker_connection)",
 				Type:        schema.TypeSet,
-				Optional:    true,
+				Required:    true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
-				ExactlyOneOf: connectionKey,
 			},
 			"unlimited_db_connections": {
 				Description: "Is this model allowed to use all current and future connections?",
@@ -49,7 +48,6 @@ func resourceLookMlModel() *schema.Resource {
 				Required:    false,
 				Optional:    true,
 				Default:     false,
-				ExactlyOneOf: connectionKey,
 			},
 			"label": {
 				Description: "UI-friendly name for this model",
@@ -85,7 +83,7 @@ func resourceLookMlModelCreate(ctx context.Context, d *schema.ResourceData, m in
 	if err = d.Set("project_name", newModel.Project_name); err != nil {
 		return diag.FromErr(err)
 	}
-	if err = d.Set("allowed_db_connections", newModel.Allowed_db_connection_names); err != nil {
+	if err = d.Set("allowed_db_connection_names", newModel.Allowed_db_connection_names); err != nil {
 		return diag.FromErr(err)
 	}
 	if err = d.Set("unlimited_db_connections", newModel.Unlimited_db_connections); err != nil {
@@ -117,7 +115,7 @@ func resourceLookMlModelRead(ctx context.Context, d *schema.ResourceData, m inte
 	if err = d.Set("project_name", newModel.Project_name); err != nil {
 		return diag.FromErr(err)
 	}
-	if err = d.Set("allowed_db_connections", newModel.Allowed_db_connection_names); err != nil {
+	if err = d.Set("allowed_db_connection_names", newModel.Allowed_db_connection_names); err != nil {
 		return diag.FromErr(err)
 	}
 	if err = d.Set("unlimited_db_connections", newModel.Unlimited_db_connections); err != nil {

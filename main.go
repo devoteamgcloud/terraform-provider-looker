@@ -35,7 +35,7 @@ func main() {
 		Debug: debugMode,
 
 		// TODO: update this string with the full name of your provider as used in your configs
-		ProviderAddr: "registry.terraform.io/reprise-digital/looker",
+		ProviderAddr: "app.terraform.io/reprise-digital/looker",
 
 		ProviderFunc: provider.New(version),
 	});

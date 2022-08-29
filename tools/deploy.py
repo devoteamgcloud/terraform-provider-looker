@@ -1,11 +1,12 @@
 import os
-import re
 import sys
 import hashlib
 import requests
+from threading import Thread
 
-PUBLIC_GPG = os.environ.get("GPG_PUBLIC_KEY").replace("\n", "\\n")
-PRIVATE_GPG = os.environ.get("GPG_PRIVATE_KEY").replace("\n", "\\n")
+#PUBLIC_GPG = os.environ.get("GPG_PUBLIC_KEY").replace("\n", "\\n")
+#PRIVATE_GPG = os.environ.get("GPG_PRIVATE_KEY").replace("\n", "\\n")
+
 TF_TOKEN = os.environ.get("TF_TOKEN")
 KEY_ID = os.environ.get("KEY_ID")
 BASE_URL = "https://app.terraform.io/api"
@@ -49,6 +50,7 @@ def add_platform_endpoint(file: File) -> str:
     }
     response = requests.post(BASE_URL+f"/v2/organizations/{WORKSPACE}/registry-providers/private/{WORKSPACE}/{PROVIDER}/versions/{file.version}/platforms", headers=headers, json = payload)
     if 200 <= response.status_code < 300:
+        print(f"Added platform endpoint for {file.platform}_{file.arch}.")
         result = response.json()
         upload_link = result["data"]["links"]["provider-binary-upload"]
         return upload_link
@@ -70,23 +72,25 @@ def add_version_endpoint(version: str) -> tuple:
     }
     response = requests.post(BASE_URL+f"/v2/organizations/{WORKSPACE}/registry-providers/private/{WORKSPACE}/{PROVIDER}/versions", headers=headers, json=payload)
     if 200 <= response.status_code < 300:
+        print(f"Added new version endpoint: {version}")
         result = response.json()
         shasums = result["data"]["links"]["shasums-upload"]
         shasums_sig = result["data"]["links"]["shasums-sig-upload"]
         return shasums, shasums_sig
     print(response.content)
-    print("Error creating version, check if version already exists.")
+    print(f"Error creating version {version}, check if version already exists.")
     sys.exit(1)
 
-def upload_file(file: File):
+def upload_file(file: File) -> None:
     with open(file.path, "rb") as file_data:
         response = requests.put(file.upload_link, files = {"upload_file": file_data})
+        print(f"Uploaded {file.name} to the private registry.")
         if response.status_code >= 300:
             print(response.content)
             print(f"Error uploading {file.path} to {file.upload_link}.")
             sys.exit(1)
 
-def main():
+def main() -> None:
     files: list[File] = []
     for file in os.listdir("dist"):
         try:
@@ -94,6 +98,7 @@ def main():
                 try:
                     _, version, platform, arch = file.split("_")
                     files.append(File(file, version, platform, arch[:-4], None))
+                    print(f"Found deployment: {file}.")
                 except:
                     pass     
             elif file[-10:] == "SHA256SUMS":
@@ -107,7 +112,7 @@ def main():
     upload_file(shasig_file)
     for file in files:
         file.upload_link = add_platform_endpoint(file)
-        upload_file(file)
+        Thread(target=upload_file, args=(file, )).start()
 
 if __name__ == "__main__":
     main()

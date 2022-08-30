@@ -13,7 +13,7 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
-const api_version = "api/4.0"
+const api_version = "4.0"
 const projectsBasePath = api_version + "/projects"
 
 // Ref: https://developers.looker.com/api/explorer/4.0/types/Project

@@ -2,8 +2,7 @@ package lookergo
 
 import "context"
 
-const lookMlModelsBasePath = "api/4.0/lookml_models"
-
+const lookMlModelsBasePath = "4.0/lookml_models"
 
 type LookMlModelsResource interface {
 	List(ctx context.Context) ([]LookMLModel, *Response, error)

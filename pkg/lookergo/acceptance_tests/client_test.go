@@ -48,7 +48,7 @@ func TestAcceptance_Panic(t *testing.T) {
 func TestAcceptance_Demo(t *testing.T) {
 	setup()
 
-	url := ac.BaseURL + "api/4.0/users/1"
+	url := ac.BaseURL + "4.0/users/1"
 	req, _ := client.NewRequest(ctx, http.MethodGet, url, nil)
 
 	body := new(lookergo.User)

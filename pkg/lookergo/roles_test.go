@@ -11,7 +11,7 @@ func TestRolesResourceOp_PermissionSetsList(t *testing.T) {
 	setup()
 	defer teardown()
 
-	mux.HandleFunc("/api/4.0/permission_sets", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/4.0/permission_sets", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodGet)
 		fmt.Fprint(w, `
 [

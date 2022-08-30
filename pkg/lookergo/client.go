@@ -251,7 +251,7 @@ func (c *Client) SetOauthCredentials(ctx context.Context, clientId string, clien
 		u, _ := url.Parse(defaultBaseURL)
 		loginUrl = *u
 	}
-	loginUrl.Path = path.Join(loginUrl.Path, "api/4.0", "login")
+	loginUrl.Path = path.Join(loginUrl.Path, "4.0", "login")
 
 	oauthConfig := clientcredentials.Config{
 		ClientID:     strings.Trim(strings.TrimSpace(clientId), "'"),

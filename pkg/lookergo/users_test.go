@@ -11,7 +11,7 @@ func TestUsersResourceOp_List(t *testing.T) {
 	setup()
 	defer teardown()
 
-	mux.HandleFunc("/api/4.0/users", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/4.0/users", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodGet)
 		fmt.Fprint(w, `[
   {
@@ -154,7 +154,7 @@ func TestUsersResourceOp_Get(t *testing.T) {
 	setup()
 	defer teardown()
 
-	mux.HandleFunc("/api/4.0/users/10", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/4.0/users/10", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodGet)
 		fmt.Fprint(w, `{
     "avatar_url": "https://gravatar.lookercdn.com/avatar/longhash?s=156&d=blank",
@@ -235,7 +235,7 @@ func TestUsersResourceOp_CreateEmail(t *testing.T) {
 	setup()
 	defer teardown()
 
-	mux.HandleFunc("/api/4.0/users/146/credentials_email", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/4.0/users/146/credentials_email", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodPost)
 		fmt.Fprint(w, `{
   "created_at": "2022-05-23T05:38:38.000+00:00",
@@ -274,7 +274,7 @@ func TestUsersResourceOp_GetRoles(t *testing.T) {
 	setup()
 	defer teardown()
 
-	mux.HandleFunc("/api/4.0/users/123/roles", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/4.0/users/123/roles", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodGet)
 		fmt.Fprint(w, `[
   {
@@ -433,7 +433,7 @@ func TestUsersResourceOp_SetRoles(t *testing.T) {
 		{Id: 99, Name: "Admin"},
 	}
 
-	mux.HandleFunc("/api/4.0/users/123/roles", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/4.0/users/123/roles", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodPut)
 		fmt.Fprint(w, `[
   {

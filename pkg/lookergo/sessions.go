@@ -8,7 +8,7 @@ import (
 	"golang.org/x/oauth2"
 )
 
-const sessionBasePath = "api/4.0/session"
+const sessionBasePath = "4.0/session"
 
 type SessionsResource interface {
 	Get(ctx context.Context) (*Session, *Response, error)
@@ -51,12 +51,12 @@ func (s *SessionsResourceOp) SetWorkspaceId(ctx context.Context, workspaceId str
 
 // GetCurrentUser -
 func (s *SessionsResourceOp) GetCurrentUser(ctx context.Context) (*User, *Response, error) {
-	return doGet(ctx, s.client, "api/4.0/user", new(User))
+	return doGet(ctx, s.client, "4.0/user", new(User))
 }
 
 // GetLoginUserToken -
 func (s *SessionsResourceOp) GetLoginUserToken(ctx context.Context, userId string) (*oauth2.Token, *Response, error) {
-	path := fmt.Sprintf("api/4.0/login/%s", userId)
+	path := fmt.Sprintf("4.0/login/%s", userId)
 
 	req, err := s.client.NewRequest(ctx, http.MethodPost, path, nil)
 	if err != nil {

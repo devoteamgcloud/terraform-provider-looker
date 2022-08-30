@@ -3,16 +3,17 @@ package provider
 import (
 	"context"
 	"fmt"
-	md "github.com/JohannesKaufmann/html-to-markdown"
-	"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
-	"github.com/hashicorp/go-cty/cty"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
-	"golang.org/x/oauth2"
 	"net/http"
 	"net/url"
 	"reflect"
 	"strconv"
 	"time"
+
+	md "github.com/JohannesKaufmann/html-to-markdown"
+	"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
+	"github.com/hashicorp/go-cty/cty"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"golang.org/x/oauth2"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -110,14 +111,27 @@ type Config struct {
 func providerConfigure(ctx context.Context, d *schema.ResourceData, p *schema.Provider, version string) (interface{}, diag.Diagnostics) {
 	tflog.Debug(ctx, "Configure provider", map[string]interface{}{"conninfo": d.ConnInfo(), "schema": p.Schema})
 	tflog.Debug(ctx, "Provider config", map[string]interface{}{"client_id": d.Get("client_id").(string)})
-
+	
 	userAgent := p.UserAgent("terraform-provider-looker", version)
 	var diags diag.Diagnostics
 
 	client := lookergo.NewClient(nil)
 	devClient := lookergo.NewClient(nil)
 
-	if err := client.SetBaseURL(d.Get("base_url").(string)); err != nil {
+	old_url := d.Get("base_url").(string)
+	var newURL string
+	switch old_url[len(old_url)-4:] {
+	case "api/":
+		newURL = old_url
+	case ".com":
+		newURL = old_url + "/api/"
+	case "com/":
+		newURL = old_url + "api/"
+	case "/api":
+		newURL = old_url + "/"
+	}
+
+	if err := client.SetBaseURL(newURL); err != nil {
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,
 			Summary:  "Unable to set looker API endpoint",
@@ -125,7 +139,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData, p *schema.Pr
 		})
 		return nil, diags
 	}
-	devClient.SetBaseURL(d.Get("base_url").(string))
+	devClient.SetBaseURL(newURL)
 
 	clientId := d.Get("client_id").(string)
 	clientSecret := d.Get("client_secret").(string)

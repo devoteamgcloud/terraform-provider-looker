@@ -11,7 +11,7 @@ func TestProjectsResourceOp_Get(t *testing.T) {
 	setup()
 	defer teardown()
 
-	mux.HandleFunc("/api/4.0/projects/sandbox-with-sand", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/4.0/projects/sandbox-with-sand", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodGet)
 		fmt.Fprint(w, `{
   "id": "sandbox-with-sand",

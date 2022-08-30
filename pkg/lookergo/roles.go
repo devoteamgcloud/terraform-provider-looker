@@ -7,8 +7,8 @@ import (
 	"strconv"
 )
 
-const roleBasePath = "api/4.0/roles"
-const permissionSetBasePath = "api/4.0/permission_sets"
+const roleBasePath = "4.0/roles"
+const permissionSetBasePath = "4.0/permission_sets"
 
 type Permission struct {
 	Permission  string      `json:"permission"`

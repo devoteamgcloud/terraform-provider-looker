@@ -2,7 +2,7 @@ package lookergo
 
 import "context"
 
-const modelSetsBasePath = "api/4.0/model_sets"
+const modelSetsBasePath = "4.0/model_sets"
 
 type ModelSetsResource interface {
 	List(ctx context.Context) ([]ModelSet, *Response, error)

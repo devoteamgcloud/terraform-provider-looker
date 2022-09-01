@@ -49,7 +49,7 @@ func resourceProjectGitRepo() *schema.Resource {
 					"Valid values are: `off`, `links`, `recommended`, `required`.",
 			},
 			"validation_required": {
-				Type: schema.TypeBool, Optional: true, Default: false,
+				Type: schema.TypeBool, Optional: true, Default: true,
 			},
 			"allow_warnings": {
 				Type: schema.TypeBool, Optional: true, Default: true,

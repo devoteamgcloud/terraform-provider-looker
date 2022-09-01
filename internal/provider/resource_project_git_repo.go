@@ -29,6 +29,7 @@ func resourceProjectGitRepo() *schema.Resource {
 			},
 			"git_production_branch_name": {
 				Type: schema.TypeString, Optional: true,
+				Default: "main",
 				Description: "Git production branch name. Defaults to ~~master~~ main. " +
 					"Supported only in Looker 21.0 and higher.",
 			},
@@ -41,12 +42,14 @@ func resourceProjectGitRepo() *schema.Resource {
 				Description: "Name of the git service provider",
 			},
 			"pull_request_mode": {
-				Type: schema.TypeString, Optional: true,
+				Type: schema.TypeString, 
+				Optional: true,
+				Default: "off",
 				Description: "The git pull request policy for this project. " +
 					"Valid values are: `off`, `links`, `recommended`, `required`.",
 			},
 			"validation_required": {
-				Type: schema.TypeBool, Optional: true, // Default: false,
+				Type: schema.TypeBool, Optional: true, Default: false,
 			},
 			"allow_warnings": {
 				Type: schema.TypeBool, Optional: true, Default: true,

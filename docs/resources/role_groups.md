@@ -1,10 +1,10 @@
 ---
-page_title: "looker_role_member Resource - terraform-provider-looker"
+page_title: "looker_role_groups Resource - terraform-provider-looker"
 subcategory: ""
 description: |-
   
 ---
-# looker_role_member (Resource)
+# looker_role_groups (Resource)
 
 
 

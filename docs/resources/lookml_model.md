@@ -13,12 +13,12 @@ description: |-
 
 ### Required
 
+- `allowed_db_connection_names` (Set of String) Array of names of connections this model is allowed to use (looker_connection)
 - `name` (String) Name of the model. Also used as the unique identifier
 - `project_name` (String) Name of project containing the model
 
 ### Optional
 
-- `allowed_db_connection_names` (Set of String) Array of names of connections this model is allowed to use (looker_connection)
 - `unlimited_db_connections` (Boolean) Is this model allowed to use all current and future connections?
 
 ### Read-Only

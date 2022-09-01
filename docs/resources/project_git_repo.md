@@ -15,7 +15,7 @@ description: |-
 
 - `git_remote_url` (String)
 - `git_service_name` (String) Name of the git service provider
-- `project_name` (String)
+- `project_id` (String)
 
 ### Optional
 

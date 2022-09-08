@@ -2,14 +2,15 @@ package provider
 
 import (
 	"context"
+	"strconv"
+	"strings"
+	"time"
+
 	"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
-	"strconv"
-	"strings"
-	"time"
 )
 
 var (
@@ -86,9 +87,20 @@ func checkUserAlreadyExists(ctx context.Context, d *schema.ResourceData, c *look
 		return lookergo.User{}, err
 	}
 	for _, user := range users {
-		if strings.EqualFold(user.CredentialEmail.Email, email) {
-			return user, nil
+		if user.CredentialEmail != nil {
+			if strings.EqualFold(user.CredentialEmail.Email, email) {
+				return user, nil
+			}
+		} else if user.CredentialSaml != nil {
+			if strings.EqualFold(user.CredentialSaml.Email, email) {
+				return user, nil
+			}
+		} else if user.Email != "" {
+			if strings.EqualFold(user.Email, email) {
+				return user, nil
+			}
 		}
+
 	}
 	return lookergo.User{}, nil
 }
@@ -164,7 +176,13 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}
 		if err != nil {
 			return diag.FromErr(err)
 		}
-		d.Set("email", user.CredentialEmail.Email)
+		if user.CredentialEmail != nil {
+			d.Set("email", user.CredentialEmail.Email)
+		} else if user.CredentialSaml != nil {
+			d.Set("email", user.CredentialSaml.Email)
+		} else if user.Email != "" {
+			d.Set("email", user.Email)
+		}
 		d.Set("first_name", user.FirstName)
 		d.Set("last_name", user.LastName)
 		d.Set("roles", user.RoleIds.ToSliceOfStrings())

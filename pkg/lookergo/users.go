@@ -17,6 +17,12 @@ type CredentialEmail struct {
 	IsDisabled  bool   `json:"is_disabled,omitempty"`
 }
 
+type CredentialSaml struct {
+	Email		string `json:"email"`
+	SamlUserId 	string `json:"saml_user_id"`
+	Url			string `json:"url"`
+}
+
 // SliceStringInts is an intermediate/shim type to make the json result return stringified integers,
 // while being able to use correct integer types internally.
 type SliceStringInts []int
@@ -28,6 +34,7 @@ type User struct {
 	FirstName       string           `json:"first_name,omitempty"`
 	LastName        string           `json:"last_name,omitempty"`
 	CredentialEmail *CredentialEmail `json:"credentials_email,omitempty" `
+	CredentialSaml  *CredentialSaml	 `json:"credentials_saml,omitempty"`
 	DisplayName     string           `json:"display_name,omitempty"`
 	RoleIds         SliceStringInts  `json:"role_ids,omitempty"`
 	Email           string           `json:"email,omitempty"`

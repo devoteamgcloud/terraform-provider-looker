@@ -46,6 +46,11 @@ func dataSourceProject() *schema.Resource {
 				Type:	schema.TypeBool,
 				Computed: true,
 			},
+			"git_service_name": {
+				Description: "Name of the git service provider.",
+				Type:	schema.TypeString,
+				Computed: true,
+			},
 		},
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
@@ -91,6 +96,9 @@ func dataSourceProjectRead(ctx context.Context, d *schema.ResourceData, m interf
 		return diag.FromErr(err)
 	}
 	if err = d.Set("is_example", project.IsExample); err != nil {
+		return diag.FromErr(err)
+	}
+	if err = d.Set("git_service_name", project.GitServiceName); err != nil {
 		return diag.FromErr(err)
 	}
 	return diags

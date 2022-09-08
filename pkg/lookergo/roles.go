@@ -17,7 +17,7 @@ type Permission struct {
 }
 
 type Role struct {
-	Id              int           `json:"id,omitempty"`
+	Id              int           `json:"id,string,omitempty"`
 	Name            string        `json:"name,omitempty"`
 	PermissionSet   PermissionSet `json:"permission_set,omitempty"`
 	PermissionSetID string        `json:"permission_set_id,omitempty"`

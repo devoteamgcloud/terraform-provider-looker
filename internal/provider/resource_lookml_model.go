@@ -77,24 +77,9 @@ func resourceLookMlModelCreate(ctx context.Context, d *schema.ResourceData, m in
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	if newModel == nil {
-		return diag.FromErr(new(lookergo.ArgError))
-	}
-	if err = d.Set("project_name", newModel.Project_name); err != nil {
-		return diag.FromErr(err)
-	}
-	if err = d.Set("allowed_db_connection_names", newModel.Allowed_db_connection_names); err != nil {
-		return diag.FromErr(err)
-	}
-	if err = d.Set("unlimited_db_connections", newModel.Unlimited_db_connections); err != nil {
-		return diag.FromErr(err)
-	}
-	if err = d.Set("label", newModel.Label); err != nil {
-		return diag.FromErr(err)
-	}
 	d.Set("name", newModel.Name)
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: end", currFuncName()))
-	//resourceLookMlModelRead(ctx, d, m)
+	resourceLookMlModelRead(ctx, d, m)
 	return diags
 }
 

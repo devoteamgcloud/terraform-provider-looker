@@ -51,17 +51,17 @@ func New(version string) func() *schema.Provider {
 						"Normally, a REST API should not have api in it's path, " +
 						"therefore we don't add the /api/ inside the provider. ",
 					Type:        schema.TypeString,
-					Optional:    true,
+					Required:    true,
 					DefaultFunc: schema.EnvDefaultFunc("LOOKER_BASE_URL", nil),
 				},
 				"client_id": {
 					Type:        schema.TypeString,
-					Optional:    true,
+					Required:    true,
 					DefaultFunc: schema.EnvDefaultFunc("LOOKER_API_CLIENT_ID", nil),
 				},
 				"client_secret": {
 					Type:        schema.TypeString,
-					Optional:    true,
+					Required:    true,
 					Sensitive:   true,
 					DefaultFunc: schema.EnvDefaultFunc("LOOKER_API_CLIENT_SECRET", nil),
 				},
@@ -121,15 +121,19 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData, p *schema.Pr
 
 	old_url := d.Get("base_url").(string)
 	var newURL string
-	switch old_url[len(old_url)-4:] {
-	case "api/":
+	if len(old_url) > 5{
+		switch old_url[len(old_url)-4:] {
+		case "api/":
+			newURL = old_url
+		case ".com":
+			newURL = old_url + "/api/"
+		case "com/":
+			newURL = old_url + "api/"
+		case "/api":
+			newURL = old_url + "/"
+		}
+	}else {
 		newURL = old_url
-	case ".com":
-		newURL = old_url + "/api/"
-	case "com/":
-		newURL = old_url + "api/"
-	case "/api":
-		newURL = old_url + "/"
 	}
 
 	if err := client.SetBaseURL(newURL); err != nil {

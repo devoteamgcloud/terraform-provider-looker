@@ -73,13 +73,10 @@ func resourceLookMlModelCreate(ctx context.Context, d *schema.ResourceData, m in
 	//logDebug(ctx, "Create MlModel", "lmlMdlName", lmlMdlName, "projectName", projectName, "dbConnNames", dbConnNames, "unlimitedConnections", unlimitedConn)
 	var lookmlModelOptions = lookergo.LookMLModel{Name: lmlMdlName, Project_name: projectName, Allowed_db_connection_names: dbConnNames, Unlimited_db_connections: unlimitedConn}
 
-	newModel, _, err := c.LookMLModel.Create(ctx, &lookmlModelOptions)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	d.Set("name", newModel.Name)
+	c.LookMLModel.Create(ctx, &lookmlModelOptions)
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: end", currFuncName()))
-	resourceLookMlModelRead(ctx, d, m)
+	//resourceLookMlModelRead(ctx, d, m)
+	d.Set("name", lmlMdlName)
 	return diags
 }
 

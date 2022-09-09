@@ -28,8 +28,8 @@ func resourceProjectGitRepo() *schema.Resource {
 				Type: schema.TypeString, Optional: true,
 			},
 			"git_production_branch_name": {
-				Type: schema.TypeString, Optional: true,
-				Default: "main",
+				Type: schema.TypeString, 
+				Optional: true,
 				Description: "Git production branch name. Defaults to ~~master~~ main. " +
 					"Supported only in Looker 21.0 and higher.",
 			},

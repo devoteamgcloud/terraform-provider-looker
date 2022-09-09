@@ -45,7 +45,6 @@ func resourceLookMlModel() *schema.Resource {
 			"unlimited_db_connections": {
 				Description: "Is this model allowed to use all current and future connections?",
 				Type:        schema.TypeBool,
-				Required:    false,
 				Optional:    true,
 				Default:     false,
 			},
@@ -73,11 +72,14 @@ func resourceLookMlModelCreate(ctx context.Context, d *schema.ResourceData, m in
 	//logDebug(ctx, "Create MlModel", "lmlMdlName", lmlMdlName, "projectName", projectName, "dbConnNames", dbConnNames, "unlimitedConnections", unlimitedConn)
 	var lookmlModelOptions = lookergo.LookMLModel{Name: lmlMdlName, Project_name: projectName, Allowed_db_connection_names: dbConnNames, Unlimited_db_connections: unlimitedConn}
 
-	c.LookMLModel.Create(ctx, &lookmlModelOptions)
+	createdModel,_,err := c.LookMLModel.Create(ctx, &lookmlModelOptions)
+	if err != nil{
+		return diag.FromErr(err)
+	}
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: end", currFuncName()))
 	//resourceLookMlModelRead(ctx, d, m)
-	d.Set("name", lmlMdlName)
-	return diags
+	d.Set("name", createdModel.Name)
+	return resourceLookMlModelRead(ctx, d, m)
 }
 
 func resourceLookMlModelRead(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {

@@ -79,6 +79,7 @@ func resourceLookMlModelCreate(ctx context.Context, d *schema.ResourceData, m in
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: end", currFuncName()))
 	//resourceLookMlModelRead(ctx, d, m)
 	d.Set("name", createdModel.Name)
+	d.SetId(createdModel.Name)
 	return resourceLookMlModelRead(ctx, d, m)
 }
 

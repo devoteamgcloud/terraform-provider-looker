@@ -27,13 +27,6 @@ func resourceProjectGitRepo() *schema.Resource {
 			"git_username": {
 				Type: schema.TypeString, Optional: true,
 			},
-			"git_production_branch_name": {
-				Type: schema.TypeString, 
-				Optional: true,
-				Default: "main",
-				Description: "Git production branch name. Defaults to ~~master~~ main. " +
-					"Supported only in Looker 21.0 and higher.",
-			},
 			"use_git_cookie_auth": {
 				Type: schema.TypeBool, Optional: true,
 				Description: "If true, the project uses a git cookie for authentication.",
@@ -48,6 +41,13 @@ func resourceProjectGitRepo() *schema.Resource {
 				Default: "off",
 				Description: "The git pull request policy for this project. " +
 					"Valid values are: `off`, `links`, `recommended`, `required`.",
+			},
+			"git_production_branch_name": {
+				Type: schema.TypeString, 
+				Optional: true,
+				Default: "main",
+				Description: "Git production branch name. Defaults to ~~master~~ main. " +
+					"Supported only in Looker 21.0 and higher.",
 			},
 			"validation_required": {
 				Type: schema.TypeBool, Optional: true, Default: true,
@@ -108,13 +108,13 @@ func resourceProjectGitRepoRead(ctx context.Context, d *schema.ResourceData, m i
 
 	d.Set("git_remote_url", project.GitRemoteUrl)
 	d.Set("git_username", project.GitUsername)
-	d.Set("git_production_branch_name", project.GitProductionBranchName)
 	d.Set("use_git_cookie_auth", project.UseGitCookieAuth)
 	d.Set("git_service_name", project.GitServiceName)
 	d.Set("pull_request_mode", project.PullRequestMode)
 	d.Set("validation_required", project.ValidationRequired)
 	d.Set("allow_warnings", project.AllowWarnings)
 	d.Set("is_example", project.IsExample)
+	d.Set("git_production_branch_name", project.GitProductionBranchName)
 
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: end", currFuncName()))
 	return diags
@@ -145,9 +145,6 @@ func resourceProjectGitRepoCreate(ctx context.Context, d *schema.ResourceData, m
 	if value, ok := d.GetOk("git_username"); ok {
 		projectGitRepoUpdate.GitUsername = value.(string)
 	}
-	if value, ok := d.GetOk("git_production_branch_name"); ok {
-		projectGitRepoUpdate.GitProductionBranchName = value.(string)
-	}
 	if value, ok := d.GetOk("use_git_cookie_auth"); ok {
 		projectGitRepoUpdate.UseGitCookieAuth = boolPtr(value.(bool))
 	}
@@ -159,6 +156,9 @@ func resourceProjectGitRepoCreate(ctx context.Context, d *schema.ResourceData, m
 	}
 	if value, ok := d.GetOk("validation_required"); ok {
 		projectGitRepoUpdate.ValidationRequired = boolPtr(value.(bool))
+	}
+	if value, ok := d.GetOk("git_production_branch_name"); ok {
+		projectGitRepoUpdate.GitProductionBranchName = value.(string)
 	}
 	if value, ok := d.GetOk("is_example"); ok {
 		projectGitRepoUpdate.IsExample = boolPtr(value.(bool))
@@ -195,9 +195,6 @@ func resourceProjectGitRepoUpdate(ctx context.Context, d *schema.ResourceData, m
 	if value, ok := d.GetOk("git_username"); ok {
 		projectGitRepoUpdate.GitUsername = value.(string)
 	}
-	if value, ok := d.GetOk("git_production_branch_name"); ok {
-		projectGitRepoUpdate.GitProductionBranchName = value.(string)
-	}
 	if value, ok := d.GetOk("use_git_cookie_auth"); ok {
 		projectGitRepoUpdate.UseGitCookieAuth = boolPtr(value.(bool))
 	}
@@ -212,6 +209,9 @@ func resourceProjectGitRepoUpdate(ctx context.Context, d *schema.ResourceData, m
 	}
 	if value, ok := d.GetOk("is_example"); ok {
 		projectGitRepoUpdate.IsExample = boolPtr(value.(bool))
+	}
+	if value, ok := d.GetOk("git_production_branch_name"); ok {
+		projectGitRepoUpdate.GitProductionBranchName = value.(string)
 	}
 
 	_, _, err = dc.Projects.Update(ctx, projectName, &projectGitRepoUpdate)

@@ -157,16 +157,21 @@ func resourceProjectGitRepoCreate(ctx context.Context, d *schema.ResourceData, m
 	if value, ok := d.GetOk("validation_required"); ok {
 		projectGitRepoUpdate.ValidationRequired = boolPtr(value.(bool))
 	}
-	if value, ok := d.GetOk("git_production_branch_name"); ok {
-		projectGitRepoUpdate.GitProductionBranchName = value.(string)
-	}
+	
 	if value, ok := d.GetOk("is_example"); ok {
 		projectGitRepoUpdate.IsExample = boolPtr(value.(bool))
 	}
 
-	_, _, err = dc.Projects.Update(ctx, projectName, &projectGitRepoUpdate)
+	project, _, err := dc.Projects.Update(ctx, projectName, &projectGitRepoUpdate)
 	if err != nil {
 		return diagErrAppend(diags, err)
+	}
+	if value, ok := d.GetOk("git_production_branch_name"); ok {
+		project.GitProductionBranchName = value.(string)
+		_,_,err = dc.Projects.Update(ctx, projectName, project)
+		if err != nil {
+			return diag.FromErr(err)
+		}
 	}
 
 	d.SetId(projectName)

@@ -27,13 +27,6 @@ func resourceProjectGitRepo() *schema.Resource {
 			"git_username": {
 				Type: schema.TypeString, Optional: true,
 			},
-			"git_production_branch_name": {
-				Type: schema.TypeString, 
-				Optional: true,
-				Default: "main",
-				Description: "Git production branch name. Defaults to ~~master~~ main. " +
-					"Supported only in Looker 21.0 and higher.",
-			},
 			"use_git_cookie_auth": {
 				Type: schema.TypeBool, Optional: true,
 				Description: "If true, the project uses a git cookie for authentication.",
@@ -108,7 +101,6 @@ func resourceProjectGitRepoRead(ctx context.Context, d *schema.ResourceData, m i
 
 	d.Set("git_remote_url", project.GitRemoteUrl)
 	d.Set("git_username", project.GitUsername)
-	d.Set("git_production_branch_name", project.GitProductionBranchName)
 	d.Set("use_git_cookie_auth", project.UseGitCookieAuth)
 	d.Set("git_service_name", project.GitServiceName)
 	d.Set("pull_request_mode", project.PullRequestMode)
@@ -144,9 +136,6 @@ func resourceProjectGitRepoCreate(ctx context.Context, d *schema.ResourceData, m
 	}
 	if value, ok := d.GetOk("git_username"); ok {
 		projectGitRepoUpdate.GitUsername = value.(string)
-	}
-	if value, ok := d.GetOk("git_production_branch_name"); ok {
-		projectGitRepoUpdate.GitProductionBranchName = value.(string)
 	}
 	if value, ok := d.GetOk("use_git_cookie_auth"); ok {
 		projectGitRepoUpdate.UseGitCookieAuth = boolPtr(value.(bool))
@@ -194,9 +183,6 @@ func resourceProjectGitRepoUpdate(ctx context.Context, d *schema.ResourceData, m
 	}
 	if value, ok := d.GetOk("git_username"); ok {
 		projectGitRepoUpdate.GitUsername = value.(string)
-	}
-	if value, ok := d.GetOk("git_production_branch_name"); ok {
-		projectGitRepoUpdate.GitProductionBranchName = value.(string)
 	}
 	if value, ok := d.GetOk("use_git_cookie_auth"); ok {
 		projectGitRepoUpdate.UseGitCookieAuth = boolPtr(value.(bool))

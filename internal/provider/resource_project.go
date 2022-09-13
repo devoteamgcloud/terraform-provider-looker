@@ -53,11 +53,6 @@ func resourceProject() *schema.Resource {
 					return diags
 				},
 			},
-			"git_production_branch_name": {
-				Type: schema.TypeString,
-				Optional: true,
-				Default: "main",
-			},
 			"allow_warnings": {
 				Type:     schema.TypeBool,
 				Optional: true,
@@ -91,7 +86,6 @@ func resourceProjectCreate(ctx context.Context, d *schema.ResourceData, m interf
 	project := &lookergo.Project{
 		Name:      d.Get("name").(string),
 		IsExample: boolPtr(d.Get("is_example").(bool)),
-		GitProductionBranchName: d.Get("git_production_branch_name").(string),
 	}
 
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: create project", currFuncName()))
@@ -145,9 +139,6 @@ func resourceProjectRead(ctx context.Context, d *schema.ResourceData, m interfac
 	if project.IsExample != nil {
 		d.Set("is_example", project.IsExample)
 	}
-	if project.GitProductionBranchName != "" {
-		d.Set("git_production_branch_name", project.GitProductionBranchName)
-	}
 
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: end", currFuncName()))
 	return diags
@@ -163,7 +154,6 @@ func resourceProjectUpdate(ctx context.Context, d *schema.ResourceData, m interf
 	project := &lookergo.Project{
 		Name:      d.Get("name").(string),
 		IsExample: boolPtr(d.Get("is_example").(bool)),
-		GitProductionBranchName: d.Get("git_production_branch_name").(string),
 	}
 	project, _, err = dc.Projects.Update(ctx, project.Name, project)
 	if err != nil {

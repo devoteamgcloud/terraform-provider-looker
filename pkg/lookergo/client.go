@@ -469,12 +469,15 @@ func (c *Client) Do(ctx context.Context, req *http.Request, v interface{}) (*Res
 	c.ratemtx.Unlock()
 
 	err = CheckResponse(resp)
+	
 	if err != nil {
 		return response, err
 	}
 
 	if v != nil {
-		if w, ok := v.(io.Writer); ok {
+		if resp.StatusCode == 204 {
+			return response, nil
+		}else if w, ok := v.(io.Writer); ok {
 			_, err = io.Copy(w, resp.Body)
 			if err != nil {
 				return nil, err

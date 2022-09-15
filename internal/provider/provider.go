@@ -83,6 +83,7 @@ func New(version string) func() *schema.Provider {
 				"looker_project_git_repo":       resourceProjectGitRepo(),
 				"looker_lookml_model":           resourceLookMlModel(),
 				"looker_model_set":              resourceModelSet(),
+				"looker_deploy_to_production":	 resourceDeployToProduction(),
 			},
 		}
 

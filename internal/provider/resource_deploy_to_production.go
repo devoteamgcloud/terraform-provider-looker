@@ -2,7 +2,7 @@ package provider
 
 import (
 	"context"
-
+	"time"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -38,6 +38,7 @@ func resourceDeployToProductionCreate(ctx context.Context, d *schema.ResourceDat
 	if err != nil {
 		return diagErrAppend(diags, err)
 	}
+	time.Sleep(3* time.Second)
 	d.Set("project_id", projectName)
 	d.SetId("-")
 	return resourceDeployToProductionRead(ctx, d, m)

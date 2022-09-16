@@ -35,6 +35,13 @@ func resourceProjectGitRepo() *schema.Resource {
 				Type: schema.TypeString, Required: true,
 				Description: "Name of the git service provider",
 			},
+			"git_production_branch_name": {
+				Type: schema.TypeString, 
+				Optional: true,
+				Default: "main",
+				Description: "Git production branch name. Defaults to ~~master~~ main. " +
+					"Supported only in Looker 21.0 and higher.",
+			},
 			"pull_request_mode": {
 				Type: schema.TypeString, 
 				Optional: true,
@@ -105,6 +112,7 @@ func resourceProjectGitRepoRead(ctx context.Context, d *schema.ResourceData, m i
 	d.Set("git_service_name", project.GitServiceName)
 	d.Set("pull_request_mode", project.PullRequestMode)
 	d.Set("validation_required", project.ValidationRequired)
+	d.Set("git_production_branch_name", project.GitProductionBranchName)
 	d.Set("allow_warnings", project.AllowWarnings)
 	d.Set("is_example", project.IsExample)
 
@@ -146,10 +154,12 @@ func resourceProjectGitRepoCreate(ctx context.Context, d *schema.ResourceData, m
 	if value, ok := d.GetOk("pull_request_mode"); ok {
 		projectGitRepoUpdate.PullRequestMode = value.(string)
 	}
+	if value, ok := d.GetOk("git_production_branch_name"); ok {
+		projectGitRepoUpdate.GitProductionBranchName = value.(string)
+	}
 	if value, ok := d.GetOk("validation_required"); ok {
 		projectGitRepoUpdate.ValidationRequired = boolPtr(value.(bool))
 	}
-	
 	if value, ok := d.GetOk("is_example"); ok {
 		projectGitRepoUpdate.IsExample = boolPtr(value.(bool))
 	}
@@ -196,6 +206,9 @@ func resourceProjectGitRepoUpdate(ctx context.Context, d *schema.ResourceData, m
 	}
 	if value, ok := d.GetOk("pull_request_mode"); ok {
 		projectGitRepoUpdate.PullRequestMode = value.(string)
+	}
+	if value, ok := d.GetOk("git_production_branch_name"); ok {
+		projectGitRepoUpdate.GitProductionBranchName = value.(string)
 	}
 	if value, ok := d.GetOk("validation_required"); ok {
 		projectGitRepoUpdate.ValidationRequired = boolPtr(value.(bool))

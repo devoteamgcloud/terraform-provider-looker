@@ -163,7 +163,12 @@ func resourceProjectGitRepoCreate(ctx context.Context, d *schema.ResourceData, m
 	if value, ok := d.GetOk("is_example"); ok {
 		projectGitRepoUpdate.IsExample = boolPtr(value.(bool))
 	}
-
+	payload := lookergo.Project{}
+	payload.GitRemoteUrl = projectGitRepoUpdate.GitRemoteUrl
+	_,_, err = dc.Projects.Update(ctx, projectName, &payload)
+	if err != nil {
+		return diag.FromErr(err)
+	}
 	_, _, err = dc.Projects.Update(ctx, projectName, &projectGitRepoUpdate)
 	if err != nil {
 		return diagErrAppend(diags, err)

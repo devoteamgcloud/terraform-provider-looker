@@ -35,19 +35,19 @@ func resourceProjectGitRepo() *schema.Resource {
 				Type: schema.TypeString, Required: true,
 				Description: "Name of the git service provider",
 			},
-			"pull_request_mode": {
-				Type: schema.TypeString, 
-				Optional: true,
-				Default: "off",
-				Description: "The git pull request policy for this project. " +
-					"Valid values are: `off`, `links`, `recommended`, `required`.",
-			},
 			"git_production_branch_name": {
 				Type: schema.TypeString, 
 				Optional: true,
 				Default: "main",
 				Description: "Git production branch name. Defaults to ~~master~~ main. " +
 					"Supported only in Looker 21.0 and higher.",
+			},
+			"pull_request_mode": {
+				Type: schema.TypeString, 
+				Optional: true,
+				Default: "off",
+				Description: "The git pull request policy for this project. " +
+					"Valid values are: `off`, `links`, `recommended`, `required`.",
 			},
 			"validation_required": {
 				Type: schema.TypeBool, Optional: true, Default: true,
@@ -112,9 +112,9 @@ func resourceProjectGitRepoRead(ctx context.Context, d *schema.ResourceData, m i
 	d.Set("git_service_name", project.GitServiceName)
 	d.Set("pull_request_mode", project.PullRequestMode)
 	d.Set("validation_required", project.ValidationRequired)
+	d.Set("git_production_branch_name", project.GitProductionBranchName)
 	d.Set("allow_warnings", project.AllowWarnings)
 	d.Set("is_example", project.IsExample)
-	d.Set("git_production_branch_name", project.GitProductionBranchName)
 
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: end", currFuncName()))
 	return diags
@@ -154,30 +154,33 @@ func resourceProjectGitRepoCreate(ctx context.Context, d *schema.ResourceData, m
 	if value, ok := d.GetOk("pull_request_mode"); ok {
 		projectGitRepoUpdate.PullRequestMode = value.(string)
 	}
+	if value, ok := d.GetOk("git_production_branch_name"); ok {
+		projectGitRepoUpdate.GitProductionBranchName = value.(string)
+	}
 	if value, ok := d.GetOk("validation_required"); ok {
 		projectGitRepoUpdate.ValidationRequired = boolPtr(value.(bool))
 	}
-	
 	if value, ok := d.GetOk("is_example"); ok {
 		projectGitRepoUpdate.IsExample = boolPtr(value.(bool))
 	}
-
-	project, _, err := dc.Projects.Update(ctx, projectName, &projectGitRepoUpdate)
+	payload := lookergo.Project{}
+	payload.GitRemoteUrl = projectGitRepoUpdate.GitRemoteUrl
+	_,_, err = dc.Projects.Update(ctx, projectName, &payload)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	_, _, err = dc.Projects.Update(ctx, projectName, &projectGitRepoUpdate)
 	if err != nil {
 		return diagErrAppend(diags, err)
 	}
-	if value, ok := d.GetOk("git_production_branch_name"); ok {
-		project.GitProductionBranchName = value.(string)
-		_,_,err = dc.Projects.Update(ctx, projectName, project)
-		if err != nil {
-			return diag.FromErr(err)
-		}
+	_, _, err = dc.Projects.DeployToProduction(ctx, projectName)
+	if err != nil {
+		return diag.FromErr(err)
 	}
-
 	d.SetId(projectName)
 
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: end", currFuncName()))
-	return diags
+	return resourceProjectRead(ctx,d,m)
 }
 
 func resourceProjectGitRepoUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
@@ -209,21 +212,24 @@ func resourceProjectGitRepoUpdate(ctx context.Context, d *schema.ResourceData, m
 	if value, ok := d.GetOk("pull_request_mode"); ok {
 		projectGitRepoUpdate.PullRequestMode = value.(string)
 	}
+	if value, ok := d.GetOk("git_production_branch_name"); ok {
+		projectGitRepoUpdate.GitProductionBranchName = value.(string)
+	}
 	if value, ok := d.GetOk("validation_required"); ok {
 		projectGitRepoUpdate.ValidationRequired = boolPtr(value.(bool))
 	}
 	if value, ok := d.GetOk("is_example"); ok {
 		projectGitRepoUpdate.IsExample = boolPtr(value.(bool))
 	}
-	if value, ok := d.GetOk("git_production_branch_name"); ok {
-		projectGitRepoUpdate.GitProductionBranchName = value.(string)
-	}
 
 	_, _, err = dc.Projects.Update(ctx, projectName, &projectGitRepoUpdate)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-
+	_, _, err = dc.Projects.DeployToProduction(ctx, projectName)
+	if err != nil {
+		return diag.FromErr(err)
+	}
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: end", currFuncName()))
 	return resourceProjectGitRepoRead(ctx, d, m)
 }

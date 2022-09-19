@@ -53,14 +53,6 @@ func resourceProject() *schema.Resource {
 					return diags
 				},
 			},
-			"allow_warnings": {
-				Type:     schema.TypeBool,
-				Optional: true,
-			},
-			"is_example": {
-				Type:     schema.TypeBool,
-				Optional: true,
-			},
 		},
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
@@ -85,7 +77,6 @@ func resourceProjectCreate(ctx context.Context, d *schema.ResourceData, m interf
 
 	project := &lookergo.Project{
 		Name:      d.Get("name").(string),
-		IsExample: boolPtr(d.Get("is_example").(bool)),
 	}
 
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: create project", currFuncName()))
@@ -97,11 +88,6 @@ func resourceProjectCreate(ctx context.Context, d *schema.ResourceData, m interf
 
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: project created, Id: %v", currFuncName(), response.Id))
 	d.SetId(project.Name)
-
-	if d.Get("allow_warnings") != nil {
-
-		_, err = dc.Projects.AllowWarnings(ctx, project.Name, d.Get("allow_warnings").(bool))
-	}
 
 	if err != nil {
 		return diagErrAppend(diags, err)
@@ -136,9 +122,6 @@ func resourceProjectRead(ctx context.Context, d *schema.ResourceData, m interfac
 	if project.Name != "" {
 		d.Set("name", project.Name)
 	}
-	if project.IsExample != nil {
-		d.Set("is_example", project.IsExample)
-	}
 
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: end", currFuncName()))
 	return diags
@@ -153,16 +136,8 @@ func resourceProjectUpdate(ctx context.Context, d *schema.ResourceData, m interf
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: start", currFuncName()))
 	project := &lookergo.Project{
 		Name:      d.Get("name").(string),
-		IsExample: boolPtr(d.Get("is_example").(bool)),
 	}
-	project, _, err = dc.Projects.Update(ctx, project.Name, project)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	if d.Get("allow_warnings") != nil {
-
-		_, err = dc.Projects.AllowWarnings(ctx, project.Name, d.Get("allow_warnings").(bool))
-	}
+	_, _, err = dc.Projects.Update(ctx, project.Name, project)
 	if err != nil {
 		return diag.FromErr(err)
 	}

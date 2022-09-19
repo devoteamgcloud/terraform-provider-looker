@@ -122,9 +122,6 @@ func resourceProjectRead(ctx context.Context, d *schema.ResourceData, m interfac
 	if project.Name != "" {
 		d.Set("name", project.Name)
 	}
-	if project.IsExample != nil {
-		d.Set("is_example", project.IsExample)
-	}
 
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: end", currFuncName()))
 	return diags
@@ -139,7 +136,6 @@ func resourceProjectUpdate(ctx context.Context, d *schema.ResourceData, m interf
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: start", currFuncName()))
 	project := &lookergo.Project{
 		Name:      d.Get("name").(string),
-		IsExample: boolPtr(d.Get("is_example").(bool)),
 	}
 	_, _, err = dc.Projects.Update(ctx, project.Name, project)
 	if err != nil {

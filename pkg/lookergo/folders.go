@@ -2,16 +2,14 @@ package lookergo
 
 import (
 	"context"
-	"fmt"
-	"net/url"
 )
 
 const FoldersBasePath = "4.0/folders"
 
 type FoldersResource interface {
 	List(context.Context, *ListOptions) ([]Folder, *Response, error)
-	ListById(context.Context, string) (*Folder, *Response, error)
-	Get(context.Context,*ListOptions, string) ([]Folder, *Response, error)
+	Get(context.Context, string) (*Folder, *Response, error)
+	//Get(context.Context,*ListOptions, string) ([]Folder, *Response, error)
 	Create(context.Context, *Folder) (*Folder, *Response, error)
 	Update(context.Context, string, *Folder) (*Folder, *Response, error)
 	Delete(context.Context, string) (*Response, error)
@@ -79,22 +77,22 @@ type Look struct {
 }
 
 type Folder struct {
-	Name                 string     `json:"name,omitempty"`
-	ParentId             string     `json:"parent_id,omitempty"`
-	Id                   string     `json:"id,omitempty"`
-	ContentMetadataId    string     `json:"content_metadata_id,omitempty"`
-	CreatedAt            string     `json:"created_at,omitempty"`
-	CreatorId            string     `json:"creator_id,omitempty"`
-	ChildCount           int64      `json:"child_count,omitempty"`
-	ExternalId           bool       `json:"external_id,omitempty"`
-	IsEmbed              bool       `json:"is_embed,omitempty"`
-	IsEmbedSharedRoot    bool       `json:"is_embed_shared_root,omitempty"`
-	IsEmbedUsersRoot     bool       `json:"is_embed_users_root,omitempty"`
-	IsPersonal           bool       `json:"is_personal,omitempty"`
-	IsPersonalDescendant bool       `json:"is_personal_descendant,omitempty"`
-	IsSharedRoot         bool       `json:"is_shared_root,omitempty"`
-	IsUsersRoot          bool       `json:"is_users_root,omitempty"`
-	Dashboards           *Dashboard `json:"dashboards, omitempty"`
+	Name                 string `json:"name,omitempty"`
+	ParentId             string `json:"parent_id,omitempty"`
+	Id                   string `json:"id,omitempty"`
+	ContentMetadataId    string `json:"content_metadata_id,omitempty"`
+	CreatedAt            string `json:"created_at,omitempty"`
+	CreatorId            string `json:"creator_id,omitempty"`
+	ChildCount           int64  `json:"child_count,omitempty"`
+	ExternalId           string `json:"external_id,omitempty"`
+	IsEmbed              bool   `json:"is_embed,omitempty"`
+	IsEmbedSharedRoot    bool   `json:"is_embed_shared_root,omitempty"`
+	IsEmbedUsersRoot     bool   `json:"is_embed_users_root,omitempty"`
+	IsPersonal           bool   `json:"is_personal,omitempty"`
+	IsPersonalDescendant bool   `json:"is_personal_descendant,omitempty"`
+	IsSharedRoot         bool   `json:"is_shared_root,omitempty"`
+	IsUsersRoot          bool   `json:"is_users_root,omitempty"`
+	//Dashboards           *Dashboard `json:"dashboards,omitempty"`
 }
 
 /*
@@ -106,32 +104,32 @@ Update
 Delete
 */
 
-func (s FoldersResourceOp) List(ctx context.Context, opt *ListOptions) ([]Folder, *Response, error) {
+func (s *FoldersResourceOp) List(ctx context.Context, opt *ListOptions) ([]Folder, *Response, error) {
 	return doList(ctx, s.client, FoldersBasePath, opt, new([]Folder))
 }
 
-func (s FoldersResourceOp) ListById(ctx context.Context, FolderId string) (*Folder, *Response, error) {
+func (s *FoldersResourceOp) Get(ctx context.Context, FolderId string) (*Folder, *Response, error) {
 	return doGetById(ctx, s.client, FoldersBasePath, FolderId, new(Folder))
 }
 
-func (s FoldersResourceOp) Get(ctx context.Context, opt *ListOptions, FolderId string) ([]Folder, *Response, error) {
-	if FolderId == "" {
-		return nil, nil, NewArgError("name", "has to be non-empty")
-	}
-	qs := url.Values{}
+// func (s *FoldersResourceOp) Get(ctx context.Context, opt *ListOptions, FolderId string) ([]Folder, *Response, error) {
+// 	if FolderId == "" {
+// 		return nil, nil, NewArgError("name", "has to be non-empty")
+// 	}
+// 	qs := url.Values{}
 
-	path := fmt.Sprintf("%s/%s/children", FoldersBasePath, FolderId)
-	return doListByX(ctx, s.client, path, opt, new([]Folder), qs)
-}
+// 	path := fmt.Sprintf("%s/%s/children", FoldersBasePath, FolderId)
+// 	return doListByX(ctx, s.client, path, opt, new([]Folder), qs)
+// }
 
-func (s FoldersResourceOp) Create(ctx context.Context, requestFolder *Folder) (*Folder, *Response, error) {
+func (s *FoldersResourceOp) Create(ctx context.Context, requestFolder *Folder) (*Folder, *Response, error) {
 	return doCreate(ctx, s.client, FoldersBasePath, requestFolder, new(Folder))
 }
 
-func (s FoldersResourceOp) Update(ctx context.Context, FolderId string, requestFolder *Folder) (*Folder, *Response, error) {
+func (s *FoldersResourceOp) Update(ctx context.Context, FolderId string, requestFolder *Folder) (*Folder, *Response, error) {
 	return doUpdate(ctx, s.client, FoldersBasePath, FolderId, requestFolder, new(Folder))
 }
 
-func (s FoldersResourceOp) Delete(ctx context.Context, FolderId string) (*Response, error) {
+func (s *FoldersResourceOp) Delete(ctx context.Context, FolderId string) (*Response, error) {
 	return doDelete(ctx, s.client, FoldersBasePath, FolderId)
 }

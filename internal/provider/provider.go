@@ -67,8 +67,8 @@ func New(version string) func() *schema.Provider {
 				},
 			},
 			DataSourcesMap: map[string]*schema.Resource{
-				"looker_user":  dataSourceUser(),
-				"looker_group": dataSourceGroup(),
+				"looker_user":    dataSourceUser(),
+				"looker_group":   dataSourceGroup(),
 				"looker_project": dataSourceProject(),
 			},
 			ResourcesMap: map[string]*schema.Resource{
@@ -83,7 +83,8 @@ func New(version string) func() *schema.Provider {
 				"looker_project_git_repo":       resourceProjectGitRepo(),
 				"looker_lookml_model":           resourceLookMlModel(),
 				"looker_model_set":              resourceModelSet(),
-				"looker_deploy_to_production":	 resourceDeployToProduction(),
+				"looker_deploy_to_production":   resourceDeployToProduction(),
+				"looker_folder":                 resourceFolder(),
 			},
 		}
 
@@ -113,7 +114,7 @@ type Config struct {
 func providerConfigure(ctx context.Context, d *schema.ResourceData, p *schema.Provider, version string) (interface{}, diag.Diagnostics) {
 	tflog.Debug(ctx, "Configure provider", map[string]interface{}{"conninfo": d.ConnInfo(), "schema": p.Schema})
 	tflog.Debug(ctx, "Provider config", map[string]interface{}{"client_id": d.Get("client_id").(string)})
-	
+
 	userAgent := p.UserAgent("terraform-provider-looker", version)
 	var diags diag.Diagnostics
 
@@ -122,7 +123,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData, p *schema.Pr
 
 	old_url := d.Get("base_url").(string)
 	var newURL string
-	if len(old_url) > 5{
+	if len(old_url) > 5 {
 		switch old_url[len(old_url)-4:] {
 		case "api/":
 			newURL = old_url
@@ -133,7 +134,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData, p *schema.Pr
 		case "/api":
 			newURL = old_url + "/"
 		}
-	}else {
+	} else {
 		newURL = old_url
 	}
 

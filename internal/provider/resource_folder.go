@@ -59,9 +59,6 @@ func resourceFolderCreate(ctx context.Context, d *schema.ResourceData, m interfa
 	d.Set("name", newFolder.Name)
 	d.Set("parent_id", newFolder.ParentId)
 
-	// Ensure resource created
-	// resourceFolderRead(ctx, d, m)
-
 	tflog.Info(ctx, "Created Looker Folder", map[string]interface{}{"id": newFolder.Id, "name": newFolder.Name})
 
 	return resourceFolderRead(ctx, d, m)

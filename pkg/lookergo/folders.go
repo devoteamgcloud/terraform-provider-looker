@@ -95,15 +95,6 @@ type Folder struct {
 	//Dashboards           *Dashboard `json:"dashboards,omitempty"`
 }
 
-/*
-List
-ListById
-Get -> recurse children.
-Create
-Update
-Delete
-*/
-
 func (s *FoldersResourceOp) List(ctx context.Context, opt *ListOptions) ([]Folder, *Response, error) {
 	return doList(ctx, s.client, FoldersBasePath, opt, new([]Folder))
 }
@@ -111,16 +102,6 @@ func (s *FoldersResourceOp) List(ctx context.Context, opt *ListOptions) ([]Folde
 func (s *FoldersResourceOp) Get(ctx context.Context, FolderId string) (*Folder, *Response, error) {
 	return doGetById(ctx, s.client, FoldersBasePath, FolderId, new(Folder))
 }
-
-// func (s *FoldersResourceOp) Get(ctx context.Context, opt *ListOptions, FolderId string) ([]Folder, *Response, error) {
-// 	if FolderId == "" {
-// 		return nil, nil, NewArgError("name", "has to be non-empty")
-// 	}
-// 	qs := url.Values{}
-
-// 	path := fmt.Sprintf("%s/%s/children", FoldersBasePath, FolderId)
-// 	return doListByX(ctx, s.client, path, opt, new([]Folder), qs)
-// }
 
 func (s *FoldersResourceOp) Create(ctx context.Context, requestFolder *Folder) (*Folder, *Response, error) {
 	return doCreate(ctx, s.client, FoldersBasePath, requestFolder, new(Folder))

@@ -250,11 +250,12 @@ func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m interface
 				return diag.FromErr(err)
 			}
 		} else {
-			emailOptions := lookergo.CredentialEmail{Email: d.Get("email").(string)}
-
-			_, _, err := c.Users.UpdateEmail(ctx, userID, &emailOptions)
-			if err != nil {
-				return diag.FromErr(err)
+			if userOptions.CredentialEmail != nil {
+				emailOptions := lookergo.CredentialEmail{Email: d.Get("email").(string)}
+				_, _, err := c.Users.UpdateEmail(ctx, userID, &emailOptions)
+				if err != nil {
+					return diag.FromErr(err)
+				}
 			}
 		}
 	}

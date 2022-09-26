@@ -18,6 +18,7 @@ description: |-
 
 - `allow_warnings` (Boolean) Validation policy: If true, the project can be committed with warnings when
 - `git_remote_url` (String) Git remote repository url.
+- `git_service_name` (String) Name of the git service provider.
 - `git_username` (String) Git username for HTTPS authentication.
 - `id` (String) The ID of this resource.
 - `is_example` (Boolean) If true, the project is an example project and cannot be modified.

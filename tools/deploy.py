@@ -46,8 +46,7 @@ def get_headers() -> dict:
 def delete_existing_version(version: str) -> None:
     """Checks if a similar version already exists on the registry"""
     headers = get_headers()
-    url = f"{BASE_URL}/v2/organizations/{WORKSPACE}/registry-providers/\
-    private/{WORKSPACE}/{PROVIDER}/versions/{version}"
+    url = f"{BASE_URL}/v2/organizations/{WORKSPACE}/registry-providers/private/{WORKSPACE}/{PROVIDER}/versions/{version}"
     try:
         response = requests.delete(url=url, headers=headers)
     except requests.exceptions.RequestException as exception:
@@ -75,8 +74,7 @@ def add_platform_endpoint(file: File) -> str:
         }
     }
     response = requests.post(
-        BASE_URL+f"/v2/organizations/{WORKSPACE}/registry-providers/private\
-            /{WORKSPACE}/{PROVIDER}/versions/{file.version}/platforms",
+        BASE_URL+f"/v2/organizations/{WORKSPACE}/registry-providers/private/{WORKSPACE}/{PROVIDER}/versions/{file.version}/platforms",
         headers=headers, json=payload)
     if 200 <= response.status_code < 300:
         print(f"Added platform endpoint for {file.platform}_{file.arch}.")
@@ -102,8 +100,7 @@ def add_version_endpoint(version: str) -> tuple:
         }
     }
     response = requests.post(
-        BASE_URL+f"/v2/organizations/{WORKSPACE}/registry-providers/\
-            private/{WORKSPACE}/{PROVIDER}/versions", headers=headers, json=payload)
+        BASE_URL+f"/v2/organizations/{WORKSPACE}/registry-providers/private/{WORKSPACE}/{PROVIDER}/versions", headers=headers, json=payload)
     if 200 <= response.status_code < 300:
         print(f"Added new version endpoint: {version}")
         result = response.json()

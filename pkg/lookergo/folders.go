@@ -2,12 +2,15 @@ package lookergo
 
 import (
 	"context"
+	"net/url"
+	"fmt"
 )
 
 const FoldersBasePath = "4.0/folders"
 
 type FoldersResource interface {
 	List(context.Context, *ListOptions) ([]Folder, *Response, error)
+	ListByName(context.Context, string, *ListOptions) ([]Folder, *Response, error)
 	Get(context.Context, string) (*Folder, *Response, error)
 	//Get(context.Context,*ListOptions, string) ([]Folder, *Response, error)
 	Create(context.Context, *Folder) (*Folder, *Response, error)
@@ -97,6 +100,19 @@ type Folder struct {
 
 func (s *FoldersResourceOp) List(ctx context.Context, opt *ListOptions) ([]Folder, *Response, error) {
 	return doList(ctx, s.client, FoldersBasePath, opt, new([]Folder))
+}
+
+func (s *FoldersResourceOp) ListByName(ctx context.Context, name string, opt *ListOptions) ([]Folder, *Response, error) {
+	if name == "" {
+		return nil, nil, NewArgError("name", "has to be non-empty")
+	}
+	qs := url.Values{}
+	qs.Add("fields", "id,name,parent_id")
+	qs.Add("name", name)
+
+	path := fmt.Sprintf("%s/search", FoldersBasePath)
+
+	return doListByX(ctx, s.client, path, opt, new([]Folder), qs)
 }
 
 func (s *FoldersResourceOp) Get(ctx context.Context, FolderId string) (*Folder, *Response, error) {

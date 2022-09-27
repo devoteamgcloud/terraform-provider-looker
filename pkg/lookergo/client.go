@@ -551,7 +551,7 @@ func StreamToString(stream io.Reader) string {
 }
 
 type service interface {
-	Group | User | CredentialEmail | Role | PermissionSet | Session | Project | GitBranch
+	Group | User | CredentialEmail | Role | PermissionSet | Session | Project | GitBranch | Folder
 }
 
 // addOptions -

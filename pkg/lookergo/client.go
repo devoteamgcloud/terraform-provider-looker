@@ -69,7 +69,6 @@ type Client struct {
 	// Resources used for communicating with the API
 	Groups         GroupsResource
 	Users          UsersResource
-	UserAttributes UserAttributesResource
 	Roles          RolesResource
 	Folders        FoldersResource
 	Workspaces     WorkspacesResource
@@ -141,7 +140,6 @@ func NewClient(httpClient *http.Client) *Client {
 	c := &Client{client: httpClient, BaseURL: baseURL, UserAgent: userAgent}
 	c.Groups = &GroupsResourceOp{client: c}
 	c.Users = &UsersResourceOp{client: c}
-	c.UserAttributes = &UserAttributesResourceOp{client: c}
 	c.Roles = &RolesResourceOp{client: c}
 	c.Folders = &FoldersResourceOp{client: c}
 	c.Workspaces = &WorkspacesResourceOp{client: c}

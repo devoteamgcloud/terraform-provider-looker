@@ -17,12 +17,11 @@ resource "looker_user" "user_a" {
 
 ## Example Output
 ```terraform
-// % terraform show
 # looker_user.user_a:
 resource "looker_user" "user_a" {
+    id         = "167"
     email      = "xavier.w@ipv4.plus"
     first_name = "Xavier"
-    id         = "167"
     last_name  = "Waterslaeghers"
 }
 ```

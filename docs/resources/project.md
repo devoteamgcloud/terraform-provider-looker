@@ -9,7 +9,8 @@ description: |-
 ## Example Usage
 ```terraform
 resource "looker_project" "example" {
-  name = "testdummy901"
+  name               = "testdummy901"
+  rename_when_delete = true
 }
 ```
 
@@ -17,9 +18,9 @@ resource "looker_project" "example" {
 ```terraform
 # looker_project.example:
 resource "looker_project" "example" {
-  discriminator = true
-  id            = "testdummy901-AgcX"
-  name          = "testdummy901"
+  rename_when_delete = true
+  id                 = "testdummy901-AgcX"
+  name               = "testdummy901"
 }
 ```
 

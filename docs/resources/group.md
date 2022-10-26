@@ -16,7 +16,6 @@ resource "looker_group" "group_a" {
 
 ## Example Output
 ```terraform
-// % terraform show
 # looker_group.group_a:
 resource "looker_group" "group_a" {
   id            = "327"

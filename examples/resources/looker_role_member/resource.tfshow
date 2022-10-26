@@ -1,0 +1,9 @@
+# looker_role_member.role_member:
+resource "looker_role_member" "role_member" {
+  id             = "-"
+  target_role_id = "345"
+  group {
+    id   = "1"
+    name = "group"
+  }
+}

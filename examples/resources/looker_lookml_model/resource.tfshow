@@ -1,0 +1,9 @@
+# looker_lookml_model.lookml_a:
+resource "looker_lookml_model" "lookml_a" {
+  id                          = "-"
+  name                        = "look-name"
+  project_name                = "project-gaeu"
+  allowed_db_connection_names = ["bq-looker-connection-project-gaeu"]
+  unlimited_db_connections    = false
+  label                       = "project-gaeu"
+}

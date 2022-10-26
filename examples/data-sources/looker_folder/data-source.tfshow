@@ -1,0 +1,5 @@
+# looker_folder.folder:
+resource "looker_folder" "folder" {
+  id   = "123"
+  name = "USA"
+}

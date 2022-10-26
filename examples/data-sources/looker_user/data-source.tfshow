@@ -1,0 +1,8 @@
+# looker_user.user:
+resource "looker_user" "user" {
+  rename_when_delete = true
+  id                 = "123"
+  first_name         = "Nabil"
+  last_name          = "Lahssini"
+  email              = "nabillahssini@gmail.com"
+}

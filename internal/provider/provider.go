@@ -51,17 +51,17 @@ func New(version string) func() *schema.Provider {
 						"Normally, a REST API should not have api in it's path, " +
 						"therefore we don't add the /api/ inside the provider. ",
 					Type:        schema.TypeString,
-					Required:    true,
+					Optional:    true,
 					DefaultFunc: schema.EnvDefaultFunc("LOOKER_BASE_URL", nil),
 				},
 				"client_id": {
 					Type:        schema.TypeString,
-					Required:    true,
+					Optional:    true,
 					DefaultFunc: schema.EnvDefaultFunc("LOOKER_API_CLIENT_ID", nil),
 				},
 				"client_secret": {
 					Type:        schema.TypeString,
-					Required:    true,
+					Optional:    true,
 					Sensitive:   true,
 					DefaultFunc: schema.EnvDefaultFunc("LOOKER_API_CLIENT_SECRET", nil),
 				},
@@ -84,7 +84,6 @@ func New(version string) func() *schema.Provider {
 				"looker_project_git_repo":       resourceProjectGitRepo(),
 				"looker_lookml_model":           resourceLookMlModel(),
 				"looker_model_set":              resourceModelSet(),
-				"looker_deploy_to_production":   resourceDeployToProduction(),
 				"looker_folder":                 resourceFolder(),
 			},
 		}

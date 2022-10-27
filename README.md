@@ -1,3 +1,7 @@
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) <br/>
+![Open issues](https://img.shields.io/github/issues-raw/devoteamgcloud/terraform-provider-looker) <br/>
+![Latest release](https://img.shields.io/github/v/release/devoteamgcloud/terraform-provider-looker)
+
 # Terraform provider for Looker
 
 Terraform provider for [looker](https://www.looker.com/), built without dependencies on official go-sdk.

@@ -76,7 +76,7 @@ func resourceProjectCreate(ctx context.Context, d *schema.ResourceData, m interf
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: start", currFuncName()))
 
 	project := &lookergo.Project{
-		Name:      d.Get("name").(string),
+		Name: d.Get("name").(string),
 	}
 
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: create project", currFuncName()))
@@ -132,7 +132,7 @@ func resourceProjectUpdate(ctx context.Context, d *schema.ResourceData, m interf
 	}
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: start", currFuncName()))
 	project := &lookergo.Project{
-		Name:      d.Get("name").(string),
+		Name: d.Get("name").(string),
 	}
 	_, _, err = dc.Projects.Update(ctx, project.Name, project)
 	if err != nil {

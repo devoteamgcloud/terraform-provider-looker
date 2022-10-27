@@ -36,16 +36,16 @@ func resourceProjectGitRepo() *schema.Resource {
 				Description: "Name of the git service provider",
 			},
 			"git_production_branch_name": {
-				Type: schema.TypeString, 
+				Type:     schema.TypeString,
 				Optional: true,
-				Default: "main",
+				Default:  "main",
 				Description: "Git production branch name. Defaults to ~~master~~ main. " +
 					"Supported only in Looker 21.0 and higher.",
 			},
 			"pull_request_mode": {
-				Type: schema.TypeString, 
+				Type:     schema.TypeString,
 				Optional: true,
-				Default: "off",
+				Default:  "off",
 				Description: "The git pull request policy for this project. " +
 					"Valid values are: `off`, `links`, `recommended`, `required`.",
 			},
@@ -160,7 +160,7 @@ func resourceProjectGitRepoCreate(ctx context.Context, d *schema.ResourceData, m
 	}
 	payload := lookergo.Project{}
 	payload.GitRemoteUrl = projectGitRepoUpdate.GitRemoteUrl
-	_,_, err = dc.Projects.Update(ctx, projectName, &payload)
+	_, _, err = dc.Projects.Update(ctx, projectName, &payload)
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -175,7 +175,7 @@ func resourceProjectGitRepoCreate(ctx context.Context, d *schema.ResourceData, m
 	d.SetId(projectName)
 
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: end", currFuncName()))
-	return resourceProjectRead(ctx,d,m)
+	return resourceProjectRead(ctx, d, m)
 }
 
 func resourceProjectGitRepoUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {

@@ -32,9 +32,9 @@ func dataSourceFolder() *schema.Resource {
 				ExactlyOneOf: folderKey,
 			},
 			"parent_id": {
-				Description:  "Id of the parent folder",
-				Type:         schema.TypeString,
-				Computed:     true,
+				Description: "Id of the parent folder",
+				Type:        schema.TypeString,
+				Computed:    true,
 			},
 		},
 	}
@@ -49,13 +49,13 @@ func dataSourceFolderRead(ctx context.Context, d *schema.ResourceData, m interfa
 		if err != nil {
 			return diag.FromErr(err)
 		}
-		if newfolder != nil{
+		if newfolder != nil {
 			folder.Id = newfolder.Id
 			folder.Name = newfolder.Name
-		}else {
+		} else {
 			return diag.Errorf("Folder not found.")
 		}
-		
+
 	} else if folderNameKey, exists := d.GetOk("name"); exists { // Query using Name
 		folders, _, err := c.Folders.ListByName(ctx, folderNameKey.(string), &lookergo.ListOptions{})
 		if err != nil {

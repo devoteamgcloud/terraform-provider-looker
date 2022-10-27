@@ -9,8 +9,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"golang.org/x/exp/slices"
 	_ "golang.org/x/exp/slices"
-	"strconv"
 	"net/http"
+	"strconv"
 )
 
 func resourceRoleMember() *schema.Resource {
@@ -142,7 +142,7 @@ func resourceRoleMemberUpdate(ctx context.Context, d *schema.ResourceData, m int
 	}
 	slices.Sort(finalTemp)
 	finalIds := slices.Compact(finalTemp)
-	
+
 	_, _, err = c.Roles.RoleGroupsSet(ctx, role_id, finalIds)
 	if err != nil {
 		return logErrDiag(ctx, diags, "Failed to update Role member Groups", "err", err)

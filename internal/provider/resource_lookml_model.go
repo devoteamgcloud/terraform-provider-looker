@@ -65,8 +65,8 @@ func resourceLookMlModelCreate(ctx context.Context, d *schema.ResourceData, m in
 	//logDebug(ctx, "Create MlModel", "lmlMdlName", lmlMdlName, "projectName", projectName, "dbConnNames", dbConnNames, "unlimitedConnections", unlimitedConn)
 	var lookmlModelOptions = lookergo.LookMLModel{Name: lmlMdlName, Project_name: projectName, Allowed_db_connection_names: dbConnNames, Unlimited_db_connections: unlimitedConn}
 
-	createdModel,_,err := c.LookMLModel.Create(ctx, &lookmlModelOptions)
-	if err != nil{
+	createdModel, _, err := c.LookMLModel.Create(ctx, &lookmlModelOptions)
+	if err != nil {
 		return diag.FromErr(err)
 	}
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: end", currFuncName()))
@@ -110,7 +110,7 @@ func resourceLookMlModelUpdate(ctx context.Context, d *schema.ResourceData, m in
 	projectName := d.Get("project_name").(string)
 	dbConnNames := schemaSetToStringSlice(d.Get("allowed_db_connection_names").(*schema.Set))
 	unlimitedConn := d.Get("unlimited_db_connections").(bool)
-	oldLookMl := lookergo.LookMLModel{Name: lmlMdlName, Project_name: projectName, Allowed_db_connection_names: dbConnNames,Unlimited_db_connections: unlimitedConn}
+	oldLookMl := lookergo.LookMLModel{Name: lmlMdlName, Project_name: projectName, Allowed_db_connection_names: dbConnNames, Unlimited_db_connections: unlimitedConn}
 	lookerML, _, err := c.LookMLModel.Update(ctx, d.Get("name").(string), &oldLookMl)
 	if err != nil {
 		return diag.FromErr(err)

@@ -28,5 +28,5 @@ func main() {
 		ProviderAddr: "app.terraform.io/devoteamgcloud/looker",
 
 		ProviderFunc: provider.New(version),
-	});
+	})
 }

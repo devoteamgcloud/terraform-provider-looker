@@ -2,8 +2,8 @@ package lookergo
 
 import (
 	"context"
-	"net/url"
 	"fmt"
+	"net/url"
 )
 
 const FoldersBasePath = "4.0/folders"

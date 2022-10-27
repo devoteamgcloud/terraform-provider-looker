@@ -67,16 +67,16 @@ type Client struct {
 	mu sync.Mutex
 
 	// Resources used for communicating with the API
-	Groups         GroupsResource
-	Users          UsersResource
-	Roles          RolesResource
-	Folders        FoldersResource
-	Workspaces     WorkspacesResource
-	Projects       ProjectsResource
-	Sessions       SessionsResource
-	ModelSets      ModelSetsResource
-	Connections    ConnectionsResource
-	LookMLModel    LookMlModelsResource
+	Groups      GroupsResource
+	Users       UsersResource
+	Roles       RolesResource
+	Folders     FoldersResource
+	Workspaces  WorkspacesResource
+	Projects    ProjectsResource
+	Sessions    SessionsResource
+	ModelSets   ModelSetsResource
+	Connections ConnectionsResource
+	LookMLModel LookMlModelsResource
 
 	// TODO: Expand
 
@@ -467,7 +467,7 @@ func (c *Client) Do(ctx context.Context, req *http.Request, v interface{}) (*Res
 	c.ratemtx.Unlock()
 
 	err = CheckResponse(resp)
-	
+
 	if err != nil {
 		return response, err
 	}
@@ -475,7 +475,7 @@ func (c *Client) Do(ctx context.Context, req *http.Request, v interface{}) (*Res
 	if v != nil {
 		if resp.StatusCode == 204 {
 			return response, nil
-		}else if w, ok := v.(io.Writer); ok {
+		} else if w, ok := v.(io.Writer); ok {
 			_, err = io.Copy(w, resp.Body)
 			if err != nil {
 				return nil, err

@@ -12,13 +12,24 @@ type LookMlModelsResource interface {
 	Delete(ctx context.Context, LookMLModelName string) (*Response, error)
 }
 
+type LookmlModelNavExplore struct {
+	Name        *string `json:"name,omitempty"`         // Name of the explore
+	Description *string `json:"description,omitempty"`  // Description for the explore
+	Label       *string `json:"label,omitempty"`        // Label for the explore
+	Hidden      *bool   `json:"hidden,omitempty"`       // Is this explore marked as hidden
+	GroupLabel  *string `json:"group_label,omitempty"`  // Label used to group explores in the navigation menus
+  }
+
 type LookMLModel struct {
-	Name                        string   `json:"name,omitempty"`
-	Project_name                string   `json:"project_name,omitempty"`
-	Label                       string   `json:"label,omitempty"`
-	Allowed_db_connection_names []string `json:"allowed_db_connection_names,omitempty"`
-	Unlimited_db_connections    bool     `json:"unlimited_db_connections,omitempty" `
-}
+	Can                      map[string]bool         `json:"can,omitempty"`                          // Operations the current user is able to perform on this object
+	AllowedDbConnectionNames []string                `json:"allowed_db_connection_names,omitempty"`  // Array of names of connections this model is allowed to use
+	Explores                 *[]LookmlModelNavExplore `json:"explores,omitempty"`                     // Array of explores (if has_content)
+	HasContent               bool                    `json:"has_content,omitempty"`                  // Does this model declaration have have lookml content?
+	Label                    string                  `json:"label,omitempty"`                        // UI-friendly name for this model
+	Name                     string                  `json:"name,omitempty"`                         // Name of the model. Also used as the unique identifier
+	ProjectName              string                  `json:"project_name,omitempty"`                 // Name of project containing the model
+	UnlimitedDbConnections   bool                    `json:"unlimited_db_connections,omitempty"`     // Is this model allowed to use all current and future connections
+  }
 
 func (s LookMlModelsResourceOp) List(ctx context.Context) ([]LookMLModel, *Response, error) {
 	// TODO implement me

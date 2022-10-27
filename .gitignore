@@ -14,3 +14,4 @@ tfplugindocs
 dev_test/**
 test/
 terraform-provider-looker
+build

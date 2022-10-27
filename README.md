@@ -15,6 +15,17 @@ If you're new to Terraform and want to get started creating infrastructure, plea
 
 To learn more about how to contribute to the development of this provider please refer to the [community guidelines](https://github.com/devoteamgcloud/terraform-provider-looker/blob/main/CONTRIBUTING.md).
 
+### Build the provider locally
+
+To build the provider locally, you need to execute following command at the root of the project.
+```
+make build
+```
+The provider will be under the /build/$VERSION folder. <br/>
+Alternatively, you can manually execute the go build command as follows.
+```
+go build -o build/terraform-provider-looker
+```
 ## Tips
 Looker doesn't support concurrent operations on their database. That's why we are required to limit parallelism to <b>1</b> during the applying of changes.
 Here is an example:

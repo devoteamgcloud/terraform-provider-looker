@@ -12,7 +12,7 @@ func resourceProjectGitDeployKey() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: resourceProjectGitDeployKeyCreate,
 		ReadContext:   resourceProjectGitDeployKeyRead,
-		// UpdateContext: resourceProjectGitDeployKeyUpdate,
+		UpdateContext: resourceProjectGitDeployKeyUpdate,
 		DeleteContext: resourceProjectGitDeployKeyDelete,
 		Schema: map[string]*schema.Schema{
 			"project_id": {
@@ -88,22 +88,22 @@ func resourceProjectGitDeployKeyRead(ctx context.Context, d *schema.ResourceData
 	return diags
 }
 
-/*func resourceProjectGitDeployKeyUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
+func resourceProjectGitDeployKeyUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
 	c := m.(*Config).Api // .(*lookergo.Client)
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: start", currFuncName()))
 
-	// TODO
+	// Looker API doesn't support the update of a git deploy key. Nothing happens in this function.
 	_ = c
 
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: end", currFuncName()))
 	return resourceProjectGitDeployKeyRead(ctx, d, m)
 }
-*/
+
 func resourceProjectGitDeployKeyDelete(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
 	c := m.(*Config).Api // .(*lookergo.Client)
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: start", currFuncName()))
 
-	// TODO
+	// Looker API doesn't support the deletion of a git deploy key. Nothing happens in this function.
 	_ = c
 
 	// Finally mark as deleted

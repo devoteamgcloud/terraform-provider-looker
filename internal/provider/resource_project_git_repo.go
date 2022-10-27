@@ -120,11 +120,6 @@ func resourceProjectGitRepoRead(ctx context.Context, d *schema.ResourceData, m i
 	return diags
 }
 
-/*
-	If someone writes lookml, push to production doesn't work if there are errors.
-
-*/
-
 func resourceProjectGitRepoCreate(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
 	c := m.(*Config).Api // .(*lookergo.Client)
 	dc := m.(*Config).DevClient

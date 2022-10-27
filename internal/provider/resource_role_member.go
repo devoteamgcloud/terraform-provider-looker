@@ -3,22 +3,22 @@ package provider
 import (
 	"context"
 	"fmt"
+	"net/http"
+	"strconv"
+
 	"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"golang.org/x/exp/slices"
-	_ "golang.org/x/exp/slices"
-	"net/http"
-	"strconv"
 )
 
-func resourceRoleMember() *schema.Resource {
+func resourceRoleGroups() *schema.Resource {
 	return &schema.Resource{
-		CreateContext: resourceRoleMemberCreate,
-		ReadContext:   resourceRoleMemberRead,
-		UpdateContext: resourceRoleMemberUpdate,
-		DeleteContext: resourceRoleMemberDelete,
+		CreateContext: resourceRoleGroupsCreate,
+		ReadContext:   resourceRoleGroupsRead,
+		UpdateContext: resourceRoleGroupsUpdate,
+		DeleteContext: resourceRoleGroupsDelete,
 		Schema: map[string]*schema.Schema{
 			"role_id": {
 				Type:     schema.TypeString,
@@ -49,7 +49,7 @@ func resourceRoleMember() *schema.Resource {
 	}
 }
 
-func resourceRoleMemberRead(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
+func resourceRoleGroupsRead(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
 	c := m.(*Config).Api // .(*lookergo.Client)
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: start", currFuncName()))
 
@@ -90,7 +90,7 @@ func resourceRoleMemberRead(ctx context.Context, d *schema.ResourceData, m inter
 	return diags
 }
 
-func resourceRoleMemberCreate(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
+func resourceRoleGroupsCreate(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
 	c := m.(*Config).Api // .(*lookergo.Client)
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: start", currFuncName()))
 
@@ -116,10 +116,10 @@ func resourceRoleMemberCreate(ctx context.Context, d *schema.ResourceData, m int
 	}
 
 	d.SetId("-")
-	return resourceRoleMemberRead(ctx, d, m)
+	return resourceRoleGroupsRead(ctx, d, m)
 }
 
-func resourceRoleMemberUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
+func resourceRoleGroupsUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
 	c := m.(*Config).Api // .(*lookergo.Client)
 	role_id, err := strconv.Atoi(d.Get("role_id").(string))
 	if err != nil {
@@ -151,10 +151,10 @@ func resourceRoleMemberUpdate(ctx context.Context, d *schema.ResourceData, m int
 	d.SetId("-")
 
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: end", currFuncName()))
-	return resourceRoleMemberRead(ctx, d, m)
+	return resourceRoleGroupsRead(ctx, d, m)
 }
 
-func resourceRoleMemberDelete(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
+func resourceRoleGroupsDelete(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
 	c := m.(*Config).Api // .(*lookergo.Client)
 	role_id, err := strconv.Atoi(d.Get("role_id").(string))
 	if err != nil {

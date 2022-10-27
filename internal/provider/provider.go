@@ -76,7 +76,7 @@ func New(version string) func() *schema.Provider {
 				"looker_group":                  resourceGroup(),
 				"looker_group_member":           resourceGroupMember(),
 				"looker_role":                   resourceRole(),
-				"looker_role_groups":            resourceRoleMember(),
+				"looker_role_groups":            resourceRoleGroups(),
 				"looker_connection":             resourceConnection(),
 				"looker_project":                resourceProject(),
 				"looker_project_git_deploy_key": resourceProjectGitDeployKey(),

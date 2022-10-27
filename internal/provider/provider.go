@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
-	"strconv"
 	"time"
 
 	md "github.com/JohannesKaufmann/html-to-markdown"
@@ -211,9 +210,9 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData, p *schema.Pr
 
 	switch session.WorkspaceId {
 	case "production":
-		config = Config{Api: client, ApiUserID: strconv.Itoa(user.Id), DevClient: devClient, Workspace: WorkspaceProduction}
+		config = Config{Api: client, ApiUserID: user.Id, DevClient: devClient, Workspace: WorkspaceProduction}
 	case "dev":
-		config = Config{Api: client, ApiUserID: strconv.Itoa(user.Id), DevClient: devClient, Workspace: WorkspaceDev}
+		config = Config{Api: client, ApiUserID: user.Id, DevClient: devClient, Workspace: WorkspaceDev}
 	default:
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,

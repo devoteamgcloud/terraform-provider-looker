@@ -1,8 +1,6 @@
 package provider
 
 import (
-	"strconv"
-
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"golang.org/x/net/context"
@@ -42,7 +40,7 @@ func dataSourceUser() *schema.Resource {
 func dataSourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
 	c := m.(*Config).Api // .(*lookergo.Client)
 
-	userId, _ := strconv.Atoi(d.Get("id").(string))
+	userId := d.Get("id").(string)
 
 	user, _, err := c.Users.Get(ctx, userId)
 	if err != nil {
@@ -63,19 +61,19 @@ func dataSourceUserRead(ctx context.Context, d *schema.ResourceData, m interface
 		}
 	}
 
-	if user.CredentialEmail != nil {
-		if err := d.Set("email", user.CredentialEmail.Email); err != nil {
+	if user.CredentialsEmail != nil {
+		if err := d.Set("email", user.CredentialsEmail.Email); err != nil {
 			return diag.FromErr(err)
 		}
-	} else if user.CredentialSaml != nil {
-		if err := d.Set("email", user.CredentialEmail.Email); err != nil {
+	} else if user.CredentialsSaml != nil {
+		if err := d.Set("email", user.CredentialsEmail.Email); err != nil {
 			return diag.FromErr(err)
 		}
 	} else if err := d.Set("email", ""); err != nil {
 		return diag.FromErr(err)
 	}
 
-	d.SetId(strconv.Itoa(user.Id))
+	d.SetId(user.Id)
 
 	return diags
 }

@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"path"
 	"reflect"
-	"strconv"
 	"strings"
 	"time"
 
@@ -311,7 +310,7 @@ func (c *Client) CreateDevConnection(ctx context.Context, rc RequestCompletionCa
 	}
 
 	// Get duplicate API token for current user
-	token, _, err := c.Sessions.GetLoginUserToken(ctx, strconv.Itoa(user.Id))
+	token, _, err := c.Sessions.GetLoginUserToken(ctx, user.Id)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -549,7 +548,7 @@ func StreamToString(stream io.Reader) string {
 }
 
 type service interface {
-	Group | User | CredentialEmail | Role | PermissionSet | Session | Project | GitBranch | Folder
+	Group | User | CredentialsEmail | Role | PermissionSet | Session | Project | GitBranch | Folder
 }
 
 // addOptions -

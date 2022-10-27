@@ -69,6 +69,10 @@ func dataSourceUserRead(ctx context.Context, d *schema.ResourceData, m interface
 		}
 	} else if err := d.Set("email", ""); err != nil {
 		return diag.FromErr(err)
+	} else if user.CredentialSaml != nil {
+		if err := d.Set("email", user.CredentialEmail.Email); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 
 	d.SetId(strconv.Itoa(user.Id))

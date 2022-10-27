@@ -12,7 +12,7 @@ func resourceProjectGitDeployKey() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: resourceProjectGitDeployKeyCreate,
 		ReadContext:   resourceProjectGitDeployKeyRead,
-		// UpdateContext: resourceProjectGitDeployKeyUpdate, All fields are ForceNew or Computed w/out Optional, Update is superfluous 
+		// UpdateContext: resourceProjectGitDeployKeyUpdate, All fields are ForceNew or Computed w/out Optional, Update is superfluous
 		DeleteContext: resourceProjectGitDeployKeyDelete,
 		Schema: map[string]*schema.Schema{
 			"project_id": {

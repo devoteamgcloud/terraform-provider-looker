@@ -238,7 +238,7 @@ func (s *UsersResourceOp) Delete(ctx context.Context, id string) (*Response, err
 
 // CreateEmail -
 func (s *UsersResourceOp) CreateEmail(ctx context.Context, id string, createReq *CredentialsEmail) (*CredentialsEmail, *Response, error) {
-	return doCreate(ctx, s.client, userBasePath, createReq, new(CredentialsEmail),id, "credentials_email")
+	return doCreate(ctx, s.client, userBasePath, createReq, new(CredentialsEmail), id, "credentials_email")
 }
 
 // GetEmail -

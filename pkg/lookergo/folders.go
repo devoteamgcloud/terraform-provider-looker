@@ -31,7 +31,7 @@ type LookModel struct {
 }
 
 type FolderBase struct {
-	Name                 string           `json:"name"`                             // Unique Name
+	Name                 string          `json:"name"`                             // Unique Name
 	ParentId             string          `json:"parent_id,omitempty"`              // Id of Parent. If the parent id is null, this is a root-level entry
 	Id                   string          `json:"id,omitempty"`                     // Unique Id
 	ContentMetadataId    string          `json:"content_metadata_id,omitempty"`    // Id of content metadata
@@ -56,12 +56,12 @@ type DashboardBase struct {
 	Description        string          `json:"description,omitempty"`         // Description
 	Hidden             bool            `json:"hidden,omitempty"`              // Is Hidden
 	Id                 string          `json:"id,omitempty"`                  // Unique Id
-	Model              *LookModel       `json:"model,omitempty"`
+	Model              *LookModel      `json:"model,omitempty"`
 	QueryTimezone      string          `json:"query_timezone,omitempty"`        // Timezone in which the Dashboard will run by default.
 	Readonly           bool            `json:"readonly,omitempty"`              // Is Read-only
 	RefreshInterval    string          `json:"refresh_interval,omitempty"`      // Refresh Interval, as a time duration phrase like "2 hours 30 minutes". A number with no time units will be interpreted as whole seconds.
 	RefreshIntervalToI int64           `json:"refresh_interval_to_i,omitempty"` // Refresh Interval in milliseconds
-	Folder             *FolderBase      `json:"folder,omitempty"`
+	Folder             *FolderBase     `json:"folder,omitempty"`
 	Title              string          `json:"title,omitempty"`            // Dashboard Title
 	UserId             string          `json:"user_id,omitempty"`          // Id of User
 	Slug               string          `json:"slug,omitempty"`             // Content Metadata Slug
@@ -88,55 +88,55 @@ type Dashboard struct {
 
 type LookWithDashboards struct {
 	Can                      *map[string]bool `json:"can,omitempty"`                        // Operations the current user is able to perform on this object
-	ContentMetadataId        string          `json:"content_metadata_id,omitempty"`        // Id of content metadata
-	Id                       string          `json:"id,omitempty"`                         // Unique Id
-	Title                    string          `json:"title,omitempty"`                      // Look Title
-	UserId                   string          `json:"user_id,omitempty"`                    // User Id
-	ContentFavoriteId        string          `json:"content_favorite_id,omitempty"`        // Content Favorite Id
+	ContentMetadataId        string           `json:"content_metadata_id,omitempty"`        // Id of content metadata
+	Id                       string           `json:"id,omitempty"`                         // Unique Id
+	Title                    string           `json:"title,omitempty"`                      // Look Title
+	UserId                   string           `json:"user_id,omitempty"`                    // User Id
+	ContentFavoriteId        string           `json:"content_favorite_id,omitempty"`        // Content Favorite Id
 	CreatedAt                *time.Time       `json:"created_at,omitempty"`                 // Time that the Look was created.
-	Deleted                  bool            `json:"deleted,omitempty"`                    // Whether or not a look is 'soft' deleted.
+	Deleted                  bool             `json:"deleted,omitempty"`                    // Whether or not a look is 'soft' deleted.
 	DeletedAt                *time.Time       `json:"deleted_at,omitempty"`                 // Time that the Look was deleted.
-	DeleterId                string          `json:"deleter_id,omitempty"`                 // Id of User that deleted the look.
-	Description              string          `json:"description,omitempty"`                // Description
-	EmbedUrl                 string          `json:"embed_url,omitempty"`                  // Embed Url
-	ExcelFileUrl             string          `json:"excel_file_url,omitempty"`             // Excel File Url
-	FavoriteCount            int64           `json:"favorite_count,omitempty"`             // Number of times favorited
-	GoogleSpreadsheetFormula string          `json:"google_spreadsheet_formula,omitempty"` // Google Spreadsheet Formula
-	ImageEmbedUrl            string          `json:"image_embed_url,omitempty"`            // Image Embed Url
-	IsRunOnLoad              bool            `json:"is_run_on_load,omitempty"`             // auto-run query when Look viewed
+	DeleterId                string           `json:"deleter_id,omitempty"`                 // Id of User that deleted the look.
+	Description              string           `json:"description,omitempty"`                // Description
+	EmbedUrl                 string           `json:"embed_url,omitempty"`                  // Embed Url
+	ExcelFileUrl             string           `json:"excel_file_url,omitempty"`             // Excel File Url
+	FavoriteCount            int64            `json:"favorite_count,omitempty"`             // Number of times favorited
+	GoogleSpreadsheetFormula string           `json:"google_spreadsheet_formula,omitempty"` // Google Spreadsheet Formula
+	ImageEmbedUrl            string           `json:"image_embed_url,omitempty"`            // Image Embed Url
+	IsRunOnLoad              bool             `json:"is_run_on_load,omitempty"`             // auto-run query when Look viewed
 	LastAccessedAt           *time.Time       `json:"last_accessed_at,omitempty"`           // Time that the Look was last accessed by any user
-	LastUpdaterId            string          `json:"last_updater_id,omitempty"`            // Id of User that last updated the look.
+	LastUpdaterId            string           `json:"last_updater_id,omitempty"`            // Id of User that last updated the look.
 	LastViewedAt             *time.Time       `json:"last_viewed_at,omitempty"`             // Time last viewed in the Looker web UI
 	Model                    *LookModel       `json:"model,omitempty"`
-	Public                   bool            `json:"public,omitempty"`      // Is Public
-	PublicSlug               string          `json:"public_slug,omitempty"` // Public Slug
-	PublicUrl                string          `json:"public_url,omitempty"`  // Public Url
-	QueryId                  string          `json:"query_id,omitempty"`    // Query Id
-	ShortUrl                 string          `json:"short_url,omitempty"`   // Short Url
+	Public                   bool             `json:"public,omitempty"`      // Is Public
+	PublicSlug               string           `json:"public_slug,omitempty"` // Public Slug
+	PublicUrl                string           `json:"public_url,omitempty"`  // Public Url
+	QueryId                  string           `json:"query_id,omitempty"`    // Query Id
+	ShortUrl                 string           `json:"short_url,omitempty"`   // Short Url
 	Folder                   *FolderBase      `json:"folder,omitempty"`
-	FolderId                 string          `json:"folder_id,omitempty"`  // Folder Id
+	FolderId                 string           `json:"folder_id,omitempty"`  // Folder Id
 	UpdatedAt                *time.Time       `json:"updated_at,omitempty"` // Time that the Look was updated.
-	ViewCount                int64           `json:"view_count,omitempty"` // Number of times viewed in the Looker web UI
+	ViewCount                int64            `json:"view_count,omitempty"` // Number of times viewed in the Looker web UI
 	Dashboards               *[]DashboardBase `json:"dashboards,omitempty"` // Dashboards
 }
 
 type Folder struct {
 	Name                 string                `json:"name"`                             // Unique Name
-	ParentId             string               `json:"parent_id,omitempty"`              // Id of Parent. If the parent id is null, this is a root-level entry
-	Id                   string               `json:"id,omitempty"`                     // Unique Id
-	ContentMetadataId    string               `json:"content_metadata_id,omitempty"`    // Id of content metadata
+	ParentId             string                `json:"parent_id,omitempty"`              // Id of Parent. If the parent id is null, this is a root-level entry
+	Id                   string                `json:"id,omitempty"`                     // Unique Id
+	ContentMetadataId    string                `json:"content_metadata_id,omitempty"`    // Id of content metadata
 	CreatedAt            *time.Time            `json:"created_at,omitempty"`             // Time the space was created
-	CreatorId            string               `json:"creator_id,omitempty"`             // User Id of Creator
-	ChildCount           int64                `json:"child_count,omitempty"`            // Children Count
-	ExternalId           string               `json:"external_id,omitempty"`            // Embedder's Id if this folder was autogenerated as an embedding shared folder via 'external_group_id' in an SSO embed login
-	IsEmbed              bool                 `json:"is_embed,omitempty"`               // Folder is an embed folder
-	IsEmbedSharedRoot    bool                 `json:"is_embed_shared_root,omitempty"`   // Folder is the root embed shared folder
-	IsEmbedUsersRoot     bool                 `json:"is_embed_users_root,omitempty"`    // Folder is the root embed users folder
-	IsPersonal           bool                 `json:"is_personal,omitempty"`            // Folder is a user's personal folder
-	IsPersonalDescendant bool                 `json:"is_personal_descendant,omitempty"` // Folder is descendant of a user's personal folder
-	IsSharedRoot         bool                 `json:"is_shared_root,omitempty"`         // Folder is the root shared folder
-	IsUsersRoot          bool                 `json:"is_users_root,omitempty"`          // Folder is the root user folder
-	Can                  map[string]bool      `json:"can,omitempty"`                    // Operations the current user is able to perform on this object
+	CreatorId            string                `json:"creator_id,omitempty"`             // User Id of Creator
+	ChildCount           int64                 `json:"child_count,omitempty"`            // Children Count
+	ExternalId           string                `json:"external_id,omitempty"`            // Embedder's Id if this folder was autogenerated as an embedding shared folder via 'external_group_id' in an SSO embed login
+	IsEmbed              bool                  `json:"is_embed,omitempty"`               // Folder is an embed folder
+	IsEmbedSharedRoot    bool                  `json:"is_embed_shared_root,omitempty"`   // Folder is the root embed shared folder
+	IsEmbedUsersRoot     bool                  `json:"is_embed_users_root,omitempty"`    // Folder is the root embed users folder
+	IsPersonal           bool                  `json:"is_personal,omitempty"`            // Folder is a user's personal folder
+	IsPersonalDescendant bool                  `json:"is_personal_descendant,omitempty"` // Folder is descendant of a user's personal folder
+	IsSharedRoot         bool                  `json:"is_shared_root,omitempty"`         // Folder is the root shared folder
+	IsUsersRoot          bool                  `json:"is_users_root,omitempty"`          // Folder is the root user folder
+	Can                  map[string]bool       `json:"can,omitempty"`                    // Operations the current user is able to perform on this object
 	Dashboards           *[]DashboardBase      `json:"dashboards,omitempty"`             // Dashboards
 	Looks                *[]LookWithDashboards `json:"looks,omitempty"`                  // Looks
 }

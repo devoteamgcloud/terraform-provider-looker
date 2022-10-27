@@ -25,7 +25,7 @@ func main() {
 		Debug: debugMode,
 
 		// TODO: update this string with the full name of your provider as used in your configs
-		ProviderAddr: "app.terraform.io/devoteamgcloud/looker",
+		ProviderAddr: "registry.terraform.io/providers/devoteamgcloud/looker",
 
 		ProviderFunc: provider.New(version),
 	})

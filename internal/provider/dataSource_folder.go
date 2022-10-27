@@ -42,7 +42,7 @@ func dataSourceFolder() *schema.Resource {
 
 func dataSourceFolderRead(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
 	c := m.(*Config).Api // .(*lookergo.Client)
-	tflog.Info(ctx, "Querying Looker Group")
+	tflog.Info(ctx, "Querying Looker Folder")
 	var folder = lookergo.Folder{}
 	if folderId, exists := d.GetOk("id"); exists { // Query using ID
 		newfolder, _, err := c.Folders.Get(ctx, folderId.(string))

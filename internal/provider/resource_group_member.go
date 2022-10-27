@@ -66,8 +66,6 @@ func resourceGroupMember() *schema.Resource {
 
 func parentGroup(ctx context.Context, d *schema.ResourceData, c *lookergo.Client) (*lookergo.Group, error) {
 	tflog.Info(ctx, "Verifying parent group.")
-	// groupID := idAsInt(d.Id())
-
 	group, _, err := c.Groups.Get(ctx, idAsInt(d.Get("target_group_id").(string)))
 	if err != nil {
 		return nil, err
@@ -118,12 +116,8 @@ func resourceGroupMemberCreate(ctx context.Context, d *schema.ResourceData, m in
 		}
 		d.Set("group", groupItems)
 	}
-
 	d.SetId("-")
-
-	resourceGroupMemberRead(ctx, d, m)
-
-	return diags
+	return resourceGroupMemberRead(ctx, d, m)
 }
 
 func resourceGroupMemberRead(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {

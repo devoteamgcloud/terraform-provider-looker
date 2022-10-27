@@ -44,14 +44,8 @@ func dataSourceUserRead(ctx context.Context, d *schema.ResourceData, m interface
 
 	userId, _ := strconv.Atoi(d.Get("id").(string))
 
-	user, r, err := c.Users.Get(ctx, userId)
+	user, _, err := c.Users.Get(ctx, userId)
 	if err != nil {
-		diags = append(diags, diag.Diagnostic{
-			Severity: diag.Error,
-			Summary:  "Error fetching user",
-			Detail:   "Unable to find user " + d.Get("user_id").(string) + " ; HTTP Status: " + r.Response.Status,
-		})
-
 		return diag.FromErr(err)
 	}
 

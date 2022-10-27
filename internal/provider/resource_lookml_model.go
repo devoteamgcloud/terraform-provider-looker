@@ -10,13 +10,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-var (
-	connectionKey = []string{
-		"allowed_db_connection_names",
-		"unlimited_db_connections",
-	}
-)
-
 func resourceLookMlModel() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: resourceLookMlModelCreate,
@@ -77,7 +70,6 @@ func resourceLookMlModelCreate(ctx context.Context, d *schema.ResourceData, m in
 		return diag.FromErr(err)
 	}
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: end", currFuncName()))
-	//resourceLookMlModelRead(ctx, d, m)
 	d.Set("name", createdModel.Name)
 	d.SetId(createdModel.Name)
 	return resourceLookMlModelRead(ctx, d, m)
@@ -87,8 +79,6 @@ func resourceLookMlModelRead(ctx context.Context, d *schema.ResourceData, m inte
 	c := m.(*Config).Api // .(*lookergo.Client)
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: start", currFuncName()))
 	lmlMdlName := d.Get("name").(string)
-
-	//logDebug(ctx, "Create MlModel", "lmlMdlName", lmlMdlName, "projectName", projectName, "dbConnNames", dbConnNames)
 
 	newModel, _, err := c.LookMLModel.Get(ctx, lmlMdlName)
 	if err != nil {

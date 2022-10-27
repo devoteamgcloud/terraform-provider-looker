@@ -27,7 +27,8 @@ func resourceFolder() *schema.Resource {
 				Computed:     false,
 				Required:     true,
 				ValidateFunc: validation.StringLenBetween(1, 255),
-			}, "parent_id": {
+			}, 
+			"parent_id": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				ValidateFunc: validation.StringLenBetween(1, 255),

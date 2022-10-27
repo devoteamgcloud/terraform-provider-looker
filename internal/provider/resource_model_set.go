@@ -58,9 +58,8 @@ func resourceModelSetCreate(ctx context.Context, d *schema.ResourceData, m inter
 		return diag.FromErr(&lookergo.ArgError{})
 	}
 	d.SetId(newSet.Id)
-	resourceModelSetRead(ctx, d, m)
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: end", currFuncName()))
-	return diags
+	return resourceModelSetRead(ctx, d, m)
 }
 
 func resourceModelSetRead(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {

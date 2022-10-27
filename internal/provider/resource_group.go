@@ -76,9 +76,6 @@ func resourceGroupCreate(ctx context.Context, d *schema.ResourceData, m interfac
 
 	d.SetId(idAsString(newGroup.Id))
 
-	// Ensure resource created
-	// resourceGroupRead(ctx, d, m)
-
 	tflog.Info(ctx, "Created Looker Group", map[string]interface{}{"id": newGroup.Id, "name": newGroup.Name})
 
 	return resourceGroupRead(ctx, d, m)

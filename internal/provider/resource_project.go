@@ -92,11 +92,8 @@ func resourceProjectCreate(ctx context.Context, d *schema.ResourceData, m interf
 	if err != nil {
 		return diagErrAppend(diags, err)
 	}
-
-	resourceProjectRead(ctx, d, m)
-
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: end", currFuncName()))
-	return diags
+	return resourceProjectRead(ctx, d, m)
 }
 
 func resourceProjectRead(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {

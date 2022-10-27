@@ -260,7 +260,7 @@ func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m interface
 		}
 	}
 
-	_ = d.Set("last_updated", time.Now().Format(time.RFC850))
+	d.Set("last_updated", time.Now().Format(time.RFC850))
 
 	return resourceUserRead(ctx, d, m)
 }

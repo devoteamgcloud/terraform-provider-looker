@@ -1,5 +1,6 @@
-[![Open issues](https://img.shields.io/github/issues-raw/devoteamgcloud/terraform-provider-looker)](https://github.com/devoteamgcloud/terraform-provider-looker/issues) <br/>
-[![Latest release](https://img.shields.io/github/v/release/devoteamgcloud/terraform-provider-looker)](https://github.com/devoteamgcloud/terraform-provider-looker/releases/latest)
+[![Open issues](https://img.shields.io/github/issues-raw/devoteamgcloud/terraform-provider-looker)](https://github.com/devoteamgcloud/terraform-provider-looker/issues) 
+[![Latest release](https://img.shields.io/github/v/release/devoteamgcloud/terraform-provider-looker)](https://github.com/devoteamgcloud/terraform-provider-looker/releases/latest) 
+![Most used programming language](https://img.shields.io/github/languages/top/devoteamgcloud/terraform-provider-looker)
 
 # Terraform provider for Looker
 

@@ -14,6 +14,23 @@ This repository is open source, please refer to the [License](https://github.com
 ## Getting Started & Documentation
 
 If you're new to Terraform and want to get started creating infrastructure, please check out the Terraform official [Getting Started guides](https://learn.hashicorp.com/terraform#getting-started) on HashiCorp's learning platform. There are also [additional guides](https://learn.hashicorp.com/terraform#operations-and-development) to continue your learning.
+### Use the provider
+```
+terraform {
+  required_providers {
+    looker = {
+      source  = "devoteamgcloud/looker"
+      version = "0.1.2"
+    }
+  }
+}
+
+provider "looker" {
+  base_url      = "https://org.cloud.looker.com:19999/api/" # Optionally use env var LOOKER_BASE_URL
+  client_id     = "xxxxxxxx"                                # Optionally use env var LOOKER_API_CLIENT_ID
+  client_secret = "xxxxxxxx"                                # Optionally use env var LOOKER_API_CLIENT_SECRET
+}
+```
 
 ## Developing the provider
 
@@ -30,10 +47,10 @@ Alternatively, you can manually execute the go build command as follows.
 ```
 go build -o build/terraform-provider-looker
 ```
-## Tips
-Looker doesn't support concurrent operations on their database. That's why we are required to limit parallelism to <b>1</b> during the applying of changes.
-Here is an example:
+## Notes
+Looker doesn't support concurrent operations on their database. That's why we are required to limit parallelism to <b>1</b> during the applying of heavy operations with multiple user creations.
+Here is how to do it:
 ```
 terraform apply -parallelism=1
 ```
-If parallelism is not limited, the Looker API will return 500 exceptions for heavy operations.
+If parallelism is not limited, the Looker API may return <B>500 exceptions</b> for heavy operations.

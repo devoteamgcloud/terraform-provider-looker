@@ -1,6 +1,6 @@
+![visitor badge](https://visitor-badge.glitch.me/badge?page_id=terraform-provider-looker.visitor-badge)
 [![Open issues](https://img.shields.io/github/issues-raw/devoteamgcloud/terraform-provider-looker)](https://github.com/devoteamgcloud/terraform-provider-looker/issues) 
-[![Latest release](https://img.shields.io/github/v/release/devoteamgcloud/terraform-provider-looker)](https://github.com/devoteamgcloud/terraform-provider-looker/releases/latest) 
-![Most used programming language](https://img.shields.io/github/languages/top/devoteamgcloud/terraform-provider-looker)
+[![Latest release](https://img.shields.io/github/v/release/devoteamgcloud/terraform-provider-looker)](https://github.com/devoteamgcloud/terraform-provider-looker/releases/latest)
 
 # Terraform provider for Looker
 

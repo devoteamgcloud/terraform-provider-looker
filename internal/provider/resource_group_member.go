@@ -261,10 +261,10 @@ func resourceGroupMemberDelete(ctx context.Context, d *schema.ResourceData, m in
 		return diag.FromErr(err)
 	}
 
-	userSet, ok := d.GetOk("user")
+	_, ok := d.GetOk("user")
 	if ok {
 		// override state with actual config
-		userSet, _ = d.GetChange("user")
+		userSet, _ := d.GetChange("user")
 		for _, raw := range userSet.(*schema.Set).List() {
 			obj := raw.(map[string]interface{})
 			val := obj["id"].(string)
@@ -277,10 +277,10 @@ func resourceGroupMemberDelete(ctx context.Context, d *schema.ResourceData, m in
 		}
 	}
 
-	groupSet, ok := d.GetOk("group")
+	_, ok = d.GetOk("group")
 	if ok {
 		// override state with actual config
-		groupSet, _ = d.GetChange("group")
+		groupSet, _ := d.GetChange("group")
 		for _, raw := range groupSet.(*schema.Set).List() {
 			obj := raw.(map[string]interface{})
 			val := obj["id"].(string)

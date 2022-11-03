@@ -73,8 +73,7 @@ func resourceProjectGitDeployKeyRead(ctx context.Context, d *schema.ResourceData
 
 	projectName := d.Get("project_id").(string)
 
-	pubKey := new(string)
-	pubKey, _, err = c.Projects.GitDeployKeyGet(ctx, projectName)
+	pubKey, _, err := c.Projects.GitDeployKeyGet(ctx, projectName)
 	if err != nil {
 		pubKey, _, err = dc.Projects.GitDeployKeyGet(ctx, projectName)
 		if err != nil {

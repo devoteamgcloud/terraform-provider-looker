@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-All the versions above 0.1.x are currently supported by features updates and security patches.
+All the versions above 0.1.x are currently supported by feature updates and security patches.
 
 | Version | Supported          |
 | ------- | ------------------ |
@@ -11,14 +11,20 @@ All the versions above 0.1.x are currently supported by features updates and sec
 
 ## Reporting a Vulnerability
 
-#### **Did you find a bug?**
+If you believe you have found a security vulnerability, please report it to us through coordinated disclosure.
 
-* **Ensure the bug was not already reported** by searching on GitHub under [Issues](https://github.com/devoteamgcloud/terraform-provider-looker/issues).
+**Please do not report security vulnerabilities through public GitHub issues, discussions, or pull requests.**
 
-* If you're unable to find an open issue addressing the problem, [open a new one](https://github.com/devoteamgcloud/terraform-provider-looker/issues/new/). Be sure to include a **title and clear description**, as much relevant information as possible, and a **code sample** or an **executable test case** demonstrating the expected behavior that is not occurring.
+Instead, please send an email to nabil.lahssini@devoteam.com
 
-#### **Did you write a patch that fixes a bug?**
+Please include as much of the information listed below as you can to help us better understand and resolve the issue:
 
-* Open a new GitHub pull request with the patch.
+The type of issue (e.g., buffer overflow, SQL injection, or cross-site scripting)
+Full paths of source file(s) related to the manifestation of the issue
+The location of the affected source code (tag/branch/commit)
+Any special configuration required to reproduce the issue
+Step-by-step instructions to reproduce the issue
+Proof-of-concept or exploit code (if possible)
+Impact of the issue, including how an attacker might exploit the issue
+This information will help us triage your report more quickly.
 
-* Ensure the PR description clearly describes the problem and solution. Include the relevant issue number if applicable.

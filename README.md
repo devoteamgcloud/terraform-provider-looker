@@ -36,6 +36,8 @@ provider "looker" {
 
 To learn more about how to contribute to the development of this provider please refer to the [community guidelines](https://github.com/devoteamgcloud/terraform-provider-looker/blob/main/CONTRIBUTING.md).
 
+**Did you find a vulnerability?** Please refer to the [Security Policy](https://github.com/devoteamgcloud/terraform-provider-looker/security/policy) for more information.
+
 ### Makefile
 The make command provides an easy way to access commands for local development of the provider.
 - To build the provider locally, you can execute the make command at the root of the project.

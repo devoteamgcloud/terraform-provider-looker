@@ -35,8 +35,8 @@ resource "looker_group" "group_a" {
 
 ### Optional
 
+- `delete_on_destroy` (Boolean) Set to false if you want the user to not be deleted on destroy plan.
 - `last_updated` (String)
-- `soft_delete` (Boolean) Only delete terraform reference to resource, keep actual resource on remote.
 
 ### Read-Only
 

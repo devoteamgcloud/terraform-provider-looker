@@ -20,13 +20,13 @@ func dataSourceGroup() *schema.Resource {
 		ReadContext: dataSourceGroupRead,
 		Schema: map[string]*schema.Schema{
 			"id": {
-				Description:  "Search group based on id",
+				Description:  "Search group based on id.",
 				Type:         schema.TypeString,
 				Optional:     true,
 				ExactlyOneOf: queryKey,
 			},
 			"name": {
-				Description:  "Search group based on name",
+				Description:  "Search group based on name.",
 				Type:         schema.TypeString,
 				Optional:     true,
 				ExactlyOneOf: queryKey,

@@ -20,19 +20,19 @@ func dataSourceFolder() *schema.Resource {
 		ReadContext: dataSourceFolderRead,
 		Schema: map[string]*schema.Schema{
 			"id": {
-				Description:  "Search folder based on id",
+				Description:  "Search folder based on id.",
 				Type:         schema.TypeString,
 				Optional:     true,
 				ExactlyOneOf: folderKey,
 			},
 			"name": {
-				Description:  "Search folder based on name",
+				Description:  "Search folder based on name.",
 				Type:         schema.TypeString,
 				Optional:     true,
 				ExactlyOneOf: folderKey,
 			},
 			"parent_id": {
-				Description: "Id of the parent folder",
+				Description: "Id of the parent folder.",
 				Type:        schema.TypeString,
 				Computed:    true,
 			},

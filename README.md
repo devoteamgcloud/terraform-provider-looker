@@ -36,17 +36,25 @@ provider "looker" {
 
 To learn more about how to contribute to the development of this provider please refer to the [community guidelines](https://github.com/devoteamgcloud/terraform-provider-looker/blob/main/CONTRIBUTING.md).
 
-### Build the provider locally
+### Makefile
+The make command provides an easy way to access commands for local development of the provider.
+- To build the provider locally, you can execute the make command at the root of the project.
+  ```
+  make build
+  ```
+  *Alternatively: 'go build -o terraform-provider-looker'*
 
-To build the provider locally, you need to execute following command at the root of the project.
-```
-make build
-```
-The provider will be under the /build/$VERSION folder. <br/>
-Alternatively, you can manually execute the go build command as follows.
-```
-go build -o build/terraform-provider-looker
-```
+- To format all the go files in the project.
+  ```
+  make format
+  ```
+  *Alternatively: 'gofmt -l -s -w .'*
+
+- To generate documentation using the tfplugindocs plugin.
+  ```
+  make docs
+  ```
+  *Alternatively: 'go run github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs'*
 ## Notes
 Looker doesn't support concurrent operations on their database. That's why we are required to limit parallelism to <b>1</b> during the applying of heavy operations with multiple user creations.
 Here is how to do it:

@@ -9,3 +9,7 @@ build: ## build binary
 .PHONY: docs
 docs: ## generate documentation
 	@go run github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs
+
+.PHONY: format
+format: ## format all the go files
+	@gofmt -l -s -w .

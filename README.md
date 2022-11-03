@@ -1,4 +1,4 @@
-![Visitors](https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fgithub.com%2Fdevoteamgcloud%2Fterraform-provider-looker&label=Visitors&countColor=%23263759&style=flat)
+![Visitors](https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fgithub.com%2Fdevoteamgcloud%2Fterraform-provider-looker&label=Visitors&countColor=%23d9e3f0&style=flat)
 [![Open issues](https://img.shields.io/github/issues-raw/devoteamgcloud/terraform-provider-looker)](https://github.com/devoteamgcloud/terraform-provider-looker/issues) 
 [![Latest release](https://img.shields.io/github/v/release/devoteamgcloud/terraform-provider-looker)](https://github.com/devoteamgcloud/terraform-provider-looker/releases/latest)
 

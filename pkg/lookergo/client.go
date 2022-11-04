@@ -69,7 +69,6 @@ type Client struct {
 	Groups      GroupsResource
 	Users       UsersResource
 	Roles       RolesResource
-	Themes      ThemesResource
 	Folders     FoldersResource
 	Workspaces  WorkspacesResource
 	Projects    ProjectsResource
@@ -141,7 +140,6 @@ func NewClient(httpClient *http.Client) *Client {
 	c.Groups = &GroupsResourceOp{client: c}
 	c.Users = &UsersResourceOp{client: c}
 	c.Roles = &RolesResourceOp{client: c}
-	c.Themes = &ThemesResourceOp{client: c}
 	c.Folders = &FoldersResourceOp{client: c}
 	c.Workspaces = &WorkspacesResourceOp{client: c}
 	c.Projects = &ProjectsResourceOp{client: c}

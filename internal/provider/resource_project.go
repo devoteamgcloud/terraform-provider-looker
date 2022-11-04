@@ -200,7 +200,7 @@ func resourceProjectDelete(ctx context.Context, d *schema.ResourceData, m interf
 	time.Sleep(5 * time.Second)
 
 	renamedProject, _, err := dc.Projects.Get(ctx, deletedProject.Name)
-	tflog.Debug(ctx, fmt.Sprintf("Found renamed project %v. Err is %v", renamedProject.Name, err))
+	tflog.Debug(ctx, fmt.Sprintf("Err is %v", err))
 	if renamedProject != nil && err == nil {
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Warning,
@@ -264,7 +264,6 @@ func dodgyProjectDelete(u *url.URL, email string, pass string, projectName strin
 	var csrfToken string
 	var csrfToken2 string
 	var csrfToken3 string
-	var devmode string
 
 	c.OnHTML("head", func(e *colly.HTMLElement) {
 		csrfToken = e.ChildAttr("meta[name=csrf-token]", "content")
@@ -285,9 +284,6 @@ func dodgyProjectDelete(u *url.URL, email string, pass string, projectName strin
 	c.OnHTML("head", func(e *colly.HTMLElement) {
 		csrfToken2 = e.ChildAttr("meta[name=csrf-token]", "content")
 	})
-	c.OnHTML("body", func(e *colly.HTMLElement) {
-		devmode = e.ChildAttr("a[lk-track-name=dev_mode]", "lk-track-action")
-	})
 	// c.OnResponse(func(r *colly.Response) {
 	// 	log.Println("response received", r.StatusCode)
 	// })
@@ -298,17 +294,8 @@ func dodgyProjectDelete(u *url.URL, email string, pass string, projectName strin
 	}
 
 	// Set dev mode
-	if devmode != "Exit Development Mode" {
-		// c.OnResponse(func(r *colly.Response) {
-		// 	log.Println("response received", r.StatusCode)
-		// })
-	}
-	err = c.Post((&url.URL{Scheme: u.Scheme, Host: u.Host, Path: "account/developer-mode/enter"}).String(),
+	c.Post((&url.URL{Scheme: u.Scheme, Host: u.Host, Path: "account/developer-mode/enter"}).String(),
 		map[string]string{"csrf-token": csrfToken2, "_method": "put"})
-	if err != nil {
-		// so be it…
-		// return err
-	}
 
 	c.OnRequest(func(r *colly.Request) {
 		r.Headers.Set("Referer", projectsUrl)

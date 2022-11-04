@@ -30,7 +30,6 @@ func resourceUser() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"last_updated": {
 				Type:     schema.TypeString,
-				Optional: true,
 				Computed: true,
 			},
 			"id": {
@@ -64,14 +63,16 @@ func resourceUser() *schema.Resource {
 				},
 			},
 			"already_exists_ok": {
-				Type:     schema.TypeBool,
-				Default:  false,
-				Optional: true,
+				Type:        schema.TypeBool,
+				Default:     false,
+				Optional:    true,
+				Description: "Set to true if the user already exists and you want to use it. If user doesn't exist, it will be created.",
 			},
 			"delete_on_destroy": {
-				Type:     schema.TypeBool,
-				Default:  true,
-				Optional: true,
+				Type:        schema.TypeBool,
+				Default:     true,
+				Optional:    true,
+				Description: "Set to false if you want the user to not be deleted on destroy plan.",
 			},
 		},
 		Importer: &schema.ResourceImporter{

@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
-	"time"
 
 	md "github.com/JohannesKaufmann/html-to-markdown"
 	"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
@@ -16,12 +15,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-)
-
-const (
-	defaultTimeout     = 5 * time.Minute
-	minimumRefreshWait = 3 * time.Second
-	checkDelay         = 10 * time.Second
 )
 
 func init() {
@@ -226,14 +219,14 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData, p *schema.Pr
 }
 
 func diagErrAppend(diags diag.Diagnostics, err error) diag.Diagnostics {
-	switch err.(type) {
+	switch e := err.(type) {
 	case *lookergo.ErrorResponse:
-		if len(err.(*lookergo.ErrorResponse).Errors) >= 1 {
+		if len(e.Errors) >= 1 {
 			diags = append(diags, diag.Diagnostic{
 				Severity: diag.Error,
-				Summary:  err.(*lookergo.ErrorResponse).Message,
+				Summary:  e.Message,
 			})
-			for _, errRespErr := range err.(*lookergo.ErrorResponse).Errors {
+			for _, errRespErr := range e.Errors {
 				diags = append(diags, diag.Diagnostic{
 					Severity: diag.Error,
 					Summary:  fmt.Sprintf("field: %v, code: %v", errRespErr.Field, errRespErr.Code),

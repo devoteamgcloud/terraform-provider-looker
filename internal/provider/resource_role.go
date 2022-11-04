@@ -53,9 +53,9 @@ func resourceRoleRead(ctx context.Context, d *schema.ResourceData, m interface{}
 	logTrace(ctx, "query role", "role_id", d.Id())
 
 	role, _, err := c.Roles.Get(ctx, idAsInt(d.Id()))
-	switch err.(type) {
+	switch e := err.(type) {
 	case *lookergo.ErrorResponse:
-		if errResp := err.(*lookergo.ErrorResponse).Response; errResp.StatusCode == http.StatusNotFound {
+		if errResp := e.Response; errResp.StatusCode == http.StatusNotFound {
 			logTrace(ctx, "role not found", "role_id", d.Id())
 			d.SetId("")
 			return // Resource was not found.

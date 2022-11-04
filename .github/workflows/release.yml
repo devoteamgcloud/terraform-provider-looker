@@ -33,6 +33,9 @@ jobs:
           go-version-file: 'go.mod'
           cache: true
       -
+        name: Generate documentation
+        run: make docs
+      -
         name: Import GPG key
         uses: crazy-max/ghaction-import-gpg@v5
         id: import_gpg

@@ -35,11 +35,11 @@ func resourceGroup() *schema.Resource {
 				Required:     true,
 				ValidateFunc: validation.StringLenBetween(1, 255),
 			},
-			"soft_delete": {
-				Description: "Only delete terraform reference to resource, keep actual resource on remote.",
+			"delete_on_destroy": {
+				Description: "Set to false if you want the user to not be deleted on destroy plan.",
 				Type:        schema.TypeBool,
 				Optional:    true,
-				Default:     false,
+				Default:     true,
 			},
 			"roles": {
 				Type:     schema.TypeSet,
@@ -153,7 +153,7 @@ func resourceGroupDelete(ctx context.Context, d *schema.ResourceData, m interfac
 	c := m.(*Config).Api // .(*lookergo.Client)
 	groupID := idAsInt(d.Id())
 
-	if !d.Get("soft_delete").(bool) {
+	if !d.Get("delete_on_destroy").(bool) {
 		if _, err := c.Groups.Delete(ctx, groupID); err != nil {
 			return diag.FromErr(err)
 		}

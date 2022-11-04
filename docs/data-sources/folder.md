@@ -25,9 +25,9 @@ resource "looker_folder" "folder" {
 
 ### Optional
 
-- `id` (String) Search folder based on id
-- `name` (String) Search folder based on name
+- `id` (String) Search folder based on id.
+- `name` (String) Search folder based on name.
 
 ### Read-Only
 
-- `parent_id` (String) Id of the parent folder
+- `parent_id` (String) Id of the parent folder.

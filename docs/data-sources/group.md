@@ -54,8 +54,8 @@ data "looker_group" "group_two" {
 
 ### Optional
 
-- `id` (String) Search group based on id
-- `name` (String) Search group based on name
+- `id` (String) Search group based on id.
+- `name` (String) Search group based on name.
 
 ### Read-Only
 

@@ -10,7 +10,7 @@ description: |-
 ```terraform
 resource "looker_group" "group_a" {
   name        = "Dummy group for dev"
-  soft_delete = false
+  delete_on_destroy = false
 }
 ```
 
@@ -18,11 +18,11 @@ resource "looker_group" "group_a" {
 ```terraform
 # looker_group.group_a:
 resource "looker_group" "group_a" {
-  id            = "327"
-  name          = "Dummy group for dev"
-  parent_groups = []
-  roles         = []
-  soft_delete   = false
+  id                = "327"
+  name              = "Dummy group for dev"
+  parent_groups     = []
+  roles             = []
+  delete_on_destroy = false
 }
 ```
 
@@ -35,8 +35,8 @@ resource "looker_group" "group_a" {
 
 ### Optional
 
+- `delete_on_destroy` (Boolean) Set to false if you want the user to not be deleted on destroy plan.
 - `last_updated` (String)
-- `soft_delete` (Boolean) Only delete terraform reference to resource, keep actual resource on remote.
 
 ### Read-Only
 

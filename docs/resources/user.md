@@ -31,14 +31,14 @@ resource "looker_user" "user_a" {
 
 ### Optional
 
-- `already_exists_ok` (Boolean)
-- `delete_on_destroy` (Boolean)
+- `already_exists_ok` (Boolean) Set to true if the user already exists and you want to use it. If user doesn't exist, it will be created.
+- `delete_on_destroy` (Boolean) Set to false if you want the user to not be deleted on destroy plan.
 - `email` (String)
 - `first_name` (String)
 - `last_name` (String)
-- `last_updated` (String)
 - `roles` (Set of String)
 
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `last_updated` (String)

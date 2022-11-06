@@ -66,16 +66,17 @@ type Client struct {
 	mu sync.Mutex
 
 	// Resources used for communicating with the API
-	Groups      GroupsResource
-	Users       UsersResource
-	Roles       RolesResource
-	Folders     FoldersResource
-	Workspaces  WorkspacesResource
-	Projects    ProjectsResource
-	Sessions    SessionsResource
-	ModelSets   ModelSetsResource
-	Connections ConnectionsResource
-	LookMLModel LookMlModelsResource
+	Groups          GroupsResource
+	Users           UsersResource
+	Roles           RolesResource
+	Folders         FoldersResource
+	Workspaces      WorkspacesResource
+	Projects        ProjectsResource
+	Sessions        SessionsResource
+	ModelSets       ModelSetsResource
+	Connections     ConnectionsResource
+	LookMLModel     LookMlModelsResource
+	ColorCollection ColorCollectionResource
 
 	// TODO: Expand
 

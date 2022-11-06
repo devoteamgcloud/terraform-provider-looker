@@ -1,5 +1,7 @@
 package lookergo
 
+import "context"
+
 // https://developers.looker.com/api/explorer/4.0/types/ColorCollection/ColorCollection
 type ColorCollection struct {
 	Id                  *string              `json:"id,omitempty"`                  // Unique Id
@@ -44,3 +46,11 @@ type ColorCollectionOp struct {
 }
 
 const ColorCollectionBasePath = "4.0/color_collection"
+
+type ColorCollectionResource interface {
+	List(context.Context, *ListOptions) ([]ColorCollection, *Response, error)
+	Get(context.Context, string) (*ColorCollection, *Response, error)
+	Create(context.Context, *ColorCollection) (*ColorCollection, *Response, error)
+	Update(context.Context, string, *ColorCollection) (*ColorCollection, *Response, error)
+	Delete(context.Context, string) (*Response, error)
+}

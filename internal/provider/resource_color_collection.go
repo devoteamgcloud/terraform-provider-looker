@@ -299,9 +299,43 @@ func resourceColorCollectionRead(ctx context.Context, d *schema.ResourceData, m 
 }
 
 func resourceColorCollectionUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
-	return nil
+	c := m.(*Config).Api // .(*lookergo.Client)
+	cocoID := d.Id()
+
+	coco, _, err := c.ColorCollection.Get(ctx, cocoID)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	if d.HasChanges() {
+		if err = d.Set("id", *coco.Id); err != nil {
+			return diag.FromErr(err)
+		}
+		if err = d.Set("label", coco.Label); err != nil {
+			return diag.FromErr(err)
+		}
+		if err = d.Set("categoricalPalettes", *coco.CategoricalPalettes); err != nil {
+			return diag.FromErr(err)
+		}
+		if err = d.Set("sequentialPalettes", *coco.SequentialPalettes); err != nil {
+			return diag.FromErr(err)
+		}
+		if err = d.Set("divergingPalettes", *coco.DivergingPalettes); err != nil {
+			return diag.FromErr(err)
+		}
+	}
+	return resourceColorCollectionRead(ctx, d, m)
 }
 
 func resourceColorCollectionDelete(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
-	return nil
+	c := m.(*Config).Api // .(*lookergo.Client)
+	CoCoId := d.Id()
+
+	if _, err := c.ColorCollection.Delete(ctx, CoCoId); err != nil {
+		return diag.FromErr(err)
+	}
+	// Finally mark as deleted
+	d.SetId("")
+
+	return diags
 }

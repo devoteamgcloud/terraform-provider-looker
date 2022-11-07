@@ -63,13 +63,13 @@ func resourceColorCollection() *schema.Resource {
 							Optional: true,
 							Elem: &schema.Schema{
 								Type: schema.TypeString,
-								ValidateFunc: validation.StringMatch(
+								ValidateDiagFunc: validation.ToDiagFunc(validation.StringMatch(
 									func() *regexp.Regexp {
 										ret, _ := regexp.Compile("#(?:[0-9a-f]{2}){2,4}")
 										return ret
 									}(),
 									"color must be a valid color hex code",
-								),
+								)),
 							},
 						},
 					},

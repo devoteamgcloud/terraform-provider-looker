@@ -41,7 +41,7 @@ type ColorStop struct {
 	Offset *int64  `json:"offset,omitempty"` // Offset in continuous palette (0 to 100)
 }
 
-type ColorCollectionOp struct {
+type ColorCollectionResourceOp struct {
 	client *Client
 }
 

@@ -148,6 +148,7 @@ func NewClient(httpClient *http.Client) *Client {
 	c.ModelSets = &ModelSetsResourceOp{client: c}
 	c.Connections = &ConnectionsResourceOp{client: c}
 	c.LookMLModel = &LookMlModelsResourceOp{client: c}
+	c.ColorCollection = &ColorCollectionResourceOp{client: c}
 
 	c.headers = make(map[string]string)
 	c.Workspace = "production"

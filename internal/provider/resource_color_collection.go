@@ -5,8 +5,11 @@ import (
 	//"fmt"
 	//"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
 	//"github.com/hashicorp/terraform-plugin-log/tflog"
+	"fmt"
 	"regexp"
 
+	"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
@@ -184,8 +187,21 @@ func resourceColorCollection() *schema.Resource {
 // Receives terraform resource schema, builds a golang struct with json fields from it, sends a Post request with the
 func resourceColorCollectionCreate(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
 	// connect to sdk
+	c := m.(*Config).Api // .(*lookergo.Client)
+	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: start", currFuncName()))
 
 	// prepare request body
+	coco := lookergo.WriteColorCollection{}
+
+	coco.Label = d.Get("label")
+
+	catPal := &lookergo.DiscretePalette{}
+	seqPal := &lookergo.ContinuousPalette{}
+	divPal := &lookergo.ContinuousPalette{}
+
+	coco.CategoricalPalettes = catPal
+	coco.SequentialPalettes = seqPal
+	coco.DivergingPalettes = divPal
 
 	// send POST request
 

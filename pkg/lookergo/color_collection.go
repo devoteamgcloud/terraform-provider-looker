@@ -50,7 +50,27 @@ const ColorCollectionBasePath = "4.0/color_collection"
 type ColorCollectionResource interface {
 	List(context.Context, *ListOptions) ([]ColorCollection, *Response, error)
 	Get(context.Context, string) (*ColorCollection, *Response, error)
-	Create(context.Context, *ColorCollection) (*ColorCollection, *Response, error)
+	Create(context.Context, *WriteColorCollection) (*ColorCollection, *Response, error)
 	Update(context.Context, string, *ColorCollection) (*ColorCollection, *Response, error)
 	Delete(context.Context, string) (*Response, error)
+}
+
+func (s *ColorCollectionResourceOp) List(ctx context.Context, opt *ListOptions) ([]ColorCollection, *Response, error) {
+	return doList(ctx, s.client, ColorCollectionBasePath, opt, new([]ColorCollection))
+}
+
+func (s *ColorCollectionResourceOp) Get(ctx context.Context, ColorCollectionId string) (*ColorCollection, *Response, error) {
+	return doGetById(ctx, s.client, ColorCollectionBasePath, ColorCollectionId, new(ColorCollection))
+}
+
+func (s *ColorCollectionResourceOp) Create(ctx context.Context, requestColorCollection *WriteColorCollection) (*ColorCollection, *Response, error) {
+	return doCreate(ctx, s.client, ColorCollectionBasePath, requestColorCollection, new(ColorCollection))
+}
+
+func (s *ColorCollectionResourceOp) Update(ctx context.Context, ColorCollectionId string, requestColorCollection *ColorCollection) (*ColorCollection, *Response, error) {
+	return doUpdate(ctx, s.client, ColorCollectionBasePath, ColorCollectionId, requestColorCollection, new(ColorCollection))
+}
+
+func (s *ColorCollectionResourceOp) Delete(ctx context.Context, ColorCollectionId string) (*Response, error) {
+	return doDelete(ctx, s.client, ColorCollectionBasePath, ColorCollectionId)
 }

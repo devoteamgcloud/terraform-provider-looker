@@ -191,27 +191,111 @@ func resourceColorCollectionCreate(ctx context.Context, d *schema.ResourceData, 
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: start", currFuncName()))
 
 	// prepare request body
-	coco := lookergo.WriteColorCollection{}
+	coco := &lookergo.WriteColorCollection{}
 
-	coco.Label = d.Get("label")
+	coco.Label = castToPtr(d.Get("label").(string)) // schema.TypeString -> string
 
-	catPal := &lookergo.DiscretePalette{}
-	seqPal := &lookergo.ContinuousPalette{}
-	divPal := &lookergo.ContinuousPalette{}
+	schemaToDiscretePalette := func(str string) *[]lookergo.DiscretePalette {
+		if catSchema, ok := d.GetOk(str); ok {
+			catPal := []lookergo.DiscretePalette{}
 
-	coco.CategoricalPalettes = catPal
-	coco.SequentialPalettes = seqPal
-	coco.DivergingPalettes = divPal
+			// schema.TypeList -> [interface{}]
+			for _, elem := range catSchema.([]interface{}) {
+				e := elem.(map[string]interface{}) // map[string]*schema.Schema -> (map[string]interface{}
+				var cat lookergo.DiscretePalette   // TODO is this better out of the loop ?
+				cat.Label = castToPtr(e["label"].(string))
+				// https://stackoverflow.com/questions/59714262/type-assertion-for-typelist-in-terraform-provider
+				rawColors := e["colors"].([]interface{})
+				items := make([]string, len(rawColors))
+				for i, raw := range rawColors {
+					items[i] = raw.(string)
+				}
+				cat.Colors = &items
+
+				catPal = append(catPal, cat)
+			}
+
+			return &catPal
+		} else {
+			return nil
+		}
+	}
+
+	coco.CategoricalPalettes = schemaToDiscretePalette("categoricalPalettes")
+
+	schemaToContinousPalette := func(str string) *[]lookergo.ContinuousPalette {
+		if catSchema, ok := d.GetOk(str); ok {
+			catPal := []lookergo.ContinuousPalette{}
+
+			// schema.TypeList -> []interface{}
+			for _, elem := range catSchema.([]interface{}) {
+				e := elem.(map[string]interface{}) // map[string]*schema.Schema -> (map[string]interface{}
+				var cat lookergo.ContinuousPalette // TODO is this better out of the loop ?
+				cat.Label = castToPtr(e["label"].(string))
+				// https://stackoverflow.com/questions/59714262/type-assertion-for-typelist-in-terraform-provider
+				rawStops := e["stops"].([]interface{})
+				items := make([]lookergo.ColorStop, len(rawStops))
+				for i, raw := range rawStops {
+					rawStop := raw.(map[string]interface{})
+					items[i] = lookergo.ColorStop{
+						Color:  castToPtr(rawStop["color"].(string)),
+						Offset: castToPtr(rawStop["offset"].(int64)),
+					}
+				}
+				cat.Stops = &items
+
+				catPal = append(catPal, cat)
+			}
+
+			return &catPal
+		} else {
+			return nil
+		}
+	}
+
+	coco.SequentialPalettes = schemaToContinousPalette("sequentialPalettes")
+	coco.DivergingPalettes = schemaToContinousPalette("divergingPalettes")
 
 	// send POST request
+	newCoCo, _, err := c.ColorCollection.Create(ctx, coco)
+	if err != nil {
+		return diag.FromErr(err)
+	}
 
+	// set computed fields in schema
+	// TODO set IDs of palettes
+	d.SetId(*newCoCo.Id)
 	// check if resource has been created correctly
 	// populate fields in ColorCollection with the values from resourceColorCollection
-	return nil
+	return resourceColorCollectionRead(ctx, d, m)
 }
 
 func resourceColorCollectionRead(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
-	return nil
+	c := m.(*Config).Api // .(*lookergo.Client)
+	cocoID := d.Id()
+
+	coco, _, err := c.ColorCollection.Get(ctx, cocoID)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	if err = d.Set("id", *coco.Id); err != nil {
+		return diag.FromErr(err)
+	}
+	if err = d.Set("label", coco.Label); err != nil {
+		return diag.FromErr(err)
+	}
+	if err = d.Set("categoricalPalettes", *coco.CategoricalPalettes); err != nil {
+		return diag.FromErr(err)
+	}
+	if err = d.Set("sequentialPalettes", *coco.SequentialPalettes); err != nil {
+		return diag.FromErr(err)
+	}
+	if err = d.Set("divergingPalettes", *coco.DivergingPalettes); err != nil {
+		return diag.FromErr(err)
+	}
+
+	return diags
 }
 
 func resourceColorCollectionUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {

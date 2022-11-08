@@ -186,11 +186,11 @@ func resourceColorCollection() *schema.Resource {
 
 // Receives terraform resource schema, builds a golang struct with json fields from it, sends a Post request with the
 func resourceColorCollectionCreate(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
-	// connect to sdk
+	// Checks whether the API Client is configured. If not, the resource responds with an error.
 	c := m.(*Config).Api // .(*lookergo.Client)
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: start", currFuncName()))
 
-	// prepare request body
+	// Retrieves values from the plan. The function will attempt to retrieve values from the plan and convert it to an WriteColorCollection
 	coco := &lookergo.WriteColorCollection{}
 
 	coco.Label = castToPtr(d.Get("label").(string)) // schema.TypeString -> string
@@ -199,9 +199,9 @@ func resourceColorCollectionCreate(ctx context.Context, d *schema.ResourceData, 
 		if catSchema, ok := d.GetOk(str); ok {
 			catPal := []lookergo.DiscretePalette{}
 
-			// schema.TypeList -> [interface{}]
+			// schema.TypeList -> []interface{}
 			for _, elem := range catSchema.([]interface{}) {
-				e := elem.(map[string]interface{}) // map[string]*schema.Schema -> (map[string]interface{}
+				e := elem.(map[string]interface{}) // map[string]*schema.Schema -> map[string]interface{}
 				var cat lookergo.DiscretePalette   // TODO is this better out of the loop ?
 				cat.Label = castToPtr(e["label"].(string))
 				// https://stackoverflow.com/questions/59714262/type-assertion-for-typelist-in-terraform-provider
@@ -256,15 +256,28 @@ func resourceColorCollectionCreate(ctx context.Context, d *schema.ResourceData, 
 	coco.SequentialPalettes = schemaToContinousPalette("sequentialPalettes")
 	coco.DivergingPalettes = schemaToContinousPalette("divergingPalettes")
 
-	// send POST request
+	// send POST request. Creates a new order. The function invokes the API client's create method.
 	newCoCo, _, err := c.ColorCollection.Create(ctx, coco)
 	if err != nil {
 		return diag.FromErr(err)
 	}
 
-	// set computed fields in schema
+	// Map response body to schema and populate Computed attribute values
 	// TODO set IDs of palettes
 	d.SetId(*newCoCo.Id)
+
+	/*
+		// regarding nested computed fields:
+		// https://github.com/hashicorp/terraform/issues/10532
+		if catId, ok := d.GetOk("categoricalPalettes"); ok {
+			catPalRes := catId.(schema.ResourceData)
+			catPalRes.Set()
+			for _, c := range catId.([]interface{}) {
+				c.set
+			}
+		}
+	*/
+
 	// check if resource has been created correctly
 	// populate fields in ColorCollection with the values from resourceColorCollection
 	return resourceColorCollectionRead(ctx, d, m)

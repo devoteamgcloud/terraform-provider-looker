@@ -1,4 +1,8 @@
-export VERSION=$(shell cat VERSION)
+ifeq ($(OS), Windows_NT)
+	export VERSION=$(shell type VERSION)
+else
+	export VERSION=$(shell cat VERSION)
+endif
 export BASE_BINARY_NAME=terraform-provider-looker
 export ORG=devoteamgcloud
 

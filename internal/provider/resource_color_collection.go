@@ -132,6 +132,7 @@ func resourceColorCollection() *schema.Resource {
 			"divergingPalettes": {
 				Description: "Array of categorical palette definitions",
 				Type:        schema.TypeList,
+				Optional:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"id": {

@@ -1,5 +1,6 @@
 package provider
 
+/*
 import (
 	"testing"
 
@@ -13,3 +14,4 @@ func TestColorCollection(t *testing.T) {
 		PreCheck: func() {},
 	})
 }
+*/

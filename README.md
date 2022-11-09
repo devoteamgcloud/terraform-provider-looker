@@ -70,8 +70,6 @@ The make command provides an easy way to access commands for local development o
 
 ### Use locally built provider
 
-#### Linux
-
 1. Create directory```~/.terraform.d/plugins/hashicorp.local/devoteamgcloud/looker/{version}/{architecture}``` eg ``mkdir -p ~/.terraform.d/plugins/hashicorp.local/devoteamgcloud/looker/0.1.2/linux_amd64``
 2. Move the built file `terraform-provider-looker` from `build/devoteamgcloud/{version}/terraform-provider-looker` to the directory created in step 1.
 3. You can use the provider now by setting the source to "hashicorp.local/devoteamgcloud/looker"

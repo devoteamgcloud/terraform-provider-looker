@@ -36,7 +36,7 @@ func resourceColorCollection() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
-			"categoricalPalettes": {
+			"categoricalpalettes": {
 				Description: "Array of categorical palette definitions",
 				Type:        schema.TypeList,
 				Optional:    true,
@@ -75,7 +75,7 @@ func resourceColorCollection() *schema.Resource {
 					},
 				},
 			},
-			"sequentialPalettes": {
+			"sequentialpalettes": {
 				Description: "Array of categorical palette definitions",
 				Type:        schema.TypeList,
 				Optional:    true,
@@ -129,7 +129,7 @@ func resourceColorCollection() *schema.Resource {
 					},
 				},
 			},
-			"divergingPalettes": {
+			"divergingpalettes": {
 				Description: "Array of categorical palette definitions",
 				Type:        schema.TypeList,
 				Optional:    true,
@@ -222,7 +222,7 @@ func resourceColorCollectionCreate(ctx context.Context, d *schema.ResourceData, 
 		}
 	}
 
-	coco.CategoricalPalettes = schemaToDiscretePalette("categoricalPalettes")
+	coco.CategoricalPalettes = schemaToDiscretePalette("categoricalpalettes")
 
 	schemaToContinousPalette := func(str string) *[]lookergo.ContinuousPalette {
 		if catSchema, ok := d.GetOk(str); ok {
@@ -254,8 +254,8 @@ func resourceColorCollectionCreate(ctx context.Context, d *schema.ResourceData, 
 		}
 	}
 
-	coco.SequentialPalettes = schemaToContinousPalette("sequentialPalettes")
-	coco.DivergingPalettes = schemaToContinousPalette("divergingPalettes")
+	coco.SequentialPalettes = schemaToContinousPalette("sequentialpalettes")
+	coco.DivergingPalettes = schemaToContinousPalette("divergingpalettes")
 
 	// send POST request. Creates a new order. The function invokes the API client's create method.
 	newCoCo, _, err := c.ColorCollection.Create(ctx, coco)
@@ -299,13 +299,13 @@ func resourceColorCollectionRead(ctx context.Context, d *schema.ResourceData, m 
 	if err = d.Set("label", coco.Label); err != nil {
 		return diag.FromErr(err)
 	}
-	if err = d.Set("categoricalPalettes", *coco.CategoricalPalettes); err != nil {
+	if err = d.Set("categoricalpalettes", *coco.CategoricalPalettes); err != nil {
 		return diag.FromErr(err)
 	}
-	if err = d.Set("sequentialPalettes", *coco.SequentialPalettes); err != nil {
+	if err = d.Set("sequentialpalettes", *coco.SequentialPalettes); err != nil {
 		return diag.FromErr(err)
 	}
-	if err = d.Set("divergingPalettes", *coco.DivergingPalettes); err != nil {
+	if err = d.Set("divergingpalettes", *coco.DivergingPalettes); err != nil {
 		return diag.FromErr(err)
 	}
 
@@ -328,13 +328,13 @@ func resourceColorCollectionUpdate(ctx context.Context, d *schema.ResourceData, 
 		if err = d.Set("label", coco.Label); err != nil {
 			return diag.FromErr(err)
 		}
-		if err = d.Set("categoricalPalettes", *coco.CategoricalPalettes); err != nil {
+		if err = d.Set("categoricalpalettes", *coco.CategoricalPalettes); err != nil {
 			return diag.FromErr(err)
 		}
-		if err = d.Set("sequentialPalettes", *coco.SequentialPalettes); err != nil {
+		if err = d.Set("sequentialpalettes", *coco.SequentialPalettes); err != nil {
 			return diag.FromErr(err)
 		}
-		if err = d.Set("divergingPalettes", *coco.DivergingPalettes); err != nil {
+		if err = d.Set("divergingpalettes", *coco.DivergingPalettes); err != nil {
 			return diag.FromErr(err)
 		}
 	}

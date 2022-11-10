@@ -78,8 +78,8 @@ func resourceConnection() *schema.Resource {
 				Optional: true,
 			},
 			"dialect_name": {
-				Type:     schema.TypeString,
-				Required: true,
+				Type:        schema.TypeString,
+				Required:    true,
 				Description: dialect_names_tab,
 			},
 			"maintenance_cron": {

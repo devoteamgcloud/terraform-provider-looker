@@ -154,11 +154,10 @@ func resourceColorCollection() *schema.Resource {
 							Default:     "Diverging",
 						},
 						"stops": {
-							Type:             schema.TypeList,
-							Description:      "Array of ColorStops in the palette",
-							Required:         true,
-							MinItems:         2,
-							ValidateDiagFunc: validation.MapKeyLenBetween(),
+							Type:        schema.TypeList,
+							Description: "Array of ColorStops in the palette",
+							Required:    true,
+							MinItems:    2,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"color": {

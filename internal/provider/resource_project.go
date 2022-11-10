@@ -111,7 +111,11 @@ func resourceProjectRead(ctx context.Context, d *schema.ResourceData, m interfac
 
 	projectId := d.Id()
 	var project *lookergo.Project
-	project, _, err = dc.Projects.Get(ctx, projectId)
+	project, response, err := dc.Projects.Get(ctx, projectId)
+	if response.StatusCode == 404 {
+		d.SetId("") // Mark as deleted
+		return diags
+	}
 	if err != nil {
 		return diagErrAppend(diags, err)
 	}

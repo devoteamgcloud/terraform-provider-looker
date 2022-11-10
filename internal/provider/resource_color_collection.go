@@ -39,7 +39,7 @@ func resourceColorCollection() *schema.Resource {
 			"categoricalpalettes": {
 				Description: "Array of categorical palette definitions",
 				Type:        schema.TypeList,
-				Optional:    true,
+				Required:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"id": {
@@ -60,7 +60,8 @@ func resourceColorCollection() *schema.Resource {
 						},
 						"colors": {
 							Type:     schema.TypeList,
-							Optional: true,
+							Required: true,
+							MinItems: 1,
 							Elem: &schema.Schema{
 								Type: schema.TypeString,
 								ValidateDiagFunc: validation.ToDiagFunc(validation.StringMatch(
@@ -78,7 +79,7 @@ func resourceColorCollection() *schema.Resource {
 			"sequentialpalettes": {
 				Description: "Array of categorical palette definitions",
 				Type:        schema.TypeList,
-				Optional:    true,
+				Required:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"id": {
@@ -99,8 +100,9 @@ func resourceColorCollection() *schema.Resource {
 						},
 						"stops": {
 							Type:        schema.TypeList,
-							Optional:    true,
+							Required:    true,
 							Description: "Array of ColorStops in the palette",
+							MinItems:    2,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"color": {
@@ -132,7 +134,7 @@ func resourceColorCollection() *schema.Resource {
 			"divergingpalettes": {
 				Description: "Array of categorical palette definitions",
 				Type:        schema.TypeList,
-				Optional:    true,
+				Required:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"id": {
@@ -152,9 +154,11 @@ func resourceColorCollection() *schema.Resource {
 							Default:     "Diverging",
 						},
 						"stops": {
-							Type:        schema.TypeList,
-							Description: "Array of ColorStops in the palette",
-							Optional:    true,
+							Type:             schema.TypeList,
+							Description:      "Array of ColorStops in the palette",
+							Required:         true,
+							MinItems:         2,
+							ValidateDiagFunc: validation.MapKeyLenBetween(),
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"color": {

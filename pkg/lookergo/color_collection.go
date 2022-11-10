@@ -45,7 +45,7 @@ type ColorCollectionResourceOp struct {
 	client *Client
 }
 
-const ColorCollectionBasePath = "4.0/color_collection"
+const ColorCollectionBasePath = "4.0/color_collections"
 
 type ColorCollectionResource interface {
 	List(context.Context, *ListOptions) ([]ColorCollection, *Response, error)

@@ -6,9 +6,9 @@ import "context"
 type ColorCollection struct {
 	Id                  *string              `json:"id,omitempty"`                  // Unique Id
 	Label               *string              `json:"label,omitempty"`               // Label of color collection
-	CategoricalPalettes *[]DiscretePalette   `json:"categoricalPalettes,omitempty"` // Array of categorical palette definitions
-	SequentialPalettes  *[]ContinuousPalette `json:"sequentialPalettes,omitempty"`  // Array of discrete palette definitions
-	DivergingPalettes   *[]ContinuousPalette `json:"divergingPalettes,omitempty"`   // Array of diverging palette definitions
+	CategoricalPalettes *[]DiscretePalette   `json:"categoricalpalettes,omitempty"` // Array of categorical palette definitions
+	SequentialPalettes  *[]ContinuousPalette `json:"sequentialpalettes,omitempty"`  // Array of discrete palette definitions
+	DivergingPalettes   *[]ContinuousPalette `json:"divergingpalettes,omitempty"`   // Array of diverging palette definitions
 }
 
 // https://developers.looker.com/api/explorer/4.0/types/ColorCollection/DiscretePalette
@@ -30,9 +30,9 @@ type ContinuousPalette struct {
 // https://developers.looker.com/api/explorer/4.0/types/ColorCollection/WriteColorCollection
 type WriteColorCollection struct {
 	Label               *string              `json:"label,omitempty"`               // Label of color collection
-	CategoricalPalettes *[]DiscretePalette   `json:"categoricalPalettes,omitempty"` // Array of categorical palette definitions
-	SequentialPalettes  *[]ContinuousPalette `json:"sequentialPalettes,omitempty"`  // Array of discrete palette definitions
-	DivergingPalettes   *[]ContinuousPalette `json:"divergingPalettes,omitempty"`   // Array of diverging palette definitions
+	CategoricalPalettes *[]DiscretePalette   `json:"categoricalpalettes,omitempty"` // Array of categorical palette definitions
+	SequentialPalettes  *[]ContinuousPalette `json:"sequentialpalettes,omitempty"`  // Array of discrete palette definitions
+	DivergingPalettes   *[]ContinuousPalette `json:"divergingpalettes,omitempty"`   // Array of diverging palette definitions
 }
 
 // https://developers.looker.com/api/explorer/4.0/types/ColorCollection/ColorStop

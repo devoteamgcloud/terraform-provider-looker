@@ -1,5 +1,5 @@
 package provider
-​
+
 import (
 	"context"
 	//"fmt"
@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"regexp"
 	"strconv"
-​
+
 	"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -16,7 +16,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	//"net/http"
 )
-​
+
 func resourceColorCollection() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: resourceColorCollectionCreate,
@@ -93,7 +93,8 @@ func resourceColorCollection() *schema.Resource {
 						},
 						"stops": {
 							Type:        schema.TypeSet,
-							Optional:    true,
+							Required:    true,
+							MinItems:    2,
 							Description: "Array of ColorStops in the palette",
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
@@ -104,7 +105,7 @@ func resourceColorCollection() *schema.Resource {
 										ValidateDiagFunc: validation.ToDiagFunc(
 											validation.StringMatch(
 												func() *regexp.Regexp {
-													ret, _ := regexp.Compile("#(?:[0-9A-F]{2}){2,4}")
+													ret, _ := regexp.Compile("#(?i)(?:[0-9A-F]{2}){2,4}")
 													return ret
 												}(),
 												"color must be a valid color hex code",
@@ -112,9 +113,9 @@ func resourceColorCollection() *schema.Resource {
 										),
 									},
 									"offset": {
-										Type:             schema.TypeString,
-										Description:      "Offset in continuous palette (0 to 100)",
-										Required:         true,
+										Type:        schema.TypeString,
+										Description: "Offset in continuous palette (0 to 100)",
+										Required:    true,
 										//ValidateDiagFunc: validation.ToDiagFunc(validation.IntBetween(0, 100)),
 									},
 								},
@@ -149,6 +150,7 @@ func resourceColorCollection() *schema.Resource {
 							Type:        schema.TypeSet,
 							Description: "Array of ColorStops in the palette",
 							Required:    true,
+							MinItems:    2,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"color": {
@@ -157,16 +159,16 @@ func resourceColorCollection() *schema.Resource {
 										Required:    true,
 										ValidateFunc: validation.StringMatch(
 											func() *regexp.Regexp {
-												ret, _ := regexp.Compile("#(?:[0-9A-F]{2}){2,4}")
+												ret, _ := regexp.Compile("#(?i)(?:[0-9A-F]{2}){2,4}")
 												return ret
 											}(),
 											"color must be a valid color hex code",
 										),
 									},
 									"offset": {
-										Type:             schema.TypeString,
-										Description:      "Offset in continuous palette (0 to 100)",
-										Required:         true,
+										Type:        schema.TypeString,
+										Description: "Offset in continuous palette (0 to 100)",
+										Required:    true,
 										//ValidateDiagFunc: validation.ToDiagFunc(validation.IntBetween(0, 100)),
 									},
 								},
@@ -178,16 +180,16 @@ func resourceColorCollection() *schema.Resource {
 		},
 	}
 }
-​
+
 // Receives terraform resource schema, builds a golang struct with json fields from it, sends a Post request with the
 func resourceColorCollectionCreate(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
 	// Checks whether the API Client is configured. If not, the resource responds with an error.
 	c := m.(*Config).Api // .(*lookergo.Client)
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: start", currFuncName()))
-​
+
 	// Retrieves values from the plan. The function will attempt to retrieve values from the plan and convert it to an WriteColorCollection
 	var coco lookergo.WriteColorCollection
-​
+
 	categoricalpalettesSet, ok := d.GetOk("categoricalpalettes")
 	if ok {
 		catPal := []lookergo.DiscretePalette{}
@@ -201,7 +203,7 @@ func resourceColorCollectionCreate(ctx context.Context, d *schema.ResourceData, 
 		}
 		coco.CategoricalPalettes = &catPal
 	}
-​
+
 	sequentialpalettesSet, ok := d.GetOk("sequentialpalettes")
 	if ok {
 		seqPal := []lookergo.ContinuousPalette{}
@@ -223,7 +225,7 @@ func resourceColorCollectionCreate(ctx context.Context, d *schema.ResourceData, 
 		}
 		coco.SequentialPalettes = &seqPal
 	}
-​
+
 	divergingpalettesSet, ok := d.GetOk("divergingpalettes")
 	if ok {
 		divPal := []lookergo.ContinuousPalette{}
@@ -254,16 +256,16 @@ func resourceColorCollectionCreate(ctx context.Context, d *schema.ResourceData, 
 	d.SetId(newCoCo.Id)
 	return resourceColorCollectionRead(ctx, d, m)
 }
-​
+
 func resourceColorCollectionRead(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
 	c := m.(*Config).Api // .(*lookergo.Client)
 	cocoID := d.Id()
-​
+
 	coco, _, err := c.ColorCollection.Get(ctx, cocoID)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-​
+
 	if err = d.Set("id", coco.Id); err != nil {
 		return diag.FromErr(err)
 	}
@@ -279,19 +281,19 @@ func resourceColorCollectionRead(ctx context.Context, d *schema.ResourceData, m 
 	if err = d.Set("divergingpalettes", *coco.DivergingPalettes); err != nil {
 		return diag.FromErr(err)
 	}
-​
+
 	return diags
 }
-​
+
 func resourceColorCollectionUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
 	c := m.(*Config).Api // .(*lookergo.Client)
 	cocoID := d.Id()
-​
+
 	coco, _, err := c.ColorCollection.Get(ctx, cocoID)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-​
+
 	if d.HasChanges() {
 		if err = d.Set("id", coco.Id); err != nil {
 			return diag.FromErr(err)
@@ -311,16 +313,16 @@ func resourceColorCollectionUpdate(ctx context.Context, d *schema.ResourceData, 
 	}
 	return resourceColorCollectionRead(ctx, d, m)
 }
-​
+
 func resourceColorCollectionDelete(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
 	c := m.(*Config).Api // .(*lookergo.Client)
 	CoCoId := d.Id()
-​
+
 	if _, err := c.ColorCollection.Delete(ctx, CoCoId); err != nil {
 		return diag.FromErr(err)
 	}
 	// Finally mark as deleted
 	d.SetId("")
-​
+
 	return diags
 }

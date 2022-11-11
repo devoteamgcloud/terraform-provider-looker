@@ -190,6 +190,8 @@ func resourceColorCollectionCreate(ctx context.Context, d *schema.ResourceData, 
 	// Retrieves values from the plan. The function will attempt to retrieve values from the plan and convert it to an WriteColorCollection
 	var coco lookergo.WriteColorCollection
 
+	coco.Label = d.Get("label").(string)
+
 	categoricalpalettesSet, ok := d.GetOk("categoricalpalettes")
 	if ok {
 		catPal := []lookergo.DiscretePalette{}

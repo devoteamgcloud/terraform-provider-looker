@@ -7,7 +7,6 @@ import (
 	//"github.com/hashicorp/terraform-plugin-log/tflog"
 	"fmt"
 	"regexp"
-	"strconv"
 
 	"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
@@ -35,7 +34,7 @@ func resourceColorCollection() *schema.Resource {
 			"label": {
 				Description: "Label of color collection",
 				Type:        schema.TypeString,
-				Optional:    true,
+				Required:    true,
 			},
 			"categoricalpalettes": {
 				Description: "Array of categorical palette definitions",
@@ -57,7 +56,7 @@ func resourceColorCollection() *schema.Resource {
 							Description: "Type of palette",
 							Type:        schema.TypeString,
 							Optional:    true,
-							Default:     "categorical",
+							Default:     "Categorical",
 						},
 						"colors": {
 							Type:     schema.TypeSet,
@@ -89,7 +88,7 @@ func resourceColorCollection() *schema.Resource {
 							Type:        schema.TypeString,
 							Optional:    true,
 							Description: "type of palette",
-							Default:     "sequential",
+							Default:     "Sequential",
 						},
 						"stops": {
 							Type:        schema.TypeSet,
@@ -113,10 +112,10 @@ func resourceColorCollection() *schema.Resource {
 										),
 									},
 									"offset": {
-										Type:        schema.TypeString,
-										Description: "Offset in continuous palette (0 to 100)",
-										Required:    true,
-										//ValidateDiagFunc: validation.ToDiagFunc(validation.IntBetween(0, 100)),
+										Type:             schema.TypeInt,
+										Description:      "Offset in continuous palette (0 to 100)",
+										Required:         true,
+										ValidateDiagFunc: validation.ToDiagFunc(validation.IntBetween(0, 100)),
 									},
 								},
 							},
@@ -144,7 +143,7 @@ func resourceColorCollection() *schema.Resource {
 							Type:        schema.TypeString,
 							Description: "Type of palette",
 							Optional:    true,
-							Default:     "diverging",
+							Default:     "Diverging",
 						},
 						"stops": {
 							Type:        schema.TypeSet,
@@ -166,10 +165,10 @@ func resourceColorCollection() *schema.Resource {
 										),
 									},
 									"offset": {
-										Type:        schema.TypeString,
-										Description: "Offset in continuous palette (0 to 100)",
-										Required:    true,
-										//ValidateDiagFunc: validation.ToDiagFunc(validation.IntBetween(0, 100)),
+										Type:             schema.TypeInt,
+										Description:      "Offset in continuous palette (0 to 100)",
+										Required:         true,
+										ValidateDiagFunc: validation.ToDiagFunc(validation.IntBetween(0, 100)),
 									},
 								},
 							},
@@ -190,36 +189,36 @@ func resourceColorCollectionCreate(ctx context.Context, d *schema.ResourceData, 
 	// Retrieves values from the plan. The function will attempt to retrieve values from the plan and convert it to an WriteColorCollection
 	var coco lookergo.WriteColorCollection
 
-	coco.Label = d.Get("label").(string)
+	if cocoLabel, ok := d.GetOk("label"); ok {
+		coco.Label = castToPtr(cocoLabel.(string))
+	}
 
-	categoricalpalettesSet, ok := d.GetOk("categoricalpalettes")
-	if ok {
+	if categoricalpalettesSet, ok := d.GetOk("categoricalpalettes"); ok {
 		catPal := []lookergo.DiscretePalette{}
 		for _, raw := range categoricalpalettesSet.(*schema.Set).List() {
 			obj := raw.(map[string]interface{})
 			var pal lookergo.DiscretePalette
-			pal.Label = obj["label"].(string)
-			pal.Colors = schemaSetToStringSlice(obj["colors"].(*schema.Set))
-			pal.Type = obj["type"].(string)
+			pal.Label = castToPtr(obj["label"].(string))
+			pal.Colors = castToPtr(schemaSetToStringSlice(obj["colors"].(*schema.Set)))
+			pal.Type = castToPtr(obj["type"].(string))
 			catPal = append(catPal, pal)
 		}
 		coco.CategoricalPalettes = &catPal
 	}
 
-	sequentialpalettesSet, ok := d.GetOk("sequentialpalettes")
-	if ok {
+	if sequentialpalettesSet, ok := d.GetOk("sequentialpalettes"); ok {
 		seqPal := []lookergo.ContinuousPalette{}
 		for _, raw := range sequentialpalettesSet.(*schema.Set).List() {
 			obj := raw.(map[string]interface{})
 			var pal lookergo.ContinuousPalette
-			pal.Label = obj["label"].(string)
-			pal.Type = obj["type"].(string)
+			pal.Label = castToPtr(obj["label"].(string))
+			pal.Type = castToPtr(obj["type"].(string))
 			stopsList := []lookergo.ColorStop{}
 			for _, stop := range obj["stops"].(*schema.Set).List() {
 				objj := stop.(map[string]interface{})
 				st := lookergo.ColorStop{}
-				st.Color = objj["color"].(string)
-				st.Offset, _ = strconv.Atoi(objj["offset"].(string))
+				st.Color = castToPtr(objj["color"].(string))
+				st.Offset = castToPtr(objj["offset"].(int))
 				stopsList = append(stopsList, st)
 			}
 			pal.Stops = &stopsList
@@ -228,20 +227,19 @@ func resourceColorCollectionCreate(ctx context.Context, d *schema.ResourceData, 
 		coco.SequentialPalettes = &seqPal
 	}
 
-	divergingpalettesSet, ok := d.GetOk("divergingpalettes")
-	if ok {
+	if divergingpalettesSet, ok := d.GetOk("divergingpalettes"); ok {
 		divPal := []lookergo.ContinuousPalette{}
 		for _, raw := range divergingpalettesSet.(*schema.Set).List() {
 			obj := raw.(map[string]interface{})
 			var pal lookergo.ContinuousPalette
-			pal.Label = obj["label"].(string)
-			pal.Type = obj["type"].(string)
+			pal.Label = castToPtr(obj["label"].(string))
+			pal.Type = castToPtr(obj["type"].(string))
 			stopsList := []lookergo.ColorStop{}
 			for _, stop := range obj["stops"].(*schema.Set).List() {
 				objj := stop.(map[string]interface{})
 				st := lookergo.ColorStop{}
-				st.Color = objj["color"].(string)
-				st.Offset, _ = strconv.Atoi(objj["offset"].(string))
+				st.Color = castToPtr(objj["color"].(string))
+				st.Offset = castToPtr(objj["offset"].(int))
 				//return diag.Errorf(objj["offset"].(string))
 				stopsList = append(stopsList, st)
 			}
@@ -253,9 +251,10 @@ func resourceColorCollectionCreate(ctx context.Context, d *schema.ResourceData, 
 	// send POST request. Creates a new order. The function invokes the API client's create method.
 	newCoCo, _, err := c.ColorCollection.Create(ctx, &coco)
 	if err != nil {
+		fmt.Println(newCoCo)
 		return diag.FromErr(err)
 	}
-	d.SetId(newCoCo.Id)
+	d.SetId(*newCoCo.Id)
 	return resourceColorCollectionRead(ctx, d, m)
 }
 
@@ -268,10 +267,10 @@ func resourceColorCollectionRead(ctx context.Context, d *schema.ResourceData, m 
 		return diag.FromErr(err)
 	}
 
-	if err = d.Set("id", coco.Id); err != nil {
+	if err = d.Set("id", *coco.Id); err != nil {
 		return diag.FromErr(err)
 	}
-	if err = d.Set("label", coco.Label); err != nil {
+	if err = d.Set("label", *coco.Label); err != nil {
 		return diag.FromErr(err)
 	}
 	if err = d.Set("categoricalpalettes", *coco.CategoricalPalettes); err != nil {
@@ -297,10 +296,10 @@ func resourceColorCollectionUpdate(ctx context.Context, d *schema.ResourceData, 
 	}
 
 	if d.HasChanges() {
-		if err = d.Set("id", coco.Id); err != nil {
+		if err = d.Set("id", *coco.Id); err != nil {
 			return diag.FromErr(err)
 		}
-		if err = d.Set("label", coco.Label); err != nil {
+		if err = d.Set("label", *coco.Label); err != nil {
 			return diag.FromErr(err)
 		}
 		if err = d.Set("categoricalpalettes", *coco.CategoricalPalettes); err != nil {

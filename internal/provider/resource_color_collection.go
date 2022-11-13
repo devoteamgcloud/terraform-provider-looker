@@ -273,13 +273,53 @@ func resourceColorCollectionRead(ctx context.Context, d *schema.ResourceData, m 
 	if err = d.Set("label", *coco.Label); err != nil {
 		return diag.FromErr(err)
 	}
-	if err = d.Set("categoricalpalettes", *coco.CategoricalPalettes); err != nil {
+
+	flattenDiscretePalette := func(coco *[]lookergo.DiscretePalette) []interface{} {
+		catPals := make([]interface{}, len(*coco), len(*coco))
+		for i, elem := range *coco {
+			catPal := make(map[string]interface{})
+			catPal["label"] = *elem.Label
+			catPal["id"] = *elem.Id
+			catPal["type"] = *elem.Type
+			catPal["colors"] = *elem.Colors
+			catPals[i] = catPal
+		}
+		return catPals
+	}
+	catPals := flattenDiscretePalette(coco.CategoricalPalettes)
+	if err = d.Set("categoricalpalettes", catPals); err != nil {
 		return diag.FromErr(err)
 	}
-	if err = d.Set("sequentialpalettes", *coco.SequentialPalettes); err != nil {
+	flattenContinuousPalette := func(coco *[]lookergo.ContinuousPalette) []interface{} {
+		contPals := make([]interface{}, len(*coco), len(*coco))
+		for i, elem := range *coco {
+			xPal := make(map[string]interface{})
+			xPal["label"] = *elem.Label
+			xPal["id"] = *elem.Id
+			xPal["type"] = *elem.Type
+			// Flatten stops
+			stops := make([]map[string]interface{}, len(*elem.Stops), len(*elem.Stops))
+			for i, stop := range *elem.Stops {
+				s := make(map[string]interface{})
+				s["color"] = *stop.Color
+				s["offset"] = *stop.Offset
+				stops[i] = s
+			}
+			xPal["stops"] = stops
+			contPals[i] = xPal
+		}
+
+		return contPals
+
+	}
+
+	seqPals := flattenContinuousPalette(coco.SequentialPalettes)
+	if err = d.Set("sequentialpalettes", seqPals); err != nil {
 		return diag.FromErr(err)
 	}
-	if err = d.Set("divergingpalettes", *coco.DivergingPalettes); err != nil {
+
+	divPals := flattenContinuousPalette(coco.DivergingPalettes)
+	if err = d.Set("divergingpalettes", divPals); err != nil {
 		return diag.FromErr(err)
 	}
 
@@ -311,6 +351,7 @@ func resourceColorCollectionUpdate(ctx context.Context, d *schema.ResourceData, 
 		if err = d.Set("divergingpalettes", *coco.DivergingPalettes); err != nil {
 			return diag.FromErr(err)
 		}
+		return resourceColorCollectionRead(ctx, d, m)
 	}
 	return resourceColorCollectionRead(ctx, d, m)
 }

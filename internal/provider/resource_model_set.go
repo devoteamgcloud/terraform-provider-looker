@@ -66,8 +66,11 @@ func resourceModelSetRead(ctx context.Context, d *schema.ResourceData, m interfa
 	c := m.(*Config).Api // .(*lookergo.Client)
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: start", currFuncName()))
 	var id = d.Id()
-	newModel, _, err := c.ModelSets.Get(ctx, id)
-
+	newModel, response, err := c.ModelSets.Get(ctx, id)
+	if response.StatusCode == 404 {
+		d.SetId("") // Mark as deleted
+		return diags
+	}
 	if err != nil {
 		return diag.FromErr(err)
 	}

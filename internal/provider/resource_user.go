@@ -191,7 +191,11 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}
 	}
 	userID := d.Id()
 
-	user, _, err := c.Users.Get(ctx, userID)
+	user, response, err := c.Users.Get(ctx, userID)
+	if response.StatusCode == 404 {
+		d.SetId("") // Mark as deleted
+		return diags
+	}
 	if err != nil {
 		return diag.FromErr(err)
 	}

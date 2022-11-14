@@ -68,8 +68,11 @@ func resourceFolderCreate(ctx context.Context, d *schema.ResourceData, m interfa
 func resourceFolderRead(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
 	c := m.(*Config).Api // .(*lookergo.Client)
 	FolderID := d.Id()
-
-	Folder, _, err := c.Folders.Get(ctx, FolderID)
+	Folder, response, err := c.Folders.Get(ctx, FolderID)
+	if response.StatusCode == 404 {
+		d.SetId("") // Mark as deleted
+		return diags
+	}
 	if err != nil {
 		return diag.FromErr(err)
 	}

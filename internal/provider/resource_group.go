@@ -85,7 +85,11 @@ func resourceGroupRead(ctx context.Context, d *schema.ResourceData, m interface{
 	c := m.(*Config).Api // .(*lookergo.Client)
 	groupID := idAsInt(d.Id())
 
-	group, _, err := c.Groups.Get(ctx, groupID)
+	group, response, err := c.Groups.Get(ctx, groupID)
+	if response.StatusCode == 404 {
+		d.SetId("") // Mark as deleted
+		return diags
+	}
 	if err != nil {
 		return diag.FromErr(err)
 	}

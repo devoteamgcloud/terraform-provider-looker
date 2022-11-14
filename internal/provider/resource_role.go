@@ -52,7 +52,11 @@ func resourceRoleRead(ctx context.Context, d *schema.ResourceData, m interface{}
 	c := m.(*Config).Api // .(*lookergo.Client)
 	logTrace(ctx, "query role", "role_id", d.Id())
 
-	role, _, err := c.Roles.Get(ctx, idAsInt(d.Id()))
+	role, response, err := c.Roles.Get(ctx, idAsInt(d.Id()))
+	if response.StatusCode == 404 {
+		d.SetId("") // Mark as deleted
+		return diags
+	}
 	switch e := err.(type) {
 	case *lookergo.ErrorResponse:
 		if errResp := e.Response; errResp.StatusCode == http.StatusNotFound {

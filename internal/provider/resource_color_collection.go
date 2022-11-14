@@ -180,15 +180,7 @@ func resourceColorCollection() *schema.Resource {
 	}
 }
 
-// Receives terraform resource schema, builds a golang struct with json fields from it, sends a Post request with the
-func resourceColorCollectionCreate(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
-	// Checks whether the API Client is configured. If not, the resource responds with an error.
-	c := m.(*Config).Api // .(*lookergo.Client)
-	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: start", currFuncName()))
-
-	// Retrieves values from the plan. The function will attempt to retrieve values from the plan and convert it to an WriteColorCollection
-	var coco lookergo.WriteColorCollection
-
+func cocoSchemaToStruct(ctx context.Context, d *schema.ResourceData, coco *lookergo.WriteColorCollection) {
 	if cocoLabel, ok := d.GetOk("label"); ok {
 		coco.Label = castToPtr(cocoLabel.(string))
 	}
@@ -248,6 +240,19 @@ func resourceColorCollectionCreate(ctx context.Context, d *schema.ResourceData, 
 		}
 		coco.DivergingPalettes = &divPal
 	}
+}
+
+// Receives terraform resource schema, builds a golang struct with json fields from it, sends a Post request with the
+func resourceColorCollectionCreate(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
+	// Checks whether the API Client is configured. If not, the resource responds with an error.
+	c := m.(*Config).Api // .(*lookergo.Client)
+	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: start", currFuncName()))
+
+	// Retrieves values from the plan. The function will attempt to retrieve values from the plan and convert it to an WriteColorCollection
+	var coco lookergo.WriteColorCollection
+
+	cocoSchemaToStruct(ctx, d, &coco)
+
 	// send POST request. Creates a new order. The function invokes the API client's create method.
 	newCoCo, _, err := c.ColorCollection.Create(ctx, &coco)
 	if err != nil {
@@ -330,28 +335,15 @@ func resourceColorCollectionUpdate(ctx context.Context, d *schema.ResourceData, 
 	c := m.(*Config).Api // .(*lookergo.Client)
 	cocoID := d.Id()
 
-	coco, _, err := c.ColorCollection.Get(ctx, cocoID)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-
-	if d.HasChanges() {
-		if err = d.Set("id", *coco.Id); err != nil {
+	if d.HasChanges("label", "catogoricalpalletes", "sequentialpalettes", "divergingpalettes") {
+		var coco lookergo.WriteColorCollection
+		cocoSchemaToStruct(ctx, d, &coco)
+		newCoco, _, err := c.ColorCollection.Update(ctx, cocoID, &coco)
+		if err != nil {
 			return diag.FromErr(err)
 		}
-		if err = d.Set("label", *coco.Label); err != nil {
-			return diag.FromErr(err)
-		}
-		if err = d.Set("categoricalpalettes", *coco.CategoricalPalettes); err != nil {
-			return diag.FromErr(err)
-		}
-		if err = d.Set("sequentialpalettes", *coco.SequentialPalettes); err != nil {
-			return diag.FromErr(err)
-		}
-		if err = d.Set("divergingpalettes", *coco.DivergingPalettes); err != nil {
-			return diag.FromErr(err)
-		}
-		return resourceColorCollectionRead(ctx, d, m)
+		d.Set("id", *newCoco.Id)
+		d.SetId(*newCoco.Id)
 	}
 	return resourceColorCollectionRead(ctx, d, m)
 }

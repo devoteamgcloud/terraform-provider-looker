@@ -1,0 +1,46 @@
+# looker_color_collection.collection:
+resource "looker_color_collection" "collection" {
+    id    = "my-new-collection"
+    label = "My new collection"
+
+    categoricalpalettes {
+        colors = [
+            "#12B5CB",
+            "#1A73E8",
+            "#E52592",
+        ]
+        id     = "my-new-collection-categorical-0"
+        label  = "cat"
+        type   = "Categorical"
+    }
+
+    divergingpalettes {
+        id    = "my-new-collection-diverging-0"
+        label = "div"
+        type  = "Diverging"
+
+        stops {
+            color  = "#1A73E8"
+            offset = 100
+        }
+        stops {
+            color  = "#FFFFFF"
+            offset = 1
+        }
+    }
+
+    sequentialpalettes {
+        id    = "my-new-collection-sequential-0"
+        label = "seq"
+        type  = "Sequential"
+
+        stops {
+            color  = "#1A73E8"
+            offset = 100
+        }
+        stops {
+            color  = "#FFFFFF"
+            offset = 1
+        }
+    }
+}

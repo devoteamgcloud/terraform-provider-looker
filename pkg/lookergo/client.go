@@ -66,16 +66,17 @@ type Client struct {
 	mu sync.Mutex
 
 	// Resources used for communicating with the API
-	Groups      GroupsResource
-	Users       UsersResource
-	Roles       RolesResource
-	Folders     FoldersResource
-	Workspaces  WorkspacesResource
-	Projects    ProjectsResource
-	Sessions    SessionsResource
-	ModelSets   ModelSetsResource
-	Connections ConnectionsResource
-	LookMLModel LookMlModelsResource
+	Groups          GroupsResource
+	Users           UsersResource
+	Roles           RolesResource
+	Folders         FoldersResource
+	Workspaces      WorkspacesResource
+	Projects        ProjectsResource
+	Sessions        SessionsResource
+	ModelSets       ModelSetsResource
+	Connections     ConnectionsResource
+	LookMLModel     LookMlModelsResource
+	ColorCollection ColorCollectionResource
 
 	// TODO: Expand
 
@@ -147,6 +148,7 @@ func NewClient(httpClient *http.Client) *Client {
 	c.ModelSets = &ModelSetsResourceOp{client: c}
 	c.Connections = &ConnectionsResourceOp{client: c}
 	c.LookMLModel = &LookMlModelsResourceOp{client: c}
+	c.ColorCollection = &ColorCollectionResourceOp{client: c}
 
 	c.headers = make(map[string]string)
 	c.Workspace = "production"

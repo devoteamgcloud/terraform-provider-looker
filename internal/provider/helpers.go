@@ -3,13 +3,14 @@ package provider
 import (
 	"context"
 	"fmt"
+	"regexp"
+	"runtime"
+	"strconv"
+
 	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"regexp"
-	"runtime"
-	"strconv"
 )
 
 func idAsString(val interface{}) string {
@@ -50,6 +51,10 @@ func currFuncName() string {
 	}
 	re := regexp.MustCompile(`(?m)\.(\S*)$`)
 	return re.FindStringSubmatch(runtime.FuncForPC(counter).Name())[1]
+}
+
+func castToPtr[T any](v T) *T {
+	return &v
 }
 
 func boolPtr(b bool) *bool {

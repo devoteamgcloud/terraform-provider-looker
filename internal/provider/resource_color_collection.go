@@ -2,18 +2,13 @@ package provider
 
 import (
 	"context"
-	//"fmt"
-	//"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
-	//"github.com/hashicorp/terraform-plugin-log/tflog"
 	"fmt"
 	"regexp"
-
 	"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
-	//"net/http"
 )
 
 func resourceColorCollection() *schema.Resource {
@@ -232,7 +227,6 @@ func cocoSchemaToStruct(ctx context.Context, d *schema.ResourceData, coco *looke
 				st := lookergo.ColorStop{}
 				st.Color = castToPtr(objj["color"].(string))
 				st.Offset = castToPtr(objj["offset"].(int))
-				//return diag.Errorf(objj["offset"].(string))
 				stopsList = append(stopsList, st)
 			}
 			pal.Stops = &stopsList
@@ -280,7 +274,7 @@ func resourceColorCollectionRead(ctx context.Context, d *schema.ResourceData, m 
 	}
 
 	flattenDiscretePalette := func(coco *[]lookergo.DiscretePalette) []interface{} {
-		catPals := make([]interface{}, len(*coco), len(*coco))
+		catPals := make([]interface{}, len(*coco))
 		for i, elem := range *coco {
 			catPal := make(map[string]interface{})
 			catPal["label"] = *elem.Label
@@ -296,14 +290,14 @@ func resourceColorCollectionRead(ctx context.Context, d *schema.ResourceData, m 
 		return diag.FromErr(err)
 	}
 	flattenContinuousPalette := func(coco *[]lookergo.ContinuousPalette) []interface{} {
-		contPals := make([]interface{}, len(*coco), len(*coco))
+		contPals := make([]interface{}, len(*coco))
 		for i, elem := range *coco {
 			xPal := make(map[string]interface{})
 			xPal["label"] = *elem.Label
 			xPal["id"] = *elem.Id
 			xPal["type"] = *elem.Type
 			// Flatten stops
-			stops := make([]map[string]interface{}, len(*elem.Stops), len(*elem.Stops))
+			stops := make([]map[string]interface{}, len(*elem.Stops))
 			for i, stop := range *elem.Stops {
 				s := make(map[string]interface{})
 				s["color"] = *stop.Color
@@ -313,9 +307,7 @@ func resourceColorCollectionRead(ctx context.Context, d *schema.ResourceData, m 
 			xPal["stops"] = stops
 			contPals[i] = xPal
 		}
-
 		return contPals
-
 	}
 
 	seqPals := flattenContinuousPalette(coco.SequentialPalettes)

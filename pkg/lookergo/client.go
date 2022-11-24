@@ -77,7 +77,7 @@ type Client struct {
 	Connections     ConnectionsResource
 	LookMLModel     LookMlModelsResource
 	ColorCollection ColorCollectionResource
-	PermissionSets   PermissionSetResource
+	PermissionSets  PermissionSetResource
 
 	// TODO: Expand
 

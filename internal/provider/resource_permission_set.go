@@ -11,7 +11,7 @@ import (
 
 func resourcePermissionSet() *schema.Resource {
 	return &schema.Resource{
-		Description: `
+		Description: `Manage permission sets.
 `,
 		CreateContext: resourcePermissionSetCreate,
 		ReadContext:   resourcePermissionSetRead,
@@ -26,10 +26,11 @@ func resourcePermissionSet() *schema.Resource {
 				Type:         schema.TypeString,
 				Computed:     false,
 				Required:     true,
+				Description:  "The name of the permission set.",
 				ValidateFunc: validation.StringLenBetween(1, 255),
 			},
 			"permissions": {
-				Description: "List of permissions",
+				Description: "List of permissions.",
 				Type:        schema.TypeSet,
 				Required:    true,
 				Elem: &schema.Schema{

@@ -78,6 +78,7 @@ func New(version string) func() *schema.Provider {
 				"looker_model_set":              resourceModelSet(),
 				"looker_folder":                 resourceFolder(),
 				"looker_color_collection":       resourceColorCollection(),
+				"looker_permission_set":         resourcePermissionSet(),
 			},
 		}
 

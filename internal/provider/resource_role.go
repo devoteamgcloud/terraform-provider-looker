@@ -38,7 +38,7 @@ func resourceRole() *schema.Resource {
 				ExactlyOneOf: []string{"permission_set_id", "permission_set_name"},
 			},
 			"model_set_id": {
-				Description: "Modelset name",
+				Description: "Modelset ID",
 				Type:        schema.TypeInt,
 				Required:    true,
 			},

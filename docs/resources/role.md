@@ -11,7 +11,7 @@ description: |-
 resource "looker_role" "role" {
   name              = "admin"
   permission_set_id = "1"
-  model_set_id      = looker_model_set.example.id
+  model_set_id      = "1"
 }
 ```
 
@@ -22,7 +22,7 @@ resource "looker_role" "role" {
   id                = "1"
   name              = "admin"
   permission_set_id = "1"
-  model_set_id      = "id"
+  model_set_id      = "1"
 }
 ```
 
@@ -31,12 +31,12 @@ resource "looker_role" "role" {
 
 ### Required
 
-- `model_set_id` (String) Modelset name
+- `model_set_id` (Number) Modelset ID
 - `name` (String) Role name
 
 ### Optional
 
-- `permission_set_id` (String) PermissionSet ID
+- `permission_set_id` (Number) PermissionSet ID
 - `permission_set_name` (String) PermissionSet Name
 
 ### Read-Only

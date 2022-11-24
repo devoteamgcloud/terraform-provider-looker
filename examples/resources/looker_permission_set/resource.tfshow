@@ -1,0 +1,8 @@
+resource "looker_permission_set" "set" {
+    id          = "27"
+    name        = "My permission set"
+    permissions = [
+        "manage_homepage",
+        "manage_spaces",
+    ]
+}

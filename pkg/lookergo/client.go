@@ -77,6 +77,7 @@ type Client struct {
 	Connections     ConnectionsResource
 	LookMLModel     LookMlModelsResource
 	ColorCollection ColorCollectionResource
+	PermissionSets  PermissionSetResource
 
 	// TODO: Expand
 
@@ -149,6 +150,7 @@ func NewClient(httpClient *http.Client) *Client {
 	c.Connections = &ConnectionsResourceOp{client: c}
 	c.LookMLModel = &LookMlModelsResourceOp{client: c}
 	c.ColorCollection = &ColorCollectionResourceOp{client: c}
+	c.PermissionSets = &PermissionSetResourceOp{client: c}
 
 	c.headers = make(map[string]string)
 	c.Workspace = "production"

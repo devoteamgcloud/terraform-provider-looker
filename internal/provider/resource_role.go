@@ -8,6 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"net/http"
+	"strconv"
 )
 
 func resourceRole() *schema.Resource {
@@ -24,7 +25,7 @@ func resourceRole() *schema.Resource {
 			},
 			"permission_set_id": {
 				Description:  "PermissionSet ID",
-				Type:         schema.TypeString,
+				Type:         schema.TypeInt,
 				Optional:     true,
 				Computed:     true,
 				ExactlyOneOf: []string{"permission_set_id", "permission_set_name"},
@@ -38,7 +39,7 @@ func resourceRole() *schema.Resource {
 			},
 			"model_set_id": {
 				Description: "Modelset name",
-				Type:        schema.TypeString,
+				Type:        schema.TypeInt,
 				Required:    true,
 			},
 		},
@@ -51,7 +52,6 @@ func resourceRole() *schema.Resource {
 func resourceRoleRead(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
 	c := m.(*Config).Api // .(*lookergo.Client)
 	logTrace(ctx, "query role", "role_id", d.Id())
-
 	role, response, err := c.Roles.Get(ctx, idAsInt(d.Id()))
 	if response.StatusCode == 404 {
 		d.SetId("") // Mark as deleted
@@ -71,7 +71,7 @@ func resourceRoleRead(ctx context.Context, d *schema.ResourceData, m interface{}
 	}
 
 	d.Set("name", role.Name)
-	d.Set("permission_set_id", idAsString(role.PermissionSet.Id))
+	d.Set("permission_set_id", role.PermissionSet.Id)
 	d.Set("permission_set_name", role.PermissionSet.Name)
 	d.Set("model_set_id", role.ModelSet.Id)
 
@@ -81,37 +81,39 @@ func resourceRoleRead(ctx context.Context, d *schema.ResourceData, m interface{}
 func resourceRoleCreate(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
 	c := m.(*Config).Api // .(*lookergo.Client)
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: start", currFuncName()))
-
-	permissionSets, _, err := c.Roles.PermissionSetsList(ctx, nil)
-	if err != nil {
-		return logErrDiag(ctx, diags, "Failed to query permission sets", "err", err)
-	}
-
 	var permissionSet lookergo.PermissionSet
 	if psId, ok := d.GetOk("permission_set_id"); ok {
-		if has, ps := permissionSets.HasById(idAsInt(psId)); has {
-			permissionSet = *ps
-		} else {
+		perm, _, err := c.PermissionSets.Get(ctx, strconv.Itoa(psId.(int)))
+		if err != nil {
 			return logErrDiag(ctx, diags, "PermissionSet not found", "permission_set_id", psId)
 		}
+		permissionSet.Id = perm.Id
 	} else if psName, ok := d.GetOk("permission_set_name"); ok {
-		if has, ps := permissionSets.HasByName(psName.(string)); has {
-			permissionSet = *ps
-		} else {
-			return logErrDiag(ctx, diags, "PermissionSet not found", "permission_set_name", psId)
+		permissions, _, err := c.PermissionSets.GetByName(ctx, psName.(string), nil)
+		if err != nil {
+			return logErrDiag(ctx, diags, "Failed to query permission sets", "err", err)
 		}
-	}
+		for _, permission := range permissions {
+			if permission.Name == psName.(string) {
+				permissionSet.Id = permission.Id
+			}
+		}
 
-	modelSet, _, err := c.ModelSets.Get(ctx, idAsString(d.Get("model_set_id")))
+	}
+	model_set_id := strconv.Itoa(d.Get("model_set_id").(int))
+	modelSet, _, err := c.ModelSets.Get(ctx, model_set_id)
 	if err != nil {
 		return logErrDiag(ctx, diags, "Failed to find ModelSet", "model_set_id", err)
 	}
 
 	roleName := d.Get("name").(string)
+	if permissionSet.Id == "" {
+		return logErrDiag(ctx, diags, "Failed to find permission set", "permission_set_id", err)
+	}
 
 	role := lookergo.Role{
 		Name:            roleName,
-		PermissionSetID: idAsString(permissionSet.Id),
+		PermissionSetID: permissionSet.Id,
 		ModelSetID:      modelSet.Id,
 	}
 
@@ -120,7 +122,7 @@ func resourceRoleCreate(ctx context.Context, d *schema.ResourceData, m interface
 		return logErrDiag(ctx, diags, "Failed to create Role", "err", err)
 	}
 	d.Set("name", newRole.Name)
-	d.Set("permission_set_id", idAsString(newRole.PermissionSet.Id))
+	d.Set("permission_set_id", newRole.PermissionSet.Id)
 	d.Set("permission_set_name", newRole.PermissionSet.Name)
 	d.Set("model_set_id", newRole.ModelSet.Id)
 
@@ -133,30 +135,29 @@ func resourceRoleUpdate(ctx context.Context, d *schema.ResourceData, m interface
 	c := m.(*Config).Api // .(*lookergo.Client)
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: start", currFuncName()))
 
-	permissionSets, _, err := c.Roles.PermissionSetsList(ctx, nil)
-	if err != nil {
-		return logErrDiag(ctx, diags, "Failed to query permission sets", "err", err)
-	}
-
 	var permissionSet lookergo.PermissionSet
 	if psId, ok := d.GetOk("permission_set_id"); ok {
-		if has, ps := permissionSets.HasById(idAsInt(psId)); has {
-			permissionSet = *ps
-		} else {
+		perm, _, err := c.PermissionSets.Get(ctx, strconv.Itoa(psId.(int)))
+		if err != nil {
 			return logErrDiag(ctx, diags, "PermissionSet not found", "permission_set_id", psId)
 		}
+		permissionSet.Id = perm.Id
 	} else if psName, ok := d.GetOk("permission_set_name"); ok {
-		if has, ps := permissionSets.HasByName(idAsString(psName)); has {
-			permissionSet = *ps
-		} else {
-			return logErrDiag(ctx, diags, "PermissionSet not found", "permission_set_name", psId)
+		permissions, _, err := c.PermissionSets.GetByName(ctx, psName.(string), nil)
+		if err != nil {
+			return logErrDiag(ctx, diags, "Failed to query permission sets", "err", err)
+		}
+		for _, permission := range permissions {
+			if permission.Name == psName.(string) {
+				permissionSet.Id = permission.Id
+			}
 		}
 	}
 
 	role := lookergo.Role{
 		Name:            d.Get("name").(string),
-		PermissionSetID: idAsString(permissionSet.Id),
-		ModelSetID:      d.Get("model_set_id").(string),
+		PermissionSetID: permissionSet.Id,
+		ModelSetID:      strconv.Itoa(d.Get("model_set_id").(int)),
 	}
 
 	newRole, _, err := c.Roles.Update(ctx, idAsInt(d.Id()), &role)

@@ -2,12 +2,11 @@
 
 ## Supported Versions
 
-All the versions above 0.1.x are currently supported by feature updates and security patches.
+All the versions above 0.2.x are currently supported by feature updates and security patches.
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 0.1.x   | :white_check_mark: |
-
+| 0.2.x   | :white_check_mark: |
 
 ## Reporting a Vulnerability
 

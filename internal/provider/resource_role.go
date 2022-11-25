@@ -88,6 +88,7 @@ func resourceRoleCreate(ctx context.Context, d *schema.ResourceData, m interface
 			return logErrDiag(ctx, diags, "PermissionSet not found", "permission_set_id", psId)
 		}
 		permissionSet.Id = perm.Id
+		permissionSet.Name = perm.Name
 	} else if psName, ok := d.GetOk("permission_set_name"); ok {
 		permissions, _, err := c.PermissionSets.GetByName(ctx, psName.(string), nil)
 		if err != nil {
@@ -96,6 +97,7 @@ func resourceRoleCreate(ctx context.Context, d *schema.ResourceData, m interface
 		for _, permission := range permissions {
 			if permission.Name == psName.(string) {
 				permissionSet.Id = permission.Id
+				permissionSet.Name = permission.Name
 			}
 		}
 
@@ -114,6 +116,7 @@ func resourceRoleCreate(ctx context.Context, d *schema.ResourceData, m interface
 	role := lookergo.Role{
 		Name:            roleName,
 		PermissionSetID: permissionSet.Id,
+		PermissionSet:   permissionSet,
 		ModelSetID:      modelSet.Id,
 	}
 
@@ -150,6 +153,7 @@ func resourceRoleUpdate(ctx context.Context, d *schema.ResourceData, m interface
 		for _, permission := range permissions {
 			if permission.Name == psName.(string) {
 				permissionSet.Id = permission.Id
+				permissionSet.Name = permission.Name
 			}
 		}
 	}

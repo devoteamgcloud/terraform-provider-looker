@@ -47,7 +47,7 @@ func (s *PermissionSetResourceOp) GetByName(ctx context.Context, PermissionSetNa
 		return nil, nil, NewArgError("name", "has to be non-empty")
 	}
 	qs := url.Values{}
-	qs.Add("fields", "id,name")
+	qs.Add("fields", "id,name,permissions")
 	qs.Add("name", PermissionSetName)
 	path := fmt.Sprintf("%s/search", permissionSetBasePath)
 	return doListByX(ctx, s.client, path, opt, new([]PermissionSet), qs)

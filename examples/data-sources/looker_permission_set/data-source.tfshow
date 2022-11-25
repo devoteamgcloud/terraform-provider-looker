@@ -1,0 +1,27 @@
+data "looker_permission_set" "set" {
+    id          = "2"
+    name        = "Developer"
+    permissions = [
+        "access_data",
+        "can_create_forecast",
+        "clear_cache_refresh",
+        "create_custom_fields",
+        "create_table_calculations",
+        "deploy",
+        "develop",
+        "download_without_limit",
+        "explore",
+        "manage_spaces",
+        "mobile_app_access",
+        "save_content",
+        "schedule_look_emails",
+        "see_drill_overlay",
+        "see_lookml",
+        "see_lookml_dashboards",
+        "see_looks",
+        "see_sql",
+        "see_user_dashboards",
+        "send_to_integration",
+        "use_sql_runner",
+    ]
+}

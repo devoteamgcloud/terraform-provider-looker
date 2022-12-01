@@ -59,17 +59,17 @@ func resourceProjectGitRepo() *schema.Resource {
 				Type: schema.TypeBool, Optional: true,
 			},
 			"git_release_mgmt_enabled": {
-				Type: schema.TypeBool, 
-				Optional: true,
+				Type:        schema.TypeBool,
+				Optional:    true,
 				Description: "Advanced Deploy Mode - Required for Webhook",
 			},
 			"deploy_secret": {
-				Type: schema.TypeString, 
-				Optional: true,
+				Type:        schema.TypeString,
+				Optional:    true,
 				Description: "Secret Value for Authentication Webhook",
 			},
 			"deploy_branch": {
-				Type: schema.TypeString, 
+				Type:     schema.TypeString,
 				Optional: true,
 				Description: "Branch which will be deployed to Production after " +
 					"creation of Project Resource. Required: Advanced Deploy Mode.",

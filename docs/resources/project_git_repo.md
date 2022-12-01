@@ -45,7 +45,10 @@ resource "looker_project_git_repo" "myrepo-project" {
 ### Optional
 
 - `allow_warnings` (Boolean)
+- `deploy_branch` (String) Branch which will be deployed to Production after creation of Project Resource. Required: Advanced Deploy Mode.
+- `deploy_secret` (String) Secret Value for Authentication Webhook
 - `git_production_branch_name` (String) Git production branch name. Defaults to ~~master~~ main. Supported only in Looker 21.0 and higher.
+- `git_release_mgmt_enabled` (Boolean) Advanced Deploy Mode - Required for Webhook
 - `git_username` (String)
 - `is_example` (Boolean)
 - `pull_request_mode` (String) The git pull request policy for this project. Valid values are: `off`, `links`, `recommended`, `required`.

@@ -58,6 +58,22 @@ func resourceProjectGitRepo() *schema.Resource {
 			"is_example": {
 				Type: schema.TypeBool, Optional: true,
 			},
+			"git_release_mgmt_enabled": {
+				Type: schema.TypeBool, 
+				Optional: true,
+				Description: "Advanced Deploy Mode - Required for Webhook"
+			},
+			"deploy_secret": {
+				Type: schema.TypeString, 
+				Optional: true,
+				Description: "Secret Value for Authentication Webhook"
+			},
+			"deploy_branch": {
+				Type: schema.TypeString, 
+				Optional: true,
+				Description: "Branch which will be deployed to Production after " +
+					"creation of Project Resource. Required: Advanced Deploy Mode."
+			},
 		},
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
@@ -115,6 +131,7 @@ func resourceProjectGitRepoRead(ctx context.Context, d *schema.ResourceData, m i
 	d.Set("git_production_branch_name", project.GitProductionBranchName)
 	d.Set("allow_warnings", project.AllowWarnings)
 	d.Set("is_example", project.IsExample)
+	d.Set("git_release_mgmt_enabled", project.GitReleaseMgmtEnabled)
 
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: end", currFuncName()))
 	return diags
@@ -158,6 +175,13 @@ func resourceProjectGitRepoCreate(ctx context.Context, d *schema.ResourceData, m
 	if value, ok := d.GetOk("is_example"); ok {
 		projectGitRepoUpdate.IsExample = boolPtr(value.(bool))
 	}
+	if value, ok := d.GetOk("git_release_mgmt_enabled"); ok {
+		projectGitRepoUpdate.GitReleaseMgmtEnabled = boolPtr(value.(bool))
+	}
+	if value, ok := d.GetOk("deploy_secret"); ok {
+		projectGitRepoUpdate.DeploySecret = value.(string)
+	}
+
 	payload := lookergo.Project{}
 	payload.GitRemoteUrl = projectGitRepoUpdate.GitRemoteUrl
 	_, _, err = dc.Projects.Update(ctx, projectName, &payload)
@@ -168,9 +192,18 @@ func resourceProjectGitRepoCreate(ctx context.Context, d *schema.ResourceData, m
 	if err != nil {
 		return diagErrAppend(diags, err)
 	}
-	_, _, err = dc.Projects.DeployToProduction(ctx, projectName)
-	if err != nil {
-		return diag.FromErr(err)
+
+	if value, ok := d.GetOk("deploy_branch"); ok {
+		branchName := value.(string)
+		_, _, err = dc.Projects.GitBranchDeployToProduction(ctx, projectName, branchName)
+		if err != nil {
+			return diag.FromErr(err)
+		}
+	} else {
+		_, _, err = dc.Projects.DeployToProduction(ctx, projectName)
+		if err != nil {
+			return diag.FromErr(err)
+		}
 	}
 	d.SetId(projectName)
 
@@ -216,14 +249,29 @@ func resourceProjectGitRepoUpdate(ctx context.Context, d *schema.ResourceData, m
 	if value, ok := d.GetOk("is_example"); ok {
 		projectGitRepoUpdate.IsExample = boolPtr(value.(bool))
 	}
+	if value, ok := d.GetOk("git_release_mgmt_enabled"); ok {
+		projectGitRepoUpdate.GitReleaseMgmtEnabled = boolPtr(value.(bool))
+	}
+	if value, ok := d.GetOk("deploy_secret"); ok {
+		projectGitRepoUpdate.DeploySecret = value.(string)
+	}
 
 	_, _, err = dc.Projects.Update(ctx, projectName, &projectGitRepoUpdate)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	_, _, err = dc.Projects.DeployToProduction(ctx, projectName)
-	if err != nil {
-		return diag.FromErr(err)
+
+	if value, ok := d.GetOk("deploy_branch"); ok {
+		branchName := value.(string)
+		_, _, err = dc.Projects.GitBranchDeployToProduction(ctx, projectName, branchName)
+		if err != nil {
+			return diag.FromErr(err)
+		}
+	} else {
+		_, _, err = dc.Projects.DeployToProduction(ctx, projectName)
+		if err != nil {
+			return diag.FromErr(err)
+		}
 	}
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: end", currFuncName()))
 	return resourceProjectGitRepoRead(ctx, d, m)

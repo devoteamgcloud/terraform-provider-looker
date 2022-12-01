@@ -249,9 +249,6 @@ func resourceProjectGitRepoUpdate(ctx context.Context, d *schema.ResourceData, m
 	if value, ok := d.GetOk("is_example"); ok {
 		projectGitRepoUpdate.IsExample = boolPtr(value.(bool))
 	}
-	if value, ok := d.GetOk("is_example"); ok {
-		projectGitRepoUpdate.IsExample = boolPtr(value.(bool))
-	}
 	if value, ok := d.GetOk("git_release_mgmt_enabled"); ok {
 		projectGitRepoUpdate.GitReleaseMgmtEnabled = boolPtr(value.(bool))
 	}

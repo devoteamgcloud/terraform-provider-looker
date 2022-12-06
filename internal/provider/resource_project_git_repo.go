@@ -25,16 +25,16 @@ func resourceProjectGitRepo() *schema.Resource {
 				Type: schema.TypeString, Required: true,
 			},
 			"git_username": {
-				Type: schema.TypeString,
+				Type:     schema.TypeString,
 				Optional: true,
 				Description: "Git username for HTTPS authentication. For SSH authentication " +
 					"skip this option and create project_git_deploy_key resource.",
 			},
 			"git_password": {
-				Type: schema.TypeString,
+				Type:     schema.TypeString,
 				Optional: true,
 				Description: "Git password for HTTPS authentication. For SSH authentication " +
-				    "skip this option and create project_git_deploy_key resource.",
+					"skip this option and create project_git_deploy_key resource.",
 				Sensitive: true,
 			},
 			"use_git_cookie_auth": {

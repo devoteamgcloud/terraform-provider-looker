@@ -12,6 +12,8 @@ resource "looker_project_git_repo" "myrepo-project" {
   project_id       = "project-id"
   git_remote_url   = "git@github.com:workspace/repo.git"
   git_service_name = "github"
+  git_username     = "username"
+  git_password     = "password"
 }
 ```
 
@@ -30,6 +32,7 @@ resource "looker_project_git_repo" "myrepo-project" {
   git_production_branch_name = "main"
   use_git_cookie_auth        = false
   git_username               = "username"
+  git_password               = (sensitive value)
 }
 ```
 
@@ -47,10 +50,10 @@ resource "looker_project_git_repo" "myrepo-project" {
 - `allow_warnings` (Boolean)
 - `deploy_branch` (String) Branch which will be deployed to Production after creation of Project Resource. Required: Advanced Deploy Mode.
 - `deploy_secret` (String) Secret Value for Authentication Webhook
+- `git_password` (String, Sensitive) Git password for HTTPS authentication. For SSH authentication skip this option and create project_git_deploy_key resource.
 - `git_production_branch_name` (String) Git production branch name. Defaults to ~~master~~ main. Supported only in Looker 21.0 and higher.
 - `git_release_mgmt_enabled` (Boolean) Advanced Deploy Mode - Required for Webhook
 - `git_username` (String) Git username for HTTPS authentication. For SSH authentication skip this option and create project_git_deploy_key resource.
-- `git_password` (String) Git password for HTTPS authentication. For SSH authentication skip this option and create project_git_deploy_key resource.
 - `is_example` (Boolean)
 - `pull_request_mode` (String) The git pull request policy for this project. Valid values are: `off`, `links`, `recommended`, `required`.
 - `use_git_cookie_auth` (Boolean) If true, the project uses a git cookie for authentication.

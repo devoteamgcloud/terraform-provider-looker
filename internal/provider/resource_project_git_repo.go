@@ -25,7 +25,17 @@ func resourceProjectGitRepo() *schema.Resource {
 				Type: schema.TypeString, Required: true,
 			},
 			"git_username": {
-				Type: schema.TypeString, Optional: true,
+				Type: schema.TypeString,
+				Optional: true,
+				Description: "Git username for HTTPS authentication. For SSH authentication " +
+					"skip this option and create project_git_deploy_key resource.",
+			},
+			"git_password": {
+				Type: schema.TypeString,
+				Optional: true,
+				Description: "Git password for HTTPS authentication. For SSH authentication " +
+				    "skip this option and create project_git_deploy_key resource.",
+				Sensitive: true,
 			},
 			"use_git_cookie_auth": {
 				Type: schema.TypeBool, Optional: true,
@@ -182,12 +192,26 @@ func resourceProjectGitRepoCreate(ctx context.Context, d *schema.ResourceData, m
 		projectGitRepoUpdate.DeploySecret = value.(string)
 	}
 
-	payload := lookergo.Project{}
-	payload.GitRemoteUrl = projectGitRepoUpdate.GitRemoteUrl
-	_, _, err = dc.Projects.Update(ctx, projectName, &payload)
-	if err != nil {
-		return diag.FromErr(err)
+	if value, ok := d.GetOk("git_password"); ok {
+		payload := lookergo.Project{}
+		payload.GitRemoteUrl = projectGitRepoUpdate.GitRemoteUrl
+		projectGitRepoUpdate.GitPassword = value.(string)
+		payload.GitUsername = projectGitRepoUpdate.GitUsername
+		payload.GitPassword = projectGitRepoUpdate.GitPassword
+		payload.GitServiceName = projectGitRepoUpdate.GitServiceName
+		_, _, err = dc.Projects.Update(ctx, projectName, &payload)
+		if err != nil {
+			return diag.FromErr(err)
+		}
+	} else {
+		payload := lookergo.Project{}
+		payload.GitRemoteUrl = projectGitRepoUpdate.GitRemoteUrl
+		_, _, err = dc.Projects.Update(ctx, projectName, &payload)
+		if err != nil {
+			return diag.FromErr(err)
+		}
 	}
+
 	_, _, err = dc.Projects.Update(ctx, projectName, &projectGitRepoUpdate)
 	if err != nil {
 		return diagErrAppend(diags, err)
@@ -254,6 +278,9 @@ func resourceProjectGitRepoUpdate(ctx context.Context, d *schema.ResourceData, m
 	}
 	if value, ok := d.GetOk("deploy_secret"); ok {
 		projectGitRepoUpdate.DeploySecret = value.(string)
+	}
+	if value, ok := d.GetOk("git_password"); ok {
+		projectGitRepoUpdate.GitPassword = value.(string)
 	}
 
 	_, _, err = dc.Projects.Update(ctx, projectName, &projectGitRepoUpdate)

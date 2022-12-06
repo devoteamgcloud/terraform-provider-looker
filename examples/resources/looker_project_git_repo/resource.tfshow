@@ -11,4 +11,5 @@ resource "looker_project_git_repo" "myrepo-project" {
   git_production_branch_name = "main"
   use_git_cookie_auth        = false
   git_username               = "username"
+  git_password               = (sensitive value)
 }

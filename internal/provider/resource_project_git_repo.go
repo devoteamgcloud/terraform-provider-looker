@@ -292,7 +292,7 @@ func resourceProjectGitRepoUpdate(ctx context.Context, d *schema.ResourceData, m
             return diag.Errorf("HTTPS Authentication requires URL starts with http://..")
         }
 	} else {
-	    if !strings.HasPrefix(projectGitRepoUpdate.GitRemoteUrl, "git@") && !strings.HasPrefix(payload.GitRemoteUrl, "ssh://") {
+	    if !strings.HasPrefix(projectGitRepoUpdate.GitRemoteUrl, "git@") && !strings.HasPrefix(projectGitRepoUpdate.GitRemoteUrl, "ssh://") {
             return diag.Errorf("SSH Authentication requires URL starts with git@.. or ssh://..")
         }
 	}

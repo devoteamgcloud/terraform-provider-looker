@@ -2,12 +2,13 @@ package provider
 
 import (
 	"context"
+	"time"
+
 	"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
-	"time"
 )
 
 // -
@@ -157,7 +158,7 @@ func resourceGroupDelete(ctx context.Context, d *schema.ResourceData, m interfac
 	c := m.(*Config).Api // .(*lookergo.Client)
 	groupID := idAsInt(d.Id())
 
-	if !d.Get("delete_on_destroy").(bool) {
+	if d.Get("delete_on_destroy").(bool) {
 		if _, err := c.Groups.Delete(ctx, groupID); err != nil {
 			return diag.FromErr(err)
 		}

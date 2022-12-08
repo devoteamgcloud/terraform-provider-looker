@@ -3,11 +3,11 @@ package provider
 import (
 	"context"
 	"fmt"
-	"strings"
 	"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"strings"
 )
 
 func resourceProjectGitRepo() *schema.Resource {
@@ -201,7 +201,7 @@ func resourceProjectGitRepoCreate(ctx context.Context, d *schema.ResourceData, m
 		payload.GitPassword = projectGitRepoUpdate.GitPassword
 		payload.GitServiceName = projectGitRepoUpdate.GitServiceName
 		if !strings.HasPrefix(projectGitRepoUpdate.GitRemoteUrl, "https://") {
-		    return diag.Errorf("HTTPS Authentication requires URL starts with http://..")
+			return diag.Errorf("HTTPS Authentication requires URL starts with http://..")
 		}
 		_, _, err = dc.Projects.Update(ctx, projectName, &payload)
 		if err != nil {
@@ -211,8 +211,8 @@ func resourceProjectGitRepoCreate(ctx context.Context, d *schema.ResourceData, m
 		payload := lookergo.Project{}
 		payload.GitRemoteUrl = projectGitRepoUpdate.GitRemoteUrl
 		if !strings.HasPrefix(projectGitRepoUpdate.GitRemoteUrl, "git@") && !strings.HasPrefix(payload.GitRemoteUrl, "ssh://") {
-		    return diag.Errorf("SSH Authentication requires URL starts with git@.. or ssh://..")
-        }
+			return diag.Errorf("SSH Authentication requires URL starts with git@.. or ssh://..")
+		}
 		_, _, err = dc.Projects.Update(ctx, projectName, &payload)
 		if err != nil {
 			return diag.FromErr(err)
@@ -289,12 +289,12 @@ func resourceProjectGitRepoUpdate(ctx context.Context, d *schema.ResourceData, m
 	if value, ok := d.GetOk("git_password"); ok {
 		projectGitRepoUpdate.GitPassword = value.(string)
 		if !strings.HasPrefix(projectGitRepoUpdate.GitRemoteUrl, "https://") {
-            return diag.Errorf("HTTPS Authentication requires URL starts with http://..")
-        }
+			return diag.Errorf("HTTPS Authentication requires URL starts with http://..")
+		}
 	} else {
-	    if !strings.HasPrefix(projectGitRepoUpdate.GitRemoteUrl, "git@") && !strings.HasPrefix(projectGitRepoUpdate.GitRemoteUrl, "ssh://") {
-            return diag.Errorf("SSH Authentication requires URL starts with git@.. or ssh://..")
-        }
+		if !strings.HasPrefix(projectGitRepoUpdate.GitRemoteUrl, "git@") && !strings.HasPrefix(projectGitRepoUpdate.GitRemoteUrl, "ssh://") {
+			return diag.Errorf("SSH Authentication requires URL starts with git@.. or ssh://..")
+		}
 	}
 
 	_, _, err = dc.Projects.Update(ctx, projectName, &projectGitRepoUpdate)

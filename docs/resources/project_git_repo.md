@@ -10,7 +10,7 @@ description: |-
 ```terraform
 resource "looker_project_git_repo" "myrepo-project" {
   project_id       = "project-id"
-  git_remote_url   = "git@github.com:workspace/repo.git"
+  git_remote_url   = "https://github.com/workspace/repo.git"
   git_service_name = "github"
   git_username     = "username"
   git_password     = "password"
@@ -23,7 +23,7 @@ resource "looker_project_git_repo" "myrepo-project" {
 resource "looker_project_git_repo" "myrepo-project" {
   id                         = "-"
   project_id                 = "project-id"
-  git_remote_url             = "git@github.com:workspace/repo.git"
+  git_remote_url             = "https://github.com/workspace/repo.git"
   git_service_name           = "github"
   is_example                 = false
   allow_warnings             = true

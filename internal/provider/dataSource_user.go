@@ -66,7 +66,7 @@ func dataSourceUserRead(ctx context.Context, d *schema.ResourceData, m interface
 			return diag.FromErr(err)
 		}
 	} else if user.CredentialsSaml != nil {
-		if err := d.Set("email", user.CredentialsEmail.Email); err != nil {
+		if err := d.Set("email", user.CredentialsSaml.Email); err != nil {
 			return diag.FromErr(err)
 		}
 	} else if err := d.Set("email", ""); err != nil {

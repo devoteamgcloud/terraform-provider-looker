@@ -8,7 +8,7 @@ description: |-
 
 ## Example Usage
 ```terraform
-resource "looker_user" "user" {
+data "looker_user" "user" {
   id = "123"
 }
 ```

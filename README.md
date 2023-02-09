@@ -79,7 +79,7 @@ The make command provides an easy way to access commands for local development o
       required_providers {  
          looker = { 
             source  = "hashicorp.local/devoteamgcloud/looker" 
-            version = "0.2.0" 
+            version = "x.x.x" 
          } 
       } 
    }

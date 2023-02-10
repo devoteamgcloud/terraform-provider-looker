@@ -15,6 +15,7 @@ resource "looker_folder" "folder" {
 
 ## Example Output
 ```terraform
+% terraform show
 # looker_folder.folder
 resource "looker_folder" "folder" {
   id   = "1"

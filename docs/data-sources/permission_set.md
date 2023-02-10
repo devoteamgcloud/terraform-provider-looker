@@ -14,6 +14,8 @@ data "looker_permission_set" "set" {
 ```
 ## Example Output
 ```terraform
+% terraform show
+#data.looker_permission_set.set
 data "looker_permission_set" "set" {
     id          = "2"
     name        = "Developer"

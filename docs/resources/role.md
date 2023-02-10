@@ -17,6 +17,7 @@ resource "looker_role" "role" {
 
 ## Example Output
 ```terraform
+% terraform show
 # looker_role.role:
 resource "looker_role" "role" {
   id                = "1"

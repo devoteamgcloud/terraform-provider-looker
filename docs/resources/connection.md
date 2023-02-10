@@ -23,6 +23,7 @@ resource "looker_connection" "example" {
 
 ## Example Output
 ```terraform
+% terraform show
 # looker_connection.example:
 resource "looker_connection" "example" {
   database        = "hegdgxme"

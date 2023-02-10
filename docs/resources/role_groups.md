@@ -18,6 +18,7 @@ resource "looker_role_groups" "role_member" {
 
 ## Example Output
 ```terraform
+% terraform show
 # looker_role_member.role_member:
 resource "looker_role_groups" "role_member" {
   id             = "-"

@@ -17,6 +17,7 @@ resource "looker_lookml_model" "lookml_a" {
 
 ## Example Output
 ```terraform
+% terraform show
 # looker_lookml_model.lookml_a:
 resource "looker_lookml_model" "lookml_a" {
   id                          = "-"

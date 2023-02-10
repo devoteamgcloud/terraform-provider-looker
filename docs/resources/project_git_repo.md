@@ -19,6 +19,7 @@ resource "looker_project_git_repo" "myrepo-project" {
 
 ## Example Output
 ```terraform
+% terraform show
 # looker_project_git_repo.myrepo-project:
 resource "looker_project_git_repo" "myrepo-project" {
   id                         = "-"

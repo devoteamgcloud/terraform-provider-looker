@@ -17,6 +17,7 @@ resource "looker_user" "user_a" {
 
 ## Example Output
 ```terraform
+% terraform show
 # looker_user.user_a:
 resource "looker_user" "user_a" {
     id         = "167"

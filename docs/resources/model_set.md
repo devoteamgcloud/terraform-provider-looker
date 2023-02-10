@@ -16,6 +16,7 @@ resource "looker_model_set" "model_set_a" {
 
 ## Example Output
 ```terraform
+% terraform show
 # looker_model_set.model_set_a:
 resource "looker_model_set" "model_set_a" {
   id     = "1"

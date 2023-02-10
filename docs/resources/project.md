@@ -16,6 +16,7 @@ resource "looker_project" "example" {
 
 ## Example Output
 ```terraform
+% terraform show
 # looker_project.example:
 resource "looker_project" "example" {
   rename_when_delete = true

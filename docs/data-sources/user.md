@@ -12,15 +12,14 @@ data "looker_user" "user" {
   id = "123"
 }
 
-#or
-
 data "looker_user" "user2" {
   email = "nabillahssini@gmail.com"
 }
 ```
 ## Example Output
 ```terraform
-# looker_user.user:
+% terraform show
+# data.looker_user.user 
 data "looker_user" "user" {
   rename_when_delete = true
   id                 = "123"
@@ -29,6 +28,7 @@ data "looker_user" "user" {
   email              = "nabillahssini@gmail.com"
 }
 
+# data.looker_user.user2
 data "looker_user" "user2" {
   rename_when_delete = true
   id                 = "123"

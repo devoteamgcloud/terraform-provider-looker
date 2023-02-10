@@ -14,8 +14,9 @@ data "looker_project" "project" {
 ```
 ## Example Output
 ```terraform
-# looker_project.project:
-resource "looker_project" "project" {
+% terraform show
+# data.looker_project.project:
+data "looker_project" "project" {
   rename_when_delete = true
   id                 = "project-a-AgcX"
   name               = "project-a"

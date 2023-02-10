@@ -16,6 +16,8 @@ resource "looker_permission_set" "set" {
 
 ## Example Output
 ```terraform
+% terraform show
+# looker_permission_set.set
 resource "looker_permission_set" "set" {
     id          = "27"
     name        = "My permission set"

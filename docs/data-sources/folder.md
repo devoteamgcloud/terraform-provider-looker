@@ -8,14 +8,15 @@ description: |-
 
 ## Example Usage
 ```terraform
-resource "looker_folder" "folder" {
+data "looker_folder" "folder" {
   id = "123"
 }
 ```
 ## Example Output
 ```terraform
-# looker_folder.folder:
-resource "looker_folder" "folder" {
+% terraform show
+# data.looker_folder.folder:
+data "looker_folder" "folder" {
   id   = "123"
   name = "USA"
 }

@@ -43,6 +43,7 @@ resource "looker_color_collection" "collection" {
 
 ## Example Output
 ```terraform
+% terraform show
 # looker_color_collection.collection:
 resource "looker_color_collection" "collection" {
     id    = "my-new-collection"

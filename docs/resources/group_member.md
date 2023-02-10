@@ -12,7 +12,6 @@ data "looker_group" "group_two" {
   id = "4" // Parent group
 }
 
-
 resource "looker_group_member" "member_binding" {
   group_id = data.looker_group.group_two.id
 
@@ -24,7 +23,6 @@ resource "looker_group_member" "member_binding" {
     id = "3"
   }
 }
-
 
 resource "looker_group_member" "member_binding_secundo" {
   group_id = data.looker_group.group_two.id
@@ -41,6 +39,22 @@ resource "looker_group_member" "member_binding_secundo" {
 
 ## Example Output
 ```terraform
+% terraform show
+# data.looker_group.group_one
+data "looker_group" "group_one" {
+    id            = "4"
+    name          = "Muppets"
+    parent_groups = [
+        "10",
+        "20",
+    ]
+    roles         = [
+        "100",
+        "200",
+    ]
+    user_count    = 0
+}
+
 # looker_group_member.member_binding:
 resource "looker_group_member" "member_binding" {
   group_id = "4"

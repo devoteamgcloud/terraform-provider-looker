@@ -1,3 +1,4 @@
+% terraform show
 # looker_connection.example:
 resource "looker_connection" "example" {
   database        = "hegdgxme"

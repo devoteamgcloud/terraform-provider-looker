@@ -1,3 +1,4 @@
+% terraform show
 # looker_role.role:
 resource "looker_role" "role" {
   id                = "1"

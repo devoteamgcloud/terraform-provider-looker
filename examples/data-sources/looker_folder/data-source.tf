@@ -1,3 +1,3 @@
-resource "looker_folder" "folder" {
+data "looker_folder" "folder" {
   id = "123"
 }

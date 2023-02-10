@@ -1,4 +1,3 @@
-
 resource "looker_connection" "example" {
   name            = "testdummy901"
   username        = "hegdgxme"

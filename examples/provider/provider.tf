@@ -2,7 +2,7 @@ terraform {
   required_providers {
     looker = {
       source  = "devoteamgcloud/looker"
-      version = "0.2.0"
+      version = "x.x.x"
     }
   }
 }

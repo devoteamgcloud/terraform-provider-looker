@@ -1,3 +1,19 @@
+% terraform show
+# data.looker_group.group_one
+data "looker_group" "group_one" {
+    id            = "4"
+    name          = "Muppets"
+    parent_groups = [
+        "10",
+        "20",
+    ]
+    roles         = [
+        "100",
+        "200",
+    ]
+    user_count    = 0
+}
+
 # looker_group_member.member_binding:
 resource "looker_group_member" "member_binding" {
   group_id = "4"

@@ -37,3 +37,8 @@ resource "looker_folder" "folder" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+## Import
+Import is supported using the following syntax:
+```shell
+terraform import looker_folder.default {{folder_id}}
+```

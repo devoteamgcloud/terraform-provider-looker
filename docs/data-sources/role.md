@@ -18,6 +18,7 @@ data "looker_role" "my_role2" {
 ```
 ## Example Output
 ```terraform
+% terraform show
 # data.looker_role.my_role:
 data "looker_role" "my_role" {
   id                = 2

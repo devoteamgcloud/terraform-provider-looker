@@ -42,4 +42,9 @@ resource "looker_role" "role" {
 
 ### Read-Only
 
-- `id` (String) The ID of this resource.
+- `id` (String) Role id
+## Import
+Import is supported using the following syntax:
+```shell
+terraform import looker_role.default {{role_id}}
+```

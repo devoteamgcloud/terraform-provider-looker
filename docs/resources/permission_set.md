@@ -39,3 +39,8 @@ resource "looker_permission_set" "set" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+## Import
+Import is supported using the following syntax:
+```shell
+terraform import looker_permission_set.default {{permission_set_id}}
+```

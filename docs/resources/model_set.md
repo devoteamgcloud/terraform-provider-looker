@@ -36,3 +36,8 @@ resource "looker_model_set" "model_set_a" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+## Import
+Import is supported using the following syntax:
+```shell
+terraform import looker_model_set.default {{model_set_id}}
+```

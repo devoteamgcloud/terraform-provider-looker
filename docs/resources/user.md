@@ -43,3 +43,8 @@ resource "looker_user" "user_a" {
 
 - `id` (String) The ID of this resource.
 - `last_updated` (String)
+## Import
+Import is supported using the following syntax:
+```shell
+terraform import looker_user.default {{user_id}}
+```

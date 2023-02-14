@@ -44,3 +44,8 @@ resource "looker_group" "group_a" {
 - `id` (String) The ID of this resource.
 - `parent_groups` (Set of String)
 - `roles` (Set of String)
+## Import
+Import is supported using the following syntax:
+```shell
+terraform import looker_group.default {{group_id}}
+```

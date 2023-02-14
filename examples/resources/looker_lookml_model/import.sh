@@ -1,0 +1,1 @@
+terraform import looker_lookml_model.default {{lookml_model_name}}

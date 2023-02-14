@@ -48,8 +48,14 @@ func resourceLookMlModel() *schema.Resource {
 				Computed:    true,
 			},
 		},
-		Importer: nil,
+		Importer: &schema.ResourceImporter{
+			State: resourceLookMlModelImport,
+		},
 	}
+}
+func resourceLookMlModelImport(d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error){
+	d.Set("name", d.Id())
+	return []*schema.ResourceData{d}, nil
 }
 
 func resourceLookMlModelCreate(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {

@@ -1,0 +1,15 @@
+# data.looker_role.my_role:
+data "looker_role" "my_role" {
+  id                = 2
+  model_set_id      = "1"
+  name              = "Admin"
+  permission_set_id = "2"
+}
+
+# data.looker_role.my_role2:
+data "looker_role" "my_role2" {
+  id                = 4
+  model_set_id      = "2"
+  name              = "Developer"
+  permission_set_id = "3"
+}

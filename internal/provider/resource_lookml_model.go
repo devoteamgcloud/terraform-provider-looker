@@ -77,9 +77,6 @@ func resourceLookMlModelRead(ctx context.Context, d *schema.ResourceData, m inte
 	c := m.(*Config).Api // .(*lookergo.Client)
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: start", currFuncName()))
 	lmlMdlName := d.Get("name").(string)
-	if lmlMdlName == "" {
-		lmlMdlName = d.Id()
-	}
 	newModel, response, err := c.LookMLModel.Get(ctx, lmlMdlName)
 	if err != nil {
 		return diag.FromErr(err)

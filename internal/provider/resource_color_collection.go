@@ -17,7 +17,7 @@ func resourceColorCollection() *schema.Resource {
 		ReadContext:   resourceColorCollectionRead,
 		UpdateContext: resourceColorCollectionUpdate,
 		DeleteContext: resourceColorCollectionDelete,
-		Importer: nil,
+		Importer:      nil,
 		Schema: map[string]*schema.Schema{
 			"id": {
 				Description: "ColorCollection id",

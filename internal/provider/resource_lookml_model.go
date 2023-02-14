@@ -53,7 +53,7 @@ func resourceLookMlModel() *schema.Resource {
 		},
 	}
 }
-func resourceLookMlModelImport(d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error){
+func resourceLookMlModelImport(d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {
 	d.Set("name", d.Id())
 	return []*schema.ResourceData{d}, nil
 }

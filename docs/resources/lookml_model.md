@@ -46,3 +46,8 @@ resource "looker_lookml_model" "lookml_a" {
 
 - `id` (String) The ID of this resource.
 - `label` (String) UI-friendly name for this model
+## Import
+Import is supported using the following syntax:
+```shell
+terraform import looker_lookml_model.default {{lookml_model_name}}
+```

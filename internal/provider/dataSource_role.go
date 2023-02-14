@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"golang.org/x/net/context"
 	"strconv"
+	"strings"
 )
 
 var (
@@ -62,9 +63,12 @@ func dataSourceRoleRead(ctx context.Context, d *schema.ResourceData, m interface
 		}
 		if len(localRole) > 0 {
 			for _, irole := range localRole {
-				if irole.Name == roleName {
+				if strings.EqualFold(irole.Name, roleName.(string)) {
 					role = irole
 				}
+			}
+			if role.Id == 0 {
+				return diag.Errorf("Role not found.")
 			}
 		} else {
 			return diag.Errorf("Role not found.")

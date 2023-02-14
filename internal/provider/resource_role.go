@@ -18,6 +18,11 @@ func resourceRole() *schema.Resource {
 		UpdateContext: resourceRoleUpdate,
 		DeleteContext: resourceRoleDelete,
 		Schema: map[string]*schema.Schema{
+			"id": {
+				Description: "Role id",
+				Type:        schema.TypeString,
+				Computed:    true,
+			},
 			"name": {
 				Description: "Role name",
 				Type:        schema.TypeString,
@@ -52,6 +57,9 @@ func resourceRole() *schema.Resource {
 func resourceRoleRead(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
 	c := m.(*Config).Api // .(*lookergo.Client)
 	logTrace(ctx, "query role", "role_id", d.Id())
+	if _, err := strconv.Atoi(d.Id()); err != nil {
+		return diag.Errorf(fmt.Sprintf("Cannot convert %s to int.", d.Id()))
+	}
 	role, response, err := c.Roles.Get(ctx, idAsInt(d.Id()))
 	if response.StatusCode == 404 {
 		d.SetId("") // Mark as deleted

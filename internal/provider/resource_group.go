@@ -2,13 +2,14 @@ package provider
 
 import (
 	"context"
-	"time"
-
+	"fmt"
 	"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
+	"strconv"
+	"time"
 )
 
 // -
@@ -84,6 +85,9 @@ func resourceGroupCreate(ctx context.Context, d *schema.ResourceData, m interfac
 
 func resourceGroupRead(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
 	c := m.(*Config).Api // .(*lookergo.Client)
+	if _, err := strconv.Atoi(d.Id()); err != nil {
+		return diag.Errorf(fmt.Sprintf("Cannot convert %s to int.", d.Id()))
+	}
 	groupID := idAsInt(d.Id())
 
 	group, response, err := c.Groups.Get(ctx, groupID)

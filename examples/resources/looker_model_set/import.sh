@@ -1,0 +1,1 @@
+terraform import looker_model_set.default {{model_set_id}}

@@ -1,0 +1,1 @@
+terraform import looker_role.default {{role_id}}

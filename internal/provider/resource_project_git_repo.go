@@ -86,9 +86,7 @@ func resourceProjectGitRepo() *schema.Resource {
 					"creation of Project Resource. Required: Advanced Deploy Mode.",
 			},
 		},
-		Importer: &schema.ResourceImporter{
-			StateContext: schema.ImportStatePassthroughContext,
-		},
+		Importer: nil,
 	}
 }
 

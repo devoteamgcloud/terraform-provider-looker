@@ -147,9 +147,7 @@ func resourceConnection() *schema.Resource {
 				Optional: true,
 			},
 		},
-		Importer: &schema.ResourceImporter{
-			StateContext: schema.ImportStatePassthroughContext,
-		},
+		Importer: nil,
 	}
 }
 

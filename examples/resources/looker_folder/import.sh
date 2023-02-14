@@ -1,0 +1,1 @@
+terraform import looker_folder.default {{folder_id}}

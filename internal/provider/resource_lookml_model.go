@@ -48,9 +48,7 @@ func resourceLookMlModel() *schema.Resource {
 				Computed:    true,
 			},
 		},
-		Importer: &schema.ResourceImporter{
-			StateContext: schema.ImportStatePassthroughContext,
-		},
+		Importer: nil,
 	}
 }
 
@@ -79,14 +77,16 @@ func resourceLookMlModelRead(ctx context.Context, d *schema.ResourceData, m inte
 	c := m.(*Config).Api // .(*lookergo.Client)
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: start", currFuncName()))
 	lmlMdlName := d.Get("name").(string)
-
+	if lmlMdlName == "" {
+		lmlMdlName = d.Id()
+	}
 	newModel, response, err := c.LookMLModel.Get(ctx, lmlMdlName)
+	if err != nil {
+		return diag.FromErr(err)
+	}
 	if response.StatusCode == 404 {
 		d.SetId("") // Mark as deleted
 		return diags
-	}
-	if err != nil {
-		return diag.FromErr(err)
 	}
 	if newModel == nil {
 		return diag.FromErr(new(lookergo.ArgError))

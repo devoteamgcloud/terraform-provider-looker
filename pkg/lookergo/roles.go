@@ -2,6 +2,8 @@ package lookergo
 
 import (
 	"context"
+	"fmt"
+	"net/url"
 	"strconv"
 )
 
@@ -28,6 +30,7 @@ type PermissionSetSlice []PermissionSet
 // Ref: https://developers.looker.com/api/explorer/4.0/methods/Role
 type RolesResource interface {
 	List(context.Context, *ListOptions) ([]Role, *Response, error)
+	ListByName(ctx context.Context, name string, opt *ListOptions) ([]Role, *Response, error)
 	Get(context.Context, int) (*Role, *Response, error)
 	Create(context.Context, *Role) (*Role, *Response, error)
 	Update(context.Context, int, *Role) (*Role, *Response, error)
@@ -48,6 +51,17 @@ var _ RolesResource = &RolesResourceOp{}
 // List -
 func (s *RolesResourceOp) List(ctx context.Context, opt *ListOptions) ([]Role, *Response, error) {
 	return doList(ctx, s.client, roleBasePath, opt, new([]Role))
+}
+
+// ListByName -
+func (s *RolesResourceOp) ListByName(ctx context.Context, name string, opt *ListOptions) ([]Role, *Response, error) {
+	if name == "" {
+		return nil, nil, NewArgError("name", "has to be non-empty")
+	}
+	qs := url.Values{}
+	qs.Add("name", name)
+	path := fmt.Sprintf("%s/search", roleBasePath)
+	return doListByX(ctx, s.client, path, opt, new([]Role), qs)
 }
 
 // Get -

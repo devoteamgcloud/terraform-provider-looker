@@ -64,6 +64,7 @@ func New(version string) func() *schema.Provider {
 				"looker_project":        dataSourceProject(),
 				"looker_folder":         dataSourceFolder(),
 				"looker_permission_set": dataSourcePermissionSet(),
+				"looker_role":           dataSourceRole(),
 			},
 			ResourcesMap: map[string]*schema.Resource{
 				"looker_user":                   resourceUser(),

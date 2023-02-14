@@ -10,7 +10,8 @@
 tfplugindocs
 
 # Dev testing samples and scripts
-*.sh
+clean.sh
+deploy.sh
 dev_test/**
 test/
 terraform-provider-looker

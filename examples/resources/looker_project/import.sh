@@ -1,0 +1,1 @@
+terraform import looker_project.default {{project_id}}

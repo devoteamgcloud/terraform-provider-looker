@@ -43,9 +43,7 @@ func resourceRoleGroups() *schema.Resource {
 				},
 			},
 		},
-		Importer: &schema.ResourceImporter{
-			StateContext: schema.ImportStatePassthroughContext,
-		},
+		Importer: nil,
 	}
 }
 

@@ -72,6 +72,7 @@ func resourcePermissionSetCreate(ctx context.Context, d *schema.ResourceData, m 
 
 func resourcePermissionSetRead(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
 	c := m.(*Config).Api // .(*lookergo.Client)
+
 	permissionSetID := d.Id()
 	permissionSet, response, err := c.PermissionSets.Get(ctx, permissionSetID)
 	if response.StatusCode == 404 {

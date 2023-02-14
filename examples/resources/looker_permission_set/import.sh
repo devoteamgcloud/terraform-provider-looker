@@ -1,0 +1,1 @@
+terraform import looker_permission_set.default {{permission_set_id}}

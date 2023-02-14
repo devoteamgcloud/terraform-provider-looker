@@ -1,0 +1,1 @@
+terraform import looker_user.default {{user_id}}

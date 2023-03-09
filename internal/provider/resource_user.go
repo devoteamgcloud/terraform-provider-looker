@@ -265,6 +265,19 @@ func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m interface
 		}
 	}
 
+	roles := d.Get("roles").(*schema.Set)
+	if roles.Len() >= 1 {
+		var r []string
+		for _, role := range roles.List() {
+			i, _ := strconv.Atoi(role.(string))
+			r = append(r, idAsString(i))
+		}
+		_, _, err = c.Users.SetRoles(ctx, userOptions.Id, r)
+		if err != nil {
+			return diag.FromErr(err)
+		}
+	}
+
 	d.Set("last_updated", time.Now().Format(time.RFC850))
 
 	return resourceUserRead(ctx, d, m)

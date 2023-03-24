@@ -24,20 +24,19 @@ func resourceUserAttribute() *schema.Resource {
 				Type:         schema.TypeString,
 				Required:     true,
 				ValidateFunc: validation.StringLenBetween(1, 255),
-				Description: "Name of user attribute.",
-
+				Description:  "Name of user attribute.",
 			},
 			"label": {
 				Type:         schema.TypeString,
 				Required:     true,
 				ValidateFunc: validation.StringLenBetween(1, 255),
-				Description: "Human-friendly label for user attribute",
+				Description:  "Human-friendly label for user attribute",
 			},
 			"type": {
 				Type:         schema.TypeString,
 				Required:     true,
 				ValidateFunc: validation.StringLenBetween(0, 255),
-				Description: "Type of user attribute ('string', 'number', 'datetime', 'yesno', 'zipcode')",
+				Description:  "Type of user attribute ('string', 'number', 'datetime', 'yesno', 'zipcode')",
 			},
 			"value_is_hidden": {
 				Type:        schema.TypeBool,
@@ -63,7 +62,6 @@ func resourceUserAttribute() *schema.Resource {
 		},
 	}
 }
-
 
 func resourceUserAttributeCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*Config).Api // .(*lookergo.Client)
@@ -148,10 +146,10 @@ func resourceUserAttributeUpdate(ctx context.Context, d *schema.ResourceData, m 
 			UserAttr.ValueIsHidden = boolPtr(d.Get("value_is_hidden").(bool))
 		}
 		if d.HasChange("user_can_view") {
-			UserAttr.UserCanView =  boolPtr(d.Get("user_can_view").(bool))
+			UserAttr.UserCanView = boolPtr(d.Get("user_can_view").(bool))
 		}
 		if d.HasChange("user_can_edit") {
-			UserAttr.UserCanEdit =  boolPtr(d.Get("user_can_edit").(bool))
+			UserAttr.UserCanEdit = boolPtr(d.Get("user_can_edit").(bool))
 		}
 
 		if _, _, err = c.UserAttributes.Update(ctx, ID, UserAttr); err != nil {
@@ -159,14 +157,14 @@ func resourceUserAttributeUpdate(ctx context.Context, d *schema.ResourceData, m 
 		}
 	}
 
-	return resourceUserAttributeRead(ctx,d,m)
+	return resourceUserAttributeRead(ctx, d, m)
 }
 
 func resourceUserAttributeDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*Config).Api // .(*lookergo.Client)
 	var diags diag.Diagnostics
 	ID := d.Id()
-	_,err := c.UserAttributes.Delete(ctx, ID)
+	_, err := c.UserAttributes.Delete(ctx, ID)
 	if err != nil {
 		return diag.FromErr(err)
 	}

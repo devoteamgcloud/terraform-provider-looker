@@ -13,9 +13,9 @@ const UserAttributesBasePath = "4.0/user_attributes"
 type UserAttribute struct {
 	Can                        *map[string]bool `json:"can,omitempty"`                           // Operations the current user is able to perform on this object
 	Id                         *string          `json:"id,omitempty"`                            // Unique Id
-	Name                       string           `json:"name,omitempty"`                                    // Name of user attribute
-	Label                      string           `json:"label,omitempty"`                                   // Human-friendly label for user attribute
-	Type                       string           `json:"type,omitempty"`                                    // Type of user attribute ("string", "number", "datetime", "yesno", "zipcode")
+	Name                       string           `json:"name"`                                    // Name of user attribute
+	Label                      string           `json:"label"`                                   // Human-friendly label for user attribute
+	Type                       string           `json:"type"`                                    // Type of user attribute ("string", "number", "datetime", "yesno", "zipcode")
 	DefaultValue               *string          `json:"default_value,omitempty"`                 // Default value for when no value is set on the user
 	IsSystem                   *bool            `json:"is_system,omitempty"`                     // Attribute is a system default
 	IsPermanent                *bool            `json:"is_permanent,omitempty"`                  // Attribute is permanent and cannot be deleted

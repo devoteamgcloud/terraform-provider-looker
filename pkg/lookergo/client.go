@@ -553,7 +553,7 @@ func StreamToString(stream io.Reader) string {
 }
 
 type service interface {
-	Group | User | CredentialsEmail | Role | PermissionSet | Session | Project | GitBranch | Folder | UserAttribute
+	Group | User | CredentialsEmail | Role | PermissionSet | Session | Project | GitBranch | Folder | UserAttribute | UserAttributeGroupValue
 }
 
 // addOptions -
@@ -809,6 +809,36 @@ func doAddMember[T service](ctx context.Context, client *Client, path string, sv
 	}
 
 	return svc, resp, err
+}
+
+func doAddValue[T service](ctx context.Context, client *Client, path string, svc *[]T, addNew interface{}) (*[]T, *Response, error) {
+
+	req, err := client.NewRequest(ctx, http.MethodPost, path, addNew)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	resp, err := client.Do(ctx, req, svc)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return svc, resp, err
+}
+
+func doDeleteX(ctx context.Context, client *Client, path string) (*Response, error) {
+
+	req, err := client.NewRequest(ctx, http.MethodDelete, path, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := client.Do(ctx, req, nil)
+	if err != nil {
+		return resp, err
+	}
+
+	return resp, err
 }
 
 func boolPtr(b bool) *bool {

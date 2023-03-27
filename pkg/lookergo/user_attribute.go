@@ -2,6 +2,7 @@ package lookergo
 
 import (
 	"context"
+	"fmt"
 )
 
 type UserAttributesResourceOp struct {
@@ -25,11 +26,23 @@ type UserAttribute struct {
 	HiddenValueDomainWhitelist *string          `json:"hidden_value_domain_whitelist,omitempty"` // Destinations to which a hidden attribute may be sent. Once set, cannot be edited.
 }
 
+type UserAttributeGroupValue struct {
+	Can             map[string]bool `json:"can,omitempty"`               // Operations the current user is able to perform on this object
+	Id              string          `json:"id,omitempty"`                // Unique Id of this group-attribute relation
+	GroupId         string          `json:"group_id,omitempty"`          // Id of group
+	UserAttributeId string          `json:"user_attribute_id,omitempty"` // Id of user attribute
+	ValueIsHidden   bool            `json:"value_is_hidden,omitempty"`   // If true, the "value" field will be null, because the attribute settings block access to this value
+	Rank            int64           `json:"rank,omitempty"`              // Precedence for resolving value for user
+	Value           string          `json:"value,omitempty"`             // Value of user attribute for group
+}
+
 type UserAttributesResource interface {
 	Get(context.Context, int) (*UserAttribute, *Response, error)
 	Create(context.Context, *UserAttribute) (*UserAttribute, *Response, error)
 	Update(context.Context, string, *UserAttribute) (*UserAttribute, *Response, error)
 	Delete(context.Context, string) (*Response, error)
+	SetUserAttributeValue(context.Context, []UserAttributeGroupValue, string) (*[]UserAttributeGroupValue, *Response, error)
+	GetUserAttributeValue(context.Context, string) (*[]UserAttributeGroupValue, *Response, error)
 }
 
 func (s *UserAttributesResourceOp) Get(ctx context.Context, UserAttributeId int) (*UserAttribute, *Response, error) {
@@ -46,4 +59,14 @@ func (s *UserAttributesResourceOp) Update(ctx context.Context, UserAttributeId s
 
 func (s *UserAttributesResourceOp) Delete(ctx context.Context, UserAttributeId string) (*Response, error) {
 	return doDelete(ctx, s.client, UserAttributesBasePath, UserAttributeId)
+}
+
+func (s *UserAttributesResourceOp) SetUserAttributeValue(ctx context.Context, userAtt []UserAttributeGroupValue, attributeId string) (*[]UserAttributeGroupValue, *Response, error) {
+	path := fmt.Sprintf("%s/%s/group_values", UserAttributesBasePath, attributeId)
+	return doAddValue(ctx, s.client, path, new([]UserAttributeGroupValue), userAtt)
+}
+
+func (s *UserAttributesResourceOp) GetUserAttributeValue(ctx context.Context, UserAttributeId string) (*[]UserAttributeGroupValue, *Response, error) {
+	path := fmt.Sprintf("%s/%s/group_values", UserAttributesBasePath, UserAttributeId)
+	return doGet(ctx, s.client, path, new([]UserAttributeGroupValue))
 }

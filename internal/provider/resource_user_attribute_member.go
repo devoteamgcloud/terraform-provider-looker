@@ -80,17 +80,17 @@ func resourceUserAttributeMemberRead(ctx context.Context, d *schema.ResourceData
 	c := m.(*Config).Api // .(*lookergo.Client)
 	var diags diag.Diagnostics
 	ID := d.Get("user_attribute_id").(string)
-	attrs, _, err := c.UserAttributes.GetUserAttributeValue(ctx,ID)
+	attrs, _, err := c.UserAttributes.GetUserAttributeValue(ctx, ID)
 	if err != nil {
 		return diag.FromErr(err)
 	}
 	var attrItems []interface{}
 	for _, attr := range *attrs {
-		group,_,err := c.Groups.Get(ctx, idAsInt(attr.GroupId))
+		group, _, err := c.Groups.Get(ctx, idAsInt(attr.GroupId))
 		if err != nil {
 			return diag.FromErr(err)
-		} 
-		attrItems = append(attrItems, map[string]interface{}{"id": idAsString(group.Id), "name": group.Name, "value":attr.Value})
+		}
+		attrItems = append(attrItems, map[string]interface{}{"id": idAsString(group.Id), "name": group.Name, "value": attr.Value})
 	}
 	d.Set("group", attrItems)
 	return diags

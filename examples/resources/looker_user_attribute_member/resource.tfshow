@@ -1,0 +1,32 @@
+% terraform show
+# looker_group.my-group:
+resource "looker_group" "my-group" {
+    delete_on_destroy = true
+    id                = "39"
+    name              = "mygroup"
+    parent_groups     = []
+    roles             = []
+}
+
+# looker_user_attribute.att:
+resource "looker_user_attribute" "att" {
+    id              = "35"
+    label           = "attribute label"
+    name            = "attribute_name"
+    type            = "string"
+    user_can_edit   = true
+    user_can_view   = true
+    value_is_hidden = false
+}
+
+# looker_user_attribute_member.name:
+resource "looker_user_attribute_member" "name" {
+    id                = "-"
+    user_attribute_id = "35"
+
+    group {
+        id    = "39"
+        name  = "mygroup"
+        value = "attribute-value"
+    }
+}

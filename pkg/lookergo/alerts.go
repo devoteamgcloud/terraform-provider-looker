@@ -2,7 +2,6 @@ package lookergo
 
 import (
 	"context"
-	"errors"
 )
 
 const AlertsBasePath = "4.0/alerts"
@@ -38,15 +37,6 @@ const ComparisonType_INCREASES_BY ComparisonType = "INCREASES_BY"
 const ComparisonType_DECREASES_BY ComparisonType = "DECREASES_BY"
 const ComparisonType_CHANGES_BY ComparisonType = "CHANGES_BY"
 
-func (lt ComparisonType) IsValid() error {
-    switch lt {
-    case ComparisonType_EQUAL_TO, ComparisonType_GREATER_THAN, ComparisonType_GREATER_THAN_OR_EQUAL_TO, ComparisonType_LESS_THAN,
-	ComparisonType_LESS_THAN_OR_EQUAL_TO,ComparisonType_INCREASES_BY,ComparisonType_DECREASES_BY,ComparisonType_CHANGES_BY:
-        return nil
-    }
-    return errors.New("invalid comparison type")
-}
-
 type AlertConditionState struct {
 	PreviousTimeSeriesId *string `json:"previous_time_series_id,omitempty"` // (Write-Only) The second latest time string the alert has seen.
 	LatestTimeSeriesId   *string `json:"latest_time_series_id,omitempty"`   // (Write-Only) Latest time string the alert has seen.
@@ -67,9 +57,9 @@ type AlertDestination struct {
 }
 
 type AlertFieldFilter struct {
-	FieldName   string      `json:"field_name"`             // Field Name. Has format `<view>.<field>`
-	FieldValue  interface{} `json:"field_value"`            // Field Value. Depends on the type of field - numeric or string. For [location](https://cloud.google.com/looker/docs/reference/field-reference/dimension-type-reference#location) type, it's a list of floats. Example `[1.0, 56.0]`
-	FilterValue *string     `json:"filter_value,omitempty"` // Filter Value. Usually null except for [location](https://cloud.google.com/looker/docs/reference/field-reference/dimension-type-reference#location) type. It'll be a string of lat,long ie `'1.0,56.0'`
+	FieldName   string  `json:"field_name"`             // Field Name. Has format `<view>.<field>`
+	FieldValue  string  `json:"field_value"`            // Field Value. Depends on the type of field - numeric or string. For [location](https://cloud.google.com/looker/docs/reference/field-reference/dimension-type-reference#location) type, it's a list of floats. Example `[1.0, 56.0]`
+	FilterValue *string `json:"filter_value,omitempty"` // Filter Value. Usually null except for [location](https://cloud.google.com/looker/docs/reference/field-reference/dimension-type-reference#location) type. It'll be a string of lat,long ie `'1.0,56.0'`
 }
 
 type AlertField struct {

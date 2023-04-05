@@ -1,0 +1,25 @@
+% terraform show                                  
+# looker_alert.default:
+resource "looker_alert" "default" {
+    comparison_type      = "GREATER_THAN_OR_EQUAL_TO"
+    cron                 = "0 1 * * *"
+    dashboard_element_id = "218"
+    description          = "A description"
+    followable           = true
+    id                   = "21"
+    is_disabled          = false
+    is_public            = true
+    owner_id             = "60"
+    owner_display_name   = "Nabil Lahssini",
+    treshold             = 10
+
+    destinations {
+        destination_type = "EMAIL"
+        email_address    = "test@test.com"
+    }
+
+    field {
+        name  = "population_data.sum_of_population"
+        title = "confirmed cases"
+    }
+}

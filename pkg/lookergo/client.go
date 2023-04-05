@@ -78,6 +78,7 @@ type Client struct {
 	LookMLModel     LookMlModelsResource
 	ColorCollection ColorCollectionResource
 	PermissionSets  PermissionSetResource
+	Alerts 			AlertsResource
 	UserAttributes  UserAttributesResource
 	// TODO: Expand
 
@@ -151,6 +152,7 @@ func NewClient(httpClient *http.Client) *Client {
 	c.LookMLModel = &LookMlModelsResourceOp{client: c}
 	c.ColorCollection = &ColorCollectionResourceOp{client: c}
 	c.PermissionSets = &PermissionSetResourceOp{client: c}
+	c.Alerts = &AlertsResourceOp{client: c}
 	c.UserAttributes = &UserAttributesResourceOp{client: c}
 
 	c.headers = make(map[string]string)
@@ -553,7 +555,7 @@ func StreamToString(stream io.Reader) string {
 }
 
 type service interface {
-	Group | User | CredentialsEmail | Role | PermissionSet | Session | Project | GitBranch | Folder | UserAttribute | UserAttributeGroupValue
+	Group | User | CredentialsEmail | Role | PermissionSet | Session | Project | GitBranch | Folder | UserAttribute | UserAttributeGroupValue | Alert
 }
 
 // addOptions -

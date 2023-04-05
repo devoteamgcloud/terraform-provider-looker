@@ -23,19 +23,23 @@ type AlertsResource interface {
 
 type DestinationType string
 
-const DestinationType_EMAIL DestinationType = "EMAIL"
-const DestinationType_ACTION_HUB DestinationType = "ACTION_HUB"
+const (
+	DestinationType_EMAIL      DestinationType = "EMAIL"
+	DestinationType_ACTION_HUB DestinationType = "ACTION_HUB"
+)
 
 type ComparisonType string
 
-const ComparisonType_EQUAL_TO ComparisonType = "EQUAL_TO"
-const ComparisonType_GREATER_THAN ComparisonType = "GREATER_THAN"
-const ComparisonType_GREATER_THAN_OR_EQUAL_TO ComparisonType = "GREATER_THAN_OR_EQUAL_TO"
-const ComparisonType_LESS_THAN ComparisonType = "LESS_THAN"
-const ComparisonType_LESS_THAN_OR_EQUAL_TO ComparisonType = "LESS_THAN_OR_EQUAL_TO"
-const ComparisonType_INCREASES_BY ComparisonType = "INCREASES_BY"
-const ComparisonType_DECREASES_BY ComparisonType = "DECREASES_BY"
-const ComparisonType_CHANGES_BY ComparisonType = "CHANGES_BY"
+const (
+	ComparisonType_EQUAL_TO                 ComparisonType = "EQUAL_TO"
+	ComparisonType_GREATER_THAN             ComparisonType = "GREATER_THAN"
+	ComparisonType_GREATER_THAN_OR_EQUAL_TO ComparisonType = "GREATER_THAN_OR_EQUAL_TO"
+	ComparisonType_LESS_THAN                ComparisonType = "LESS_THAN"
+	ComparisonType_LESS_THAN_OR_EQUAL_TO    ComparisonType = "LESS_THAN_OR_EQUAL_TO"
+	ComparisonType_INCREASES_BY             ComparisonType = "INCREASES_BY"
+	ComparisonType_DECREASES_BY             ComparisonType = "DECREASES_BY"
+	ComparisonType_CHANGES_BY               ComparisonType = "CHANGES_BY"
+)
 
 type AlertConditionState struct {
 	PreviousTimeSeriesId *string `json:"previous_time_series_id,omitempty"` // (Write-Only) The second latest time string the alert has seen.

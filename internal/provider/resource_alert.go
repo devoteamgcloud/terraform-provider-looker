@@ -19,28 +19,28 @@ func resourceAlerts() *schema.Resource {
 		DeleteContext: resourceAlertsDelete,
 		Schema: map[string]*schema.Schema{
 			"id": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Type:        schema.TypeString,
+				Computed:    true,
 				Description: "ID of the alert",
 			},
 			"description": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Type:        schema.TypeString,
+				Optional:    true,
 				Description: "An optional description for the alert. This supplements the title",
 			},
 			"cron": {
-				Type:     schema.TypeString,
-				Required: true,
+				Type:        schema.TypeString,
+				Required:    true,
 				Description: "Vixie-Style crontab specification when to run. At minumum, it has to be longer than 15 minute intervals",
 			},
 			"dashboard_element_id": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Type:        schema.TypeString,
+				Optional:    true,
 				Description: "ID of the dashboard element associated with the alert",
 			},
 			"comparison_type": {
-				Type:     schema.TypeString,
-				Required: true,
+				Type:        schema.TypeString,
+				Required:    true,
 				Description: `This property informs the check what kind of comparison we are performing. Only certain condition types are valid for time series alerts. Valid values are: "EQUAL_TO", "GREATER_THAN", "GREATER_THAN_OR_EQUAL_TO", "LESS_THAN", "LESS_THAN_OR_EQUAL_TO", "INCREASES_BY", "DECREASES_BY", "CHANGES_BY".`,
 				ValidateFunc: func(val any, key string) (warns []string, errs []error) {
 					v := val.(string)
@@ -55,8 +55,8 @@ func resourceAlerts() *schema.Resource {
 				},
 			},
 			"applied_dashboard_filters": {
-				Type:     schema.TypeSet,
-				Optional: true,
+				Type:        schema.TypeSet,
+				Optional:    true,
 				Description: "Filters coming from the dashboard that are applied.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
@@ -80,14 +80,14 @@ func resourceAlerts() *schema.Resource {
 				},
 			},
 			"destinations": {
-				Type:     schema.TypeSet,
-				Required: true,
+				Type:        schema.TypeSet,
+				Required:    true,
 				Description: "Array of destinations to send alerts to. Must be the same type of destination.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"destination_type": {
-							Type:     schema.TypeString,
-							Required: true,
+							Type:        schema.TypeString,
+							Required:    true,
 							Description: `Type of destination that the alert will be sent to Valid values are: "EMAIL", "ACTION_HUB".`,
 							ValidateFunc: func(val any, key string) (warns []string, errs []error) {
 								v := val.(string)
@@ -102,37 +102,37 @@ func resourceAlerts() *schema.Resource {
 							},
 						},
 						"email_address": {
-							Type:     schema.TypeString,
-							Optional: true,
+							Type:        schema.TypeString,
+							Optional:    true,
 							Description: "Email address for the 'email' type",
 						},
 						"action_hub_integration_id": {
-							Type:     schema.TypeString,
-							Optional: true,
+							Type:        schema.TypeString,
+							Optional:    true,
 							Description: "Action hub integration id for the 'action_hub' type",
 						},
 						"action_hub_form_params_json": {
-							Type:     schema.TypeString,
-							Optional: true,
+							Type:        schema.TypeString,
+							Optional:    true,
 							Description: "Action hub form params json for the 'action_hub' type",
 						},
 					},
 				},
 			},
 			"field": {
-				Type:     schema.TypeSet,
-				Required: true,
+				Type:        schema.TypeSet,
+				Required:    true,
 				Description: "",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"title": {
-							Type:     schema.TypeString,
-							Optional: true,
+							Type:        schema.TypeString,
+							Optional:    true,
 							Description: "Field's title",
 						},
 						"name": {
-							Type:     schema.TypeString,
-							Required: true,
+							Type:        schema.TypeString,
+							Required:    true,
 							Description: "Field's name",
 							ValidateFunc: func(val any, key string) (warns []string, errs []error) {
 								v := val.(string)
@@ -145,8 +145,8 @@ func resourceAlerts() *schema.Resource {
 							},
 						},
 						"filter": {
-							Type:     schema.TypeSet,
-							Optional: true,
+							Type:        schema.TypeSet,
+							Optional:    true,
 							Description: "(Optional / Advance Use) List of fields filter. This further restricts the alert to certain dashboard element's field values. This can be used on top of dashboard filters `applied_dashboard_filters`. To keep thing simple, it's suggested to just use dashboard filters.",
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
@@ -169,38 +169,38 @@ func resourceAlerts() *schema.Resource {
 				},
 			},
 			"custom_title": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Type:        schema.TypeString,
+				Optional:    true,
 				Description: "An optional, user-defined title for the alert",
 			},
 			"owner_id": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Type:        schema.TypeString,
+				Optional:    true,
 				Description: "User id of alert owner",
 			},
 			"owner_display_name": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Type:        schema.TypeString,
+				Computed:    true,
 				Description: "User display name of alert owner",
 			},
 			"followable": {
-				Type:     schema.TypeBool,
-				Optional: true,
+				Type:        schema.TypeBool,
+				Optional:    true,
 				Description: "Whether or not the alert is followable",
 			},
 			"is_disabled": {
-				Type:     schema.TypeBool,
-				Optional: true,
+				Type:        schema.TypeBool,
+				Optional:    true,
 				Description: "Whether or not the alert is disabled",
 			},
 			"is_public": {
-				Type:     schema.TypeBool,
-				Optional: true,
+				Type:        schema.TypeBool,
+				Optional:    true,
 				Description: "Whether or not the alert is public",
 			},
 			"treshold": {
-				Type:     schema.TypeFloat,
-				Required: true,
+				Type:        schema.TypeFloat,
+				Required:    true,
 				Description: "Value of the alert threshold",
 			},
 		},

@@ -78,7 +78,7 @@ type Client struct {
 	LookMLModel     LookMlModelsResource
 	ColorCollection ColorCollectionResource
 	PermissionSets  PermissionSetResource
-	Alerts 			AlertsResource
+	Alerts          AlertsResource
 	UserAttributes  UserAttributesResource
 	// TODO: Expand
 

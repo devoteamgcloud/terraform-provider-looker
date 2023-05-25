@@ -1,6 +1,16 @@
 % terraform show
-# data.looker_folder.folder:
-data "looker_folder" "folder" {
-  id   = "123"
-  name = "USA"
+# data.looker_folder.usa_folder:
+data "looker_folder" "usa_folder" {
+  id          = "1"
+  name        = "USA"
+  parent_id   = "3"
+  parent_name = "Countries"
+}
+
+# data.looker_folder.eu_folder:
+data "looker_folder" "eu_folder" {
+  id          = "2"
+  name        = "EU"
+  parent_id   = "3"
+  parent_name = "Countries"
 }

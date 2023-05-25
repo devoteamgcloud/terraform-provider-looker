@@ -66,7 +66,7 @@ func resourceUser() *schema.Resource {
 				Type:        schema.TypeBool,
 				Default:     false,
 				Optional:    true,
-				Description: "Set to true if the user already exists and you want to use it. If user doesn't exist, it will be created.",
+				Description: "Set to true if the user already exists and you want to import it. If user is not found, it will be created.",
 			},
 			"delete_on_destroy": {
 				Type:        schema.TypeBool,

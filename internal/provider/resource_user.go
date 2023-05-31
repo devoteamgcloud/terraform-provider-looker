@@ -74,6 +74,11 @@ func resourceUser() *schema.Resource {
 				Optional:    true,
 				Description: "Set to false if you want the user to not be deleted on destroy plan.",
 			},
+			"send_password_reset": {
+				Type:        schema.TypeBool,
+				Required:    true,
+				Description: "This will send a password reset email to the user. If a password reset token does not already exist for this user, it will create one and then send it. If the user has not yet set up their account, it will send a setup email to the user.",
+			},
 		},
 		Importer: &schema.ResourceImporter{
 			// State: schema.ImportStatePassthrough,
@@ -156,6 +161,13 @@ func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface
 		}
 
 		newRoles, _, err = c.Users.SetRoles(ctx, newUser.Id, r)
+		if err != nil {
+			return diag.FromErr(err)
+		}
+	}
+
+	if d.Get("send_password_reset").(bool) {
+		_, _, err := c.Users.SendPasswordReset(ctx, newUser.Id)
 		if err != nil {
 			return diag.FromErr(err)
 		}

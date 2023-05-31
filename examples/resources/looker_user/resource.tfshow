@@ -1,8 +1,9 @@
 % terraform show
 # looker_user.user_a:
 resource "looker_user" "user_a" {
-    id         = "167"
-    email      = "xavier.w@ipv4.plus"
-    first_name = "Xavier"
-    last_name  = "Waterslaeghers"
+    id                  = "167"
+    email               = "xavier.w@ipv4.plus"
+    first_name          = "Xavier"
+    last_name           = "Waterslaeghers"
+    send_password_reset = true
 }

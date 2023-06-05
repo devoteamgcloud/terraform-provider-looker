@@ -76,7 +76,8 @@ func resourceUser() *schema.Resource {
 			},
 			"send_password_reset": {
 				Type:        schema.TypeBool,
-				Required:    true,
+				Default:     true,
+				Optional:    true,
 				Description: "This will send a password reset email to the user. If a password reset token does not already exist for this user, it will create one and then send it. If the user has not yet set up their account, it will send a setup email to the user.",
 			},
 		},

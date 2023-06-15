@@ -31,7 +31,7 @@ func resourceColorCollection() *schema.Resource {
 			},
 			"categoricalpalettes": {
 				Description: "Array of categorical palette definitions",
-				Type:        schema.TypeList,
+				Type:        schema.TypeSet,
 				Required:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
@@ -52,7 +52,7 @@ func resourceColorCollection() *schema.Resource {
 							Default:     "Categorical",
 						},
 						"colors": {
-							Type:     schema.TypeList,
+							Type:     schema.TypeSet,
 							Required: true,
 							Elem: &schema.Schema{
 								Type: schema.TypeString,
@@ -63,7 +63,7 @@ func resourceColorCollection() *schema.Resource {
 			},
 			"sequentialpalettes": {
 				Description: "Array of categorical palette definitions",
-				Type:        schema.TypeList,
+				Type:        schema.TypeSet,
 				Required:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
@@ -84,7 +84,7 @@ func resourceColorCollection() *schema.Resource {
 							Default:     "Sequential",
 						},
 						"stops": {
-							Type:        schema.TypeList,
+							Type:        schema.TypeSet,
 							Required:    true,
 							MinItems:    2,
 							Description: "Array of ColorStops in the palette",
@@ -118,7 +118,7 @@ func resourceColorCollection() *schema.Resource {
 			},
 			"divergingpalettes": {
 				Description: "Array of categorical palette definitions",
-				Type:        schema.TypeList,
+				Type:        schema.TypeSet,
 				Required:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
@@ -139,7 +139,7 @@ func resourceColorCollection() *schema.Resource {
 							Default:     "Diverging",
 						},
 						"stops": {
-							Type:        schema.TypeList,
+							Type:        schema.TypeSet,
 							Description: "Array of ColorStops in the palette",
 							Required:    true,
 							MinItems:    2,

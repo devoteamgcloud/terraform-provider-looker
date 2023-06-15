@@ -180,11 +180,11 @@ func cocoSchemaToStruct(ctx context.Context, d *schema.ResourceData, coco *looke
 
 	if categoricalpalettesSet, ok := d.GetOk("categoricalpalettes"); ok {
 		catPal := []lookergo.DiscretePalette{}
-		for _, raw := range categoricalpalettesSet.(*schema.Set).List() {
+		for _, raw := range categoricalpalettesSet.([]interface{}) {
 			obj := raw.(map[string]interface{})
 			var pal lookergo.DiscretePalette
 			pal.Label = castToPtr(obj["label"].(string))
-			pal.Colors = castToPtr(schemaSetToStringSlice(obj["colors"].(*schema.Set)))
+			pal.Colors = castToPtr(obj["colors"].([]string))
 			pal.Type = castToPtr(obj["type"].(string))
 			catPal = append(catPal, pal)
 		}
@@ -193,13 +193,13 @@ func cocoSchemaToStruct(ctx context.Context, d *schema.ResourceData, coco *looke
 
 	if sequentialpalettesSet, ok := d.GetOk("sequentialpalettes"); ok {
 		seqPal := []lookergo.ContinuousPalette{}
-		for _, raw := range sequentialpalettesSet.(*schema.Set).List() {
+		for _, raw := range sequentialpalettesSet.([]interface{}) {
 			obj := raw.(map[string]interface{})
 			var pal lookergo.ContinuousPalette
 			pal.Label = castToPtr(obj["label"].(string))
 			pal.Type = castToPtr(obj["type"].(string))
 			stopsList := []lookergo.ColorStop{}
-			for _, stop := range obj["stops"].(*schema.Set).List() {
+			for _, stop := range obj["stops"].([]interface{}) {
 				objj := stop.(map[string]interface{})
 				st := lookergo.ColorStop{}
 				st.Color = castToPtr(objj["color"].(string))
@@ -214,13 +214,13 @@ func cocoSchemaToStruct(ctx context.Context, d *schema.ResourceData, coco *looke
 
 	if divergingpalettesSet, ok := d.GetOk("divergingpalettes"); ok {
 		divPal := []lookergo.ContinuousPalette{}
-		for _, raw := range divergingpalettesSet.(*schema.Set).List() {
+		for _, raw := range divergingpalettesSet.([]interface{}) {
 			obj := raw.(map[string]interface{})
 			var pal lookergo.ContinuousPalette
 			pal.Label = castToPtr(obj["label"].(string))
 			pal.Type = castToPtr(obj["type"].(string))
 			stopsList := []lookergo.ColorStop{}
-			for _, stop := range obj["stops"].(*schema.Set).List() {
+			for _, stop := range obj["stops"].([]interface{}) {
 				objj := stop.(map[string]interface{})
 				st := lookergo.ColorStop{}
 				st.Color = castToPtr(objj["color"].(string))

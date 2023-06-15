@@ -31,7 +31,7 @@ func resourceColorCollection() *schema.Resource {
 			},
 			"categoricalpalettes": {
 				Description: "Array of categorical palette definitions",
-				Type:        schema.TypeSet,
+				Type:        schema.TypeList,
 				Required:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
@@ -52,7 +52,7 @@ func resourceColorCollection() *schema.Resource {
 							Default:     "Categorical",
 						},
 						"colors": {
-							Type:     schema.TypeSet,
+							Type:     schema.TypeList,
 							Required: true,
 							Elem: &schema.Schema{
 								Type: schema.TypeString,
@@ -63,7 +63,7 @@ func resourceColorCollection() *schema.Resource {
 			},
 			"sequentialpalettes": {
 				Description: "Array of categorical palette definitions",
-				Type:        schema.TypeSet,
+				Type:        schema.TypeList,
 				Required:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
@@ -84,7 +84,7 @@ func resourceColorCollection() *schema.Resource {
 							Default:     "Sequential",
 						},
 						"stops": {
-							Type:        schema.TypeSet,
+							Type:        schema.TypeList,
 							Required:    true,
 							MinItems:    2,
 							Description: "Array of ColorStops in the palette",
@@ -118,7 +118,7 @@ func resourceColorCollection() *schema.Resource {
 			},
 			"divergingpalettes": {
 				Description: "Array of categorical palette definitions",
-				Type:        schema.TypeSet,
+				Type:        schema.TypeList,
 				Required:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
@@ -139,7 +139,7 @@ func resourceColorCollection() *schema.Resource {
 							Default:     "Diverging",
 						},
 						"stops": {
-							Type:        schema.TypeSet,
+							Type:        schema.TypeList,
 							Description: "Array of ColorStops in the palette",
 							Required:    true,
 							MinItems:    2,
@@ -184,7 +184,7 @@ func cocoSchemaToStruct(ctx context.Context, d *schema.ResourceData, coco *looke
 			obj := raw.(map[string]interface{})
 			var pal lookergo.DiscretePalette
 			pal.Label = castToPtr(obj["label"].(string))
-			pal.Colors = castToPtr(obj["colors"].([]string))
+			pal.Colors = castToPtr(interfaceListToStringList(obj["colors"].([]interface{})))
 			pal.Type = castToPtr(obj["type"].(string))
 			catPal = append(catPal, pal)
 		}

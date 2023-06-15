@@ -97,10 +97,10 @@ resource "looker_color_collection" "collection" {
 
 ### Required
 
-- `categoricalpalettes` (Block Set, Min: 1) Array of categorical palette definitions (see [below for nested schema](#nestedblock--categoricalpalettes))
-- `divergingpalettes` (Block Set, Min: 1) Array of categorical palette definitions (see [below for nested schema](#nestedblock--divergingpalettes))
+- `categoricalpalettes` (Block List, Min: 1) Array of categorical palette definitions (see [below for nested schema](#nestedblock--categoricalpalettes))
+- `divergingpalettes` (Block List, Min: 1) Array of categorical palette definitions (see [below for nested schema](#nestedblock--divergingpalettes))
 - `label` (String) Label of color collection
-- `sequentialpalettes` (Block Set, Min: 1) Array of categorical palette definitions (see [below for nested schema](#nestedblock--sequentialpalettes))
+- `sequentialpalettes` (Block List, Min: 1) Array of categorical palette definitions (see [below for nested schema](#nestedblock--sequentialpalettes))
 
 ### Read-Only
 
@@ -111,7 +111,7 @@ resource "looker_color_collection" "collection" {
 
 Required:
 
-- `colors` (Set of String)
+- `colors` (List of String)
 
 Optional:
 
@@ -128,7 +128,7 @@ Read-Only:
 
 Required:
 
-- `stops` (Block Set, Min: 2) Array of ColorStops in the palette (see [below for nested schema](#nestedblock--divergingpalettes--stops))
+- `stops` (Block List, Min: 2) Array of ColorStops in the palette (see [below for nested schema](#nestedblock--divergingpalettes--stops))
 
 Optional:
 
@@ -154,7 +154,7 @@ Required:
 
 Required:
 
-- `stops` (Block Set, Min: 2) Array of ColorStops in the palette (see [below for nested schema](#nestedblock--sequentialpalettes--stops))
+- `stops` (Block List, Min: 2) Array of ColorStops in the palette (see [below for nested schema](#nestedblock--sequentialpalettes--stops))
 
 Optional:
 

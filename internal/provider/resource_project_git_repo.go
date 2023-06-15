@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"time"
 	"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -65,9 +66,6 @@ func resourceProjectGitRepo() *schema.Resource {
 			},
 			"allow_warnings": {
 				Type: schema.TypeBool, Optional: true, Default: true,
-			},
-			"is_example": {
-				Type: schema.TypeBool, Optional: true,
 			},
 			"git_release_mgmt_enabled": {
 				Type:        schema.TypeBool,
@@ -139,7 +137,6 @@ func resourceProjectGitRepoRead(ctx context.Context, d *schema.ResourceData, m i
 	d.Set("validation_required", project.ValidationRequired)
 	d.Set("git_production_branch_name", project.GitProductionBranchName)
 	d.Set("allow_warnings", project.AllowWarnings)
-	d.Set("is_example", project.IsExample)
 	d.Set("git_release_mgmt_enabled", project.GitReleaseMgmtEnabled)
 
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: end", currFuncName()))
@@ -156,7 +153,7 @@ func resourceProjectGitRepoCreate(ctx context.Context, d *schema.ResourceData, m
 	}
 	projectName := d.Get("project_id").(string)
 
-	projectGitRepoUpdate := lookergo.Project{}
+	projectGitRepoUpdate := lookergo.WorkProject{}
 	if value, ok := d.GetOk("allow_warnings"); ok {
 		projectGitRepoUpdate.AllowWarnings = boolPtr(value.(bool))
 	}
@@ -181,9 +178,6 @@ func resourceProjectGitRepoCreate(ctx context.Context, d *schema.ResourceData, m
 	if value, ok := d.GetOk("validation_required"); ok {
 		projectGitRepoUpdate.ValidationRequired = boolPtr(value.(bool))
 	}
-	if value, ok := d.GetOk("is_example"); ok {
-		projectGitRepoUpdate.IsExample = boolPtr(value.(bool))
-	}
 	if value, ok := d.GetOk("git_release_mgmt_enabled"); ok {
 		projectGitRepoUpdate.GitReleaseMgmtEnabled = boolPtr(value.(bool))
 	}
@@ -192,7 +186,7 @@ func resourceProjectGitRepoCreate(ctx context.Context, d *schema.ResourceData, m
 	}
 
 	if value, ok := d.GetOk("git_password"); ok {
-		payload := lookergo.Project{}
+		payload := lookergo.WorkProject{}
 		payload.GitRemoteUrl = projectGitRepoUpdate.GitRemoteUrl
 		projectGitRepoUpdate.GitPassword = value.(string)
 		payload.GitUsername = projectGitRepoUpdate.GitUsername
@@ -206,11 +200,11 @@ func resourceProjectGitRepoCreate(ctx context.Context, d *schema.ResourceData, m
 			return diag.FromErr(err)
 		}
 	} else {
-		payload := lookergo.Project{}
-		payload.GitRemoteUrl = projectGitRepoUpdate.GitRemoteUrl
+		payload := lookergo.WorkProject{GitRemoteUrl: projectGitRepoUpdate.GitRemoteUrl}
 		if !strings.HasPrefix(projectGitRepoUpdate.GitRemoteUrl, "git@") && !strings.HasPrefix(payload.GitRemoteUrl, "ssh://") {
 			return diag.Errorf("SSH Authentication requires URL starts with git@.. or ssh://..")
 		}
+		time.Sleep(3* time.Second)
 		_, _, err = dc.Projects.Update(ctx, projectName, &payload)
 		if err != nil {
 			return diag.FromErr(err)
@@ -219,19 +213,21 @@ func resourceProjectGitRepoCreate(ctx context.Context, d *schema.ResourceData, m
 
 	_, _, err = dc.Projects.Update(ctx, projectName, &projectGitRepoUpdate)
 	if err != nil {
-		return diagErrAppend(diags, err)
+		return diag.FromErr(err)
 	}
 
-	if value, ok := d.GetOk("deploy_branch"); ok {
-		branchName := value.(string)
-		_, _, err = dc.Projects.GitBranchDeployToProduction(ctx, projectName, branchName)
-		if err != nil {
-			return diag.FromErr(err)
-		}
-	} else {
-		_, _, err = dc.Projects.DeployToProduction(ctx, projectName)
-		if err != nil {
-			return diag.FromErr(err)
+	if value, ok := d.GetOk("pull_request_mode"); ok && value.(string) != "required" {
+		if value, ok := d.GetOk("deploy_branch"); ok {
+			branchName := value.(string)
+			_, _, err = dc.Projects.GitBranchDeployToProduction(ctx, projectName, branchName)
+			if err != nil {
+				return diag.FromErr(err)
+			}
+		} else {
+			_, _, err = dc.Projects.DeployToProduction(ctx, projectName)
+			if err != nil {
+				return diag.FromErr(err)
+			}
 		}
 	}
 	d.SetId(projectName)
@@ -250,7 +246,7 @@ func resourceProjectGitRepoUpdate(ctx context.Context, d *schema.ResourceData, m
 	}
 	projectName := d.Get("project_id").(string)
 
-	projectGitRepoUpdate := lookergo.Project{}
+	projectGitRepoUpdate := lookergo.WorkProject{}
 	if value, ok := d.GetOk("allow_warnings"); ok {
 		projectGitRepoUpdate.AllowWarnings = boolPtr(value.(bool))
 	}
@@ -275,9 +271,7 @@ func resourceProjectGitRepoUpdate(ctx context.Context, d *schema.ResourceData, m
 	if value, ok := d.GetOk("validation_required"); ok {
 		projectGitRepoUpdate.ValidationRequired = boolPtr(value.(bool))
 	}
-	if value, ok := d.GetOk("is_example"); ok {
-		projectGitRepoUpdate.IsExample = boolPtr(value.(bool))
-	}
+
 	if value, ok := d.GetOk("git_release_mgmt_enabled"); ok {
 		projectGitRepoUpdate.GitReleaseMgmtEnabled = boolPtr(value.(bool))
 	}
@@ -299,17 +293,18 @@ func resourceProjectGitRepoUpdate(ctx context.Context, d *schema.ResourceData, m
 	if err != nil {
 		return diag.FromErr(err)
 	}
-
-	if value, ok := d.GetOk("deploy_branch"); ok {
-		branchName := value.(string)
-		_, _, err = dc.Projects.GitBranchDeployToProduction(ctx, projectName, branchName)
-		if err != nil {
-			return diag.FromErr(err)
-		}
-	} else {
-		_, _, err = dc.Projects.DeployToProduction(ctx, projectName)
-		if err != nil {
-			return diag.FromErr(err)
+	if value, ok := d.GetOk("pull_request_mode"); ok && value.(string) != "required" {
+		if value, ok := d.GetOk("deploy_branch"); ok {
+			branchName := value.(string)
+			_, _, err = dc.Projects.GitBranchDeployToProduction(ctx, projectName, branchName)
+			if err != nil {
+				return diag.FromErr(err)
+			}
+		} else {
+			_, _, err = dc.Projects.DeployToProduction(ctx, projectName)
+			if err != nil {
+				return diag.FromErr(err)
+			}
 		}
 	}
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: end", currFuncName()))

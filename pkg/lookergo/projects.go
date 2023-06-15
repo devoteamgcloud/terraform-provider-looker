@@ -24,7 +24,7 @@ type ProjectsResource interface {
 	// name is required. git_remote_url is not allowed.
 	// To configure Git for the newly created project, follow the instructions in update_project.
 	Create(ctx context.Context, proj *Project) (*Project, *Response, error)
-	Update(ctx context.Context, projectName string, proj *Project) (*Project, *Response, error)
+	Update(ctx context.Context, projectName string, proj *WorkProject) (*Project, *Response, error)
 	Delete(ctx context.Context, projectName string) (*Response, error)
 	AllowWarnings(ctx context.Context, projectName string, value bool) (*Response, error)
 	DeleteGitRepo(ctx context.Context, projectName string) (*Response, error)
@@ -47,6 +47,36 @@ type ProjectsResourceOp struct {
 }
 
 var _ ProjectsResource = &ProjectsResourceOp{}
+
+type PullRequestMode string
+
+const PullRequestMode_Off PullRequestMode = "off"
+const PullRequestMode_Links PullRequestMode = "links"
+const PullRequestMode_Recommended PullRequestMode = "recommended"
+const PullRequestMode_Required PullRequestMode = "required"
+
+// Dynamic writeable type for Project removes:
+// can, id, uses_git, is_example
+type WorkProject struct {
+	Name                           string `json:"name,omitempty"`                               // Project display name
+	GitRemoteUrl                   string `json:"git_remote_url,omitempty"`                     // Git remote repository url
+	GitUsername                    string `json:"git_username,omitempty"`                       // Git username for HTTPS authentication. (For production only, if using user attributes.)
+	GitPassword                    string `json:"git_password,omitempty"`                       // (Write-Only) Git password for HTTPS authentication. (For production only, if using user attributes.)
+	GitProductionBranchName        string `json:"git_production_branch_name,omitempty"`         // Git production branch name. Defaults to master. Supported only in Looker 21.0 and higher.
+	UseGitCookieAuth               *bool  `json:"use_git_cookie_auth,omitempty"`                // If true, the project uses a git cookie for authentication.
+	GitUsernameUserAttribute       string `json:"git_username_user_attribute,omitempty"`        // User attribute name for username in per-user HTTPS authentication.
+	GitPasswordUserAttribute       string `json:"git_password_user_attribute,omitempty"`        // User attribute name for password in per-user HTTPS authentication.
+	GitServiceName                 string `json:"git_service_name,omitempty"`                   // Name of the git service provider
+	GitApplicationServerHttpPort   int64  `json:"git_application_server_http_port,omitempty"`   // Port that HTTP(S) application server is running on (for PRs, file browsing, etc.)
+	GitApplicationServerHttpScheme string `json:"git_application_server_http_scheme,omitempty"` // Scheme that is running on application server (for PRs, file browsing, etc.)
+	DeploySecret                   string `json:"deploy_secret,omitempty"`                      // (Write-Only) Optional secret token with which to authenticate requests to the webhook deploy endpoint. If not set, endpoint is unauthenticated.
+	UnsetDeploySecret              *bool  `json:"unset_deploy_secret,omitempty"`                // (Write-Only) When true, unsets the deploy secret to allow unauthenticated access to the webhook deploy endpoint.
+	PullRequestMode                string `json:"pull_request_mode,omitempty"`                  // The git pull request policy for this project. Valid values are: "off", "links", "recommended", "required".
+	ValidationRequired             *bool  `json:"validation_required,omitempty"`                // Validation policy: If true, the project must pass validation checks before project changes can be committed to the git repository
+	GitReleaseMgmtEnabled          *bool  `json:"git_release_mgmt_enabled,omitempty"`           // If true, advanced git release management is enabled for this project
+	AllowWarnings                  *bool  `json:"allow_warnings,omitempty"`                     // Validation policy: If true, the project can be committed with warnings when `validation_required` is true. (`allow_warnings` does nothing if `validation_required` is false).
+	DependencyStatus               string `json:"dependency_status,omitempty"`                  // Status of dependencies in your manifest & lockfile
+}
 
 // Project struct for Project
 type Project struct {
@@ -177,7 +207,7 @@ func (s *ProjectsResourceOp) Create(ctx context.Context, proj *Project) (*Projec
 	Call update_session to select the 'dev' workspace.
 	Call update_project setting git_remote_url to null and git_service_name to "bare".
 */
-func (s *ProjectsResourceOp) Update(ctx context.Context, projectName string, proj *Project) (*Project, *Response, error) {
+func (s *ProjectsResourceOp) Update(ctx context.Context, projectName string, proj *WorkProject) (*Project, *Response, error) {
 	return doUpdate(ctx, s.client, projectsBasePath, projectName, proj, new(Project))
 }
 

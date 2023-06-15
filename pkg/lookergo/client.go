@@ -5,15 +5,14 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"path"
-	"reflect"
-	"strings"
-	"time"
-
 	"github.com/beefsack/go-rate"
 	"github.com/google/go-querystring/query"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
+	"path"
+	"reflect"
+	"strings"
+	"time"
 
 	"io"
 	"io/ioutil"
@@ -746,7 +745,6 @@ func doUpdate[T any, U any](ctx context.Context, client *Client, basePath string
 	if err != nil {
 		return nil, resp, err
 	}
-
 	return uSvc, resp, err
 }
 

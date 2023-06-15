@@ -135,7 +135,7 @@ func resourceProjectUpdate(ctx context.Context, d *schema.ResourceData, m interf
 		return diagErrAppend(diags, err)
 	}
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: start", currFuncName()))
-	project := &lookergo.Project{
+	project := &lookergo.WorkProject{
 		Name: d.Get("name").(string),
 	}
 	_, _, err = dc.Projects.Update(ctx, project.Name, project)
@@ -168,7 +168,7 @@ func resourceProjectDelete(ctx context.Context, d *schema.ResourceData, m interf
 	}
 
 	// API not available
-	deletedProject := &lookergo.Project{Name: fmt.Sprintf("deleteme-%s-%s", project.Name, srand(4))}
+	deletedProject := &lookergo.WorkProject{Name: fmt.Sprintf("deleteme-%s-%s", project.Name, srand(4))}
 
 	_, resp, err := dc.Projects.Update(ctx, projectId, deletedProject)
 	if resp.StatusCode == http.StatusInternalServerError {

@@ -145,6 +145,14 @@ func schemaSetToStringSlice(set1 *schema.Set) []string {
 	return ret
 }
 
+func interfaceListToStringList(list1 []interface{}) []string {
+	ret := make([]string, len(list1))
+	for i, item := range list1 {
+		ret[i] = item.(string)
+	}
+	return ret
+}
+
 /*func getMapIds(itemSet []interface{}) (ids []string) {
 	for _, elem := range itemSet.List() {
 		elemId := elemSet.(map[string]interface{})["id"].(string)

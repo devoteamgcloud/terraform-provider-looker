@@ -44,6 +44,9 @@ func resourceColorCollection() *schema.Resource {
 							Description: "Label of palette",
 							Type:        schema.TypeString,
 							Optional:    true,
+							DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+								return true
+							},
 						},
 						"type": {
 							Description: "Type of palette",
@@ -76,6 +79,9 @@ func resourceColorCollection() *schema.Resource {
 							Type:        schema.TypeString,
 							Description: "Label of palette",
 							Optional:    true,
+							DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+								return true
+							},
 						},
 						"type": {
 							Type:        schema.TypeString,
@@ -131,6 +137,9 @@ func resourceColorCollection() *schema.Resource {
 							Description: "Label for palette",
 							Type:        schema.TypeString,
 							Optional:    true,
+							DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+								return true
+							},
 						},
 						"type": {
 							Type:        schema.TypeString,
@@ -332,7 +341,6 @@ func resourceColorCollectionUpdate(ctx context.Context, d *schema.ResourceData, 
 		if err != nil {
 			return diag.FromErr(err)
 		}
-		d.Set("id", *newCoco.Id)
 		d.SetId(*newCoco.Id)
 	}
 	return resourceColorCollectionRead(ctx, d, m)

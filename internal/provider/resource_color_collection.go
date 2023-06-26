@@ -31,7 +31,7 @@ func resourceColorCollection() *schema.Resource {
 			},
 			"categoricalpalettes": {
 				Description: "Array of categorical palette definitions",
-				Type:        schema.TypeSet,
+				Type:        schema.TypeList,
 				Required:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
@@ -44,6 +44,9 @@ func resourceColorCollection() *schema.Resource {
 							Description: "Label of palette",
 							Type:        schema.TypeString,
 							Optional:    true,
+							DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+								return true
+							},
 						},
 						"type": {
 							Description: "Type of palette",
@@ -52,7 +55,7 @@ func resourceColorCollection() *schema.Resource {
 							Default:     "Categorical",
 						},
 						"colors": {
-							Type:     schema.TypeSet,
+							Type:     schema.TypeList,
 							Required: true,
 							Elem: &schema.Schema{
 								Type: schema.TypeString,
@@ -63,7 +66,7 @@ func resourceColorCollection() *schema.Resource {
 			},
 			"sequentialpalettes": {
 				Description: "Array of categorical palette definitions",
-				Type:        schema.TypeSet,
+				Type:        schema.TypeList,
 				Required:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
@@ -76,6 +79,9 @@ func resourceColorCollection() *schema.Resource {
 							Type:        schema.TypeString,
 							Description: "Label of palette",
 							Optional:    true,
+							DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+								return true
+							},
 						},
 						"type": {
 							Type:        schema.TypeString,
@@ -84,7 +90,7 @@ func resourceColorCollection() *schema.Resource {
 							Default:     "Sequential",
 						},
 						"stops": {
-							Type:        schema.TypeSet,
+							Type:        schema.TypeList,
 							Required:    true,
 							MinItems:    2,
 							Description: "Array of ColorStops in the palette",
@@ -118,7 +124,7 @@ func resourceColorCollection() *schema.Resource {
 			},
 			"divergingpalettes": {
 				Description: "Array of categorical palette definitions",
-				Type:        schema.TypeSet,
+				Type:        schema.TypeList,
 				Required:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
@@ -131,6 +137,9 @@ func resourceColorCollection() *schema.Resource {
 							Description: "Label for palette",
 							Type:        schema.TypeString,
 							Optional:    true,
+							DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+								return true
+							},
 						},
 						"type": {
 							Type:        schema.TypeString,
@@ -139,7 +148,7 @@ func resourceColorCollection() *schema.Resource {
 							Default:     "Diverging",
 						},
 						"stops": {
-							Type:        schema.TypeSet,
+							Type:        schema.TypeList,
 							Description: "Array of ColorStops in the palette",
 							Required:    true,
 							MinItems:    2,
@@ -180,11 +189,11 @@ func cocoSchemaToStruct(ctx context.Context, d *schema.ResourceData, coco *looke
 
 	if categoricalpalettesSet, ok := d.GetOk("categoricalpalettes"); ok {
 		catPal := []lookergo.DiscretePalette{}
-		for _, raw := range categoricalpalettesSet.(*schema.Set).List() {
+		for _, raw := range categoricalpalettesSet.([]interface{}) {
 			obj := raw.(map[string]interface{})
 			var pal lookergo.DiscretePalette
 			pal.Label = castToPtr(obj["label"].(string))
-			pal.Colors = castToPtr(schemaSetToStringSlice(obj["colors"].(*schema.Set)))
+			pal.Colors = castToPtr(interfaceListToStringList(obj["colors"].([]interface{})))
 			pal.Type = castToPtr(obj["type"].(string))
 			catPal = append(catPal, pal)
 		}
@@ -193,13 +202,13 @@ func cocoSchemaToStruct(ctx context.Context, d *schema.ResourceData, coco *looke
 
 	if sequentialpalettesSet, ok := d.GetOk("sequentialpalettes"); ok {
 		seqPal := []lookergo.ContinuousPalette{}
-		for _, raw := range sequentialpalettesSet.(*schema.Set).List() {
+		for _, raw := range sequentialpalettesSet.([]interface{}) {
 			obj := raw.(map[string]interface{})
 			var pal lookergo.ContinuousPalette
 			pal.Label = castToPtr(obj["label"].(string))
 			pal.Type = castToPtr(obj["type"].(string))
 			stopsList := []lookergo.ColorStop{}
-			for _, stop := range obj["stops"].(*schema.Set).List() {
+			for _, stop := range obj["stops"].([]interface{}) {
 				objj := stop.(map[string]interface{})
 				st := lookergo.ColorStop{}
 				st.Color = castToPtr(objj["color"].(string))
@@ -214,13 +223,13 @@ func cocoSchemaToStruct(ctx context.Context, d *schema.ResourceData, coco *looke
 
 	if divergingpalettesSet, ok := d.GetOk("divergingpalettes"); ok {
 		divPal := []lookergo.ContinuousPalette{}
-		for _, raw := range divergingpalettesSet.(*schema.Set).List() {
+		for _, raw := range divergingpalettesSet.([]interface{}) {
 			obj := raw.(map[string]interface{})
 			var pal lookergo.ContinuousPalette
 			pal.Label = castToPtr(obj["label"].(string))
 			pal.Type = castToPtr(obj["type"].(string))
 			stopsList := []lookergo.ColorStop{}
-			for _, stop := range obj["stops"].(*schema.Set).List() {
+			for _, stop := range obj["stops"].([]interface{}) {
 				objj := stop.(map[string]interface{})
 				st := lookergo.ColorStop{}
 				st.Color = castToPtr(objj["color"].(string))
@@ -332,7 +341,6 @@ func resourceColorCollectionUpdate(ctx context.Context, d *schema.ResourceData, 
 		if err != nil {
 			return diag.FromErr(err)
 		}
-		d.Set("id", *newCoco.Id)
 		d.SetId(*newCoco.Id)
 	}
 	return resourceColorCollectionRead(ctx, d, m)

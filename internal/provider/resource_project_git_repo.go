@@ -83,7 +83,7 @@ func resourceProjectGitRepo() *schema.Resource {
 					"creation of Project Resource. Required: Advanced Deploy Mode.",
 			},
 			"is_example": {
-				Type: schema.TypeBool,
+				Type:     schema.TypeBool,
 				Optional: true,
 			},
 		},

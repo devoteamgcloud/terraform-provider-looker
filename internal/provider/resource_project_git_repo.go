@@ -82,6 +82,10 @@ func resourceProjectGitRepo() *schema.Resource {
 				Description: "Branch which will be deployed to Production after " +
 					"creation of Project Resource. Required: Advanced Deploy Mode.",
 			},
+			"is_example": {
+				Type: schema.TypeBool,
+				Optional: true,
+			},
 		},
 		Importer: nil,
 	}
@@ -136,6 +140,7 @@ func resourceProjectGitRepoRead(ctx context.Context, d *schema.ResourceData, m i
 	d.Set("validation_required", project.ValidationRequired)
 	d.Set("git_production_branch_name", project.GitProductionBranchName)
 	d.Set("allow_warnings", project.AllowWarnings)
+	d.Set("is_example", project.IsExample)
 	d.Set("git_release_mgmt_enabled", project.GitReleaseMgmtEnabled)
 
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: end", currFuncName()))
@@ -179,6 +184,9 @@ func resourceProjectGitRepoCreate(ctx context.Context, d *schema.ResourceData, m
 	}
 	if value, ok := d.GetOk("git_release_mgmt_enabled"); ok {
 		projectGitRepoUpdate.GitReleaseMgmtEnabled = boolPtr(value.(bool))
+	}
+	if value, ok := d.GetOk("is_example"); ok {
+		projectGitRepoUpdate.IsExample = boolPtr(value.(bool))
 	}
 	if value, ok := d.GetOk("deploy_secret"); ok {
 		projectGitRepoUpdate.DeploySecret = value.(string)
@@ -259,6 +267,9 @@ func resourceProjectGitRepoUpdate(ctx context.Context, d *schema.ResourceData, m
 	}
 	if value, ok := d.GetOk("git_service_name"); ok {
 		projectGitRepoUpdate.GitServiceName = value.(string)
+	}
+	if value, ok := d.GetOk("is_example"); ok {
+		projectGitRepoUpdate.IsExample = boolPtr(value.(bool))
 	}
 	if value, ok := d.GetOk("pull_request_mode"); ok {
 		projectGitRepoUpdate.PullRequestMode = value.(string)

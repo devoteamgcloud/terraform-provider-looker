@@ -66,9 +66,6 @@ func resourceProjectGitRepo() *schema.Resource {
 			"allow_warnings": {
 				Type: schema.TypeBool, Optional: true, Default: true,
 			},
-			"is_example": {
-				Type: schema.TypeBool, Optional: true,
-			},
 			"git_release_mgmt_enabled": {
 				Type:        schema.TypeBool,
 				Optional:    true,
@@ -84,6 +81,10 @@ func resourceProjectGitRepo() *schema.Resource {
 				Optional: true,
 				Description: "Branch which will be deployed to Production after " +
 					"creation of Project Resource. Required: Advanced Deploy Mode.",
+			},
+			"is_example": {
+				Type: schema.TypeBool,
+				Optional: true,
 			},
 		},
 		Importer: nil,
@@ -181,11 +182,11 @@ func resourceProjectGitRepoCreate(ctx context.Context, d *schema.ResourceData, m
 	if value, ok := d.GetOk("validation_required"); ok {
 		projectGitRepoUpdate.ValidationRequired = boolPtr(value.(bool))
 	}
-	if value, ok := d.GetOk("is_example"); ok {
-		projectGitRepoUpdate.IsExample = boolPtr(value.(bool))
-	}
 	if value, ok := d.GetOk("git_release_mgmt_enabled"); ok {
 		projectGitRepoUpdate.GitReleaseMgmtEnabled = boolPtr(value.(bool))
+	}
+	if value, ok := d.GetOk("is_example"); ok {
+		projectGitRepoUpdate.IsExample = boolPtr(value.(bool))
 	}
 	if value, ok := d.GetOk("deploy_secret"); ok {
 		projectGitRepoUpdate.DeploySecret = value.(string)
@@ -206,8 +207,7 @@ func resourceProjectGitRepoCreate(ctx context.Context, d *schema.ResourceData, m
 			return diag.FromErr(err)
 		}
 	} else {
-		payload := lookergo.Project{}
-		payload.GitRemoteUrl = projectGitRepoUpdate.GitRemoteUrl
+		payload := lookergo.Project{GitRemoteUrl: projectGitRepoUpdate.GitRemoteUrl}
 		if !strings.HasPrefix(projectGitRepoUpdate.GitRemoteUrl, "git@") && !strings.HasPrefix(payload.GitRemoteUrl, "ssh://") {
 			return diag.Errorf("SSH Authentication requires URL starts with git@.. or ssh://..")
 		}
@@ -219,19 +219,21 @@ func resourceProjectGitRepoCreate(ctx context.Context, d *schema.ResourceData, m
 
 	_, _, err = dc.Projects.Update(ctx, projectName, &projectGitRepoUpdate)
 	if err != nil {
-		return diagErrAppend(diags, err)
+		return diag.FromErr(err)
 	}
 
-	if value, ok := d.GetOk("deploy_branch"); ok {
-		branchName := value.(string)
-		_, _, err = dc.Projects.GitBranchDeployToProduction(ctx, projectName, branchName)
-		if err != nil {
-			return diag.FromErr(err)
-		}
-	} else {
-		_, _, err = dc.Projects.DeployToProduction(ctx, projectName)
-		if err != nil {
-			return diag.FromErr(err)
+	if value, ok := d.GetOk("pull_request_mode"); ok && value.(string) != "required" {
+		if value, ok := d.GetOk("deploy_branch"); ok {
+			branchName := value.(string)
+			_, _, err = dc.Projects.GitBranchDeployToProduction(ctx, projectName, branchName)
+			if err != nil {
+				return diag.FromErr(err)
+			}
+		} else {
+			_, _, err = dc.Projects.DeployToProduction(ctx, projectName)
+			if err != nil {
+				return diag.FromErr(err)
+			}
 		}
 	}
 	d.SetId(projectName)
@@ -266,6 +268,9 @@ func resourceProjectGitRepoUpdate(ctx context.Context, d *schema.ResourceData, m
 	if value, ok := d.GetOk("git_service_name"); ok {
 		projectGitRepoUpdate.GitServiceName = value.(string)
 	}
+	if value, ok := d.GetOk("is_example"); ok {
+		projectGitRepoUpdate.IsExample = boolPtr(value.(bool))
+	}
 	if value, ok := d.GetOk("pull_request_mode"); ok {
 		projectGitRepoUpdate.PullRequestMode = value.(string)
 	}
@@ -275,9 +280,7 @@ func resourceProjectGitRepoUpdate(ctx context.Context, d *schema.ResourceData, m
 	if value, ok := d.GetOk("validation_required"); ok {
 		projectGitRepoUpdate.ValidationRequired = boolPtr(value.(bool))
 	}
-	if value, ok := d.GetOk("is_example"); ok {
-		projectGitRepoUpdate.IsExample = boolPtr(value.(bool))
-	}
+
 	if value, ok := d.GetOk("git_release_mgmt_enabled"); ok {
 		projectGitRepoUpdate.GitReleaseMgmtEnabled = boolPtr(value.(bool))
 	}
@@ -288,10 +291,10 @@ func resourceProjectGitRepoUpdate(ctx context.Context, d *schema.ResourceData, m
 		projectGitRepoUpdate.GitPassword = value.(string)
 		if !strings.HasPrefix(projectGitRepoUpdate.GitRemoteUrl, "https://") {
 			return diag.Errorf("HTTPS Authentication requires URL starts with http://..")
-		}
-	} else {
-		if !strings.HasPrefix(projectGitRepoUpdate.GitRemoteUrl, "git@") && !strings.HasPrefix(projectGitRepoUpdate.GitRemoteUrl, "ssh://") {
-			return diag.Errorf("SSH Authentication requires URL starts with git@.. or ssh://..")
+		} else {
+			if !strings.HasPrefix(projectGitRepoUpdate.GitRemoteUrl, "git@") && !strings.HasPrefix(projectGitRepoUpdate.GitRemoteUrl, "ssh://") {
+				return diag.Errorf("SSH Authentication requires URL starts with git@.. or ssh://..")
+			}
 		}
 	}
 
@@ -299,17 +302,18 @@ func resourceProjectGitRepoUpdate(ctx context.Context, d *schema.ResourceData, m
 	if err != nil {
 		return diag.FromErr(err)
 	}
-
-	if value, ok := d.GetOk("deploy_branch"); ok {
-		branchName := value.(string)
-		_, _, err = dc.Projects.GitBranchDeployToProduction(ctx, projectName, branchName)
-		if err != nil {
-			return diag.FromErr(err)
-		}
-	} else {
-		_, _, err = dc.Projects.DeployToProduction(ctx, projectName)
-		if err != nil {
-			return diag.FromErr(err)
+	if value, ok := d.GetOk("pull_request_mode"); ok && value.(string) != "required" {
+		if value, ok := d.GetOk("deploy_branch"); ok {
+			branchName := value.(string)
+			_, _, err = dc.Projects.GitBranchDeployToProduction(ctx, projectName, branchName)
+			if err != nil {
+				return diag.FromErr(err)
+			}
+		} else {
+			_, _, err = dc.Projects.DeployToProduction(ctx, projectName)
+			if err != nil {
+				return diag.FromErr(err)
+			}
 		}
 	}
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: end", currFuncName()))

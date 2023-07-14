@@ -48,6 +48,13 @@ type ProjectsResourceOp struct {
 
 var _ ProjectsResource = &ProjectsResourceOp{}
 
+type PullRequestMode string
+
+const PullRequestMode_Off PullRequestMode = "off"
+const PullRequestMode_Links PullRequestMode = "links"
+const PullRequestMode_Recommended PullRequestMode = "recommended"
+const PullRequestMode_Required PullRequestMode = "required"
+
 // Project struct for Project
 type Project struct {
 	// Project Id

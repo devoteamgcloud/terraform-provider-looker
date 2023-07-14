@@ -24,7 +24,7 @@ type ProjectsResource interface {
 	// name is required. git_remote_url is not allowed.
 	// To configure Git for the newly created project, follow the instructions in update_project.
 	Create(ctx context.Context, proj *Project) (*Project, *Response, error)
-	Update(ctx context.Context, projectName string, proj *WorkProject) (*Project, *Response, error)
+	Update(ctx context.Context, projectName string, proj *Project) (*Project, *Response, error)
 	Delete(ctx context.Context, projectName string) (*Response, error)
 	AllowWarnings(ctx context.Context, projectName string, value bool) (*Response, error)
 	DeleteGitRepo(ctx context.Context, projectName string) (*Response, error)
@@ -207,7 +207,7 @@ func (s *ProjectsResourceOp) Create(ctx context.Context, proj *Project) (*Projec
 	Call update_session to select the 'dev' workspace.
 	Call update_project setting git_remote_url to null and git_service_name to "bare".
 */
-func (s *ProjectsResourceOp) Update(ctx context.Context, projectName string, proj *WorkProject) (*Project, *Response, error) {
+func (s *ProjectsResourceOp) Update(ctx context.Context, projectName string, proj *Project) (*Project, *Response, error) {
 	return doUpdate(ctx, s.client, projectsBasePath, projectName, proj, new(Project))
 }
 

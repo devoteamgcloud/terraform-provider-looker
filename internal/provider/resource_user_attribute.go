@@ -56,6 +56,12 @@ func resourceUserAttribute() *schema.Resource {
 				Optional:    true,
 				Description: "Users can change the value of this attribute for themselves.",
 			},
+			"default_value": {
+				Type:         schema.TypeString,
+				Optional:     true,
+				ValidateFunc: validation.StringLenBetween(0, 255),
+				Description:  "Default user attribute value",
+			},
 		},
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
@@ -84,6 +90,9 @@ func resourceUserAttributeCreate(ctx context.Context, d *schema.ResourceData, m 
 	}
 	if value, ok := d.GetOk("user_can_edit"); ok {
 		userAttr.UserCanEdit = boolPtr(value.(bool))
+	}
+	if value, ok := d.GetOk("default_value"); ok {
+		userAttr.DefaultValue = castToPtr(value.(string))
 	}
 	newAtt, _, err := c.UserAttributes.Create(ctx, userAttr)
 	if err != nil {
@@ -122,6 +131,9 @@ func resourceUserAttributeRead(ctx context.Context, d *schema.ResourceData, m in
 	if err = d.Set("user_can_edit", UserAttr.UserCanEdit); err != nil {
 		return diag.FromErr(err)
 	}
+	if err = d.Set("default_value", UserAttr.DefaultValue); err != nil {
+		return diag.FromErr(err)
+	}
 	return diags
 }
 
@@ -150,6 +162,9 @@ func resourceUserAttributeUpdate(ctx context.Context, d *schema.ResourceData, m 
 		}
 		if d.HasChange("user_can_edit") {
 			UserAttr.UserCanEdit = boolPtr(d.Get("user_can_edit").(bool))
+		}
+		if d.HasChange("default_value") {
+			UserAttr.DefaultValue = castToPtr(d.Get("default_value").(string))
 		}
 
 		if _, _, err = c.UserAttributes.Update(ctx, ID, UserAttr); err != nil {

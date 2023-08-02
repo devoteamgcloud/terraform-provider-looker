@@ -1,0 +1,11 @@
+% terraform show
+# data.looker_user_attribute.user_attribute 
+data "looker_user_attribute" "user_attribute" {
+  id              = "123"
+  label           = "attribute label"
+  name            = "attribute"
+  type            = "string"
+  user_can_edit   = true
+  user_can_view   = true
+  value_is_hidden = false
+}

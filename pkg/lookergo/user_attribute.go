@@ -13,7 +13,7 @@ const UserAttributesBasePath = "4.0/user_attributes"
 
 type UserAttribute struct {
 	Can                        *map[string]bool `json:"can,omitempty"`                           // Operations the current user is able to perform on this object
-	Id                         *string          `json:"id,omitempty"`                            // Unique Id
+	Id                         string          `json:"id,omitempty"`                            // Unique Id
 	Name                       string           `json:"name"`                                    // Name of user attribute
 	Label                      string           `json:"label"`                                   // Human-friendly label for user attribute
 	Type                       string           `json:"type"`                                    // Type of user attribute ("string", "number", "datetime", "yesno", "zipcode")

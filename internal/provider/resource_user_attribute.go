@@ -98,7 +98,7 @@ func resourceUserAttributeCreate(ctx context.Context, d *schema.ResourceData, m 
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	d.SetId(*newAtt.Id)
+	d.SetId(newAtt.Id)
 	resourceUserAttributeRead(ctx, d, m)
 	return diags
 }

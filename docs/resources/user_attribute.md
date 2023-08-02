@@ -37,7 +37,7 @@ resource "looker_user_attribute" "default" {
 
 - `label` (String) Human-friendly label for user attribute
 - `name` (String) Name of user attribute.
-- `type` (String) Type of user attribute ('string', 'number', 'datetime', 'yesno', 'zipcode')
+- `type` (String) Type of user attribute ('string', 'number', 'datetime', 'yesno', 'zipcode', 'relative_url', 'advanced_filter_string', 'advanced_filter_datetime', 'advanced_filter_number')
 
 ### Optional
 

@@ -56,6 +56,12 @@ func resourceUserAttribute() *schema.Resource {
 				Optional:    true,
 				Description: "Users can change the value of this attribute for themselves.",
 			},
+			"default_value": {
+				Type:         schema.TypeString,
+				Required:     true,
+				ValidateFunc: validation.StringLenBetween(1, 255),
+				Description:  "Default value for when no value is set on the user.",
+			},
 		},
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
@@ -76,6 +82,9 @@ func resourceUserAttributeCreate(ctx context.Context, d *schema.ResourceData, m 
 	if value, ok := d.GetOk("type"); ok {
 		userAttr.Type = value.(string)
 	}
+	if value, ok := d.GetOk("default_value"); ok {
+		userAttr.DefaultValue = value.(string)
+	}
 	if value, ok := d.GetOk("value_is_hidden"); ok {
 		userAttr.ValueIsHidden = boolPtr(value.(bool))
 	}
@@ -89,7 +98,7 @@ func resourceUserAttributeCreate(ctx context.Context, d *schema.ResourceData, m 
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	d.SetId(*newAtt.Id)
+	d.SetId(newAtt.Id)
 	resourceUserAttributeRead(ctx, d, m)
 	return diags
 }
@@ -108,6 +117,9 @@ func resourceUserAttributeRead(ctx context.Context, d *schema.ResourceData, m in
 		return diag.FromErr(err)
 	}
 	if err = d.Set("name", UserAttr.Name); err != nil {
+		return diag.FromErr(err)
+	}
+	if err = d.Set("default_value", UserAttr.DefaultValue); err != nil {
 		return diag.FromErr(err)
 	}
 	if err = d.Set("type", UserAttr.Type); err != nil {
@@ -141,6 +153,9 @@ func resourceUserAttributeUpdate(ctx context.Context, d *schema.ResourceData, m 
 		}
 		if d.HasChange("type") {
 			UserAttr.Type = d.Get("type").(string)
+		}
+		if d.HasChange("default_value") {
+			UserAttr.DefaultValue = d.Get("default_value").(string)
 		}
 		if d.HasChange("value_is_hidden") {
 			UserAttr.ValueIsHidden = boolPtr(d.Get("value_is_hidden").(bool))

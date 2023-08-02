@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 
+	"fmt"
 	"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -33,10 +34,19 @@ func resourceUserAttribute() *schema.Resource {
 				Description:  "Human-friendly label for user attribute",
 			},
 			"type": {
-				Type:         schema.TypeString,
-				Required:     true,
-				ValidateFunc: validation.StringLenBetween(0, 255),
-				Description:  "Type of user attribute ('string', 'number', 'datetime', 'yesno', 'zipcode')",
+				Type:     schema.TypeString,
+				Required: true,
+				ValidateFunc: func(val any, key string) (warns []string, errs []error) {
+					v := val.(string)
+					value := lookergo.ComparisonType(v)
+					switch value {
+					case "string", "number", "datetime", "yesno", "zipcode", "relative_url", "advanced_filter_string", "advanced_filter_datetime", "advanced_filter_number":
+					default:
+						errs = append(errs, fmt.Errorf("type must be a supported value; 'string', 'number', 'datetime', 'yesno', 'zipcode', 'relative_url', 'advanced_filter_string', 'advanced_filter_datetime', 'advanced_filter_number'"))
+					}
+					return warns, errs
+				},
+				Description: "Type of user attribute ('string', 'number', 'datetime', 'yesno', 'zipcode', 'relative_url', 'advanced_filter_string', 'advanced_filter_datetime', 'advanced_filter_number')",
 			},
 			"value_is_hidden": {
 				Type:        schema.TypeBool,

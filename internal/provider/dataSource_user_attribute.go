@@ -27,7 +27,7 @@ func dataSourceUserAttribute() *schema.Resource {
 			"type": {
 				Type:        schema.TypeString,
 				Computed:    true,
-				Description: "Type of user attribute ('string', 'number', 'datetime', 'yesno', 'zipcode')",
+				Description: "Type of user attribute ('string', 'number', 'datetime', 'yesno', 'zipcode', 'relative_url', 'advanced_filter_string', 'advanced_filter_datetime', 'advanced_filter_number')",
 			},
 			"value_is_hidden": {
 				Type:        schema.TypeBool,

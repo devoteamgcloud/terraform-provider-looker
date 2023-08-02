@@ -36,7 +36,7 @@ data "looker_user_attribute" "user_attribute" {
 - `id` (String) The ID of this resource.
 - `label` (String) Human-friendly label for user attribute
 - `name` (String) Name of user attribute.
-- `type` (String) Type of user attribute ('string', 'number', 'datetime', 'yesno', 'zipcode')
+- `type` (String) Type of user attribute ('string', 'number', 'datetime', 'yesno', 'zipcode', 'relative_url', 'advanced_filter_string', 'advanced_filter_datetime', 'advanced_filter_number')
 - `user_can_edit` (Boolean) Users can change the value of this attribute for themselves.
 - `user_can_view` (Boolean) Non-admin users can see the values of their attributes and use them in filters.
 - `value_is_hidden` (Boolean) If true, users will not be able to view values of this attribute.

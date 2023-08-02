@@ -8,4 +8,5 @@ data "looker_user_attribute" "user_attribute" {
   user_can_edit   = true
   user_can_view   = true
   value_is_hidden = false
+  default_value   = "default"
 }

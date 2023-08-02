@@ -15,23 +15,23 @@ func dataSourceUserAttribute() *schema.Resource {
 				Required: true,
 			},
 			"name": {
-				Type:         schema.TypeString,
-				Computed:     true,
-				Description:  "Name of user attribute.",
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "Name of user attribute.",
 			},
 			"label": {
-				Type:         schema.TypeString,
-				Computed:     true,
-				Description:  "Human-friendly label for user attribute",
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "Human-friendly label for user attribute",
 			},
 			"type": {
-				Type:         schema.TypeString,
-				Computed:     true,
-				Description:  "Type of user attribute ('string', 'number', 'datetime', 'yesno', 'zipcode')",
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "Type of user attribute ('string', 'number', 'datetime', 'yesno', 'zipcode')",
 			},
 			"value_is_hidden": {
 				Type:        schema.TypeBool,
-				Computed:     true,
+				Computed:    true,
 				Description: "If true, users will not be able to view values of this attribute.",
 			},
 			"user_can_view": {
@@ -41,13 +41,13 @@ func dataSourceUserAttribute() *schema.Resource {
 			},
 			"user_can_edit": {
 				Type:        schema.TypeBool,
-				Computed:     true,
+				Computed:    true,
 				Description: "Users can change the value of this attribute for themselves.",
 			},
 			"default_value": {
-				Type:         schema.TypeString,
-				Computed:     true,
-				Description:  "Default value for when no value is set on the user.",
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "Default value for when no value is set on the user.",
 			},
 		},
 	}

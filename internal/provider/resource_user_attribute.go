@@ -58,7 +58,7 @@ func resourceUserAttribute() *schema.Resource {
 			},
 			"default_value": {
 				Type:         schema.TypeString,
-				Required:     true,
+				Optional:     true,
 				ValidateFunc: validation.StringLenBetween(1, 255),
 				Description:  "Default value for when no value is set on the user.",
 			},

@@ -35,13 +35,13 @@ resource "looker_user_attribute" "default" {
 
 ### Required
 
-- `default_value` (String) Default value for when no value is set on the user.
 - `label` (String) Human-friendly label for user attribute
 - `name` (String) Name of user attribute.
 - `type` (String) Type of user attribute ('string', 'number', 'datetime', 'yesno', 'zipcode')
 
 ### Optional
 
+- `default_value` (String) Default value for when no value is set on the user.
 - `user_can_edit` (Boolean) Users can change the value of this attribute for themselves.
 - `user_can_view` (Boolean) Non-admin users can see the values of their attributes and use them in filters.
 - `value_is_hidden` (Boolean) If true, users will not be able to view values of this attribute.

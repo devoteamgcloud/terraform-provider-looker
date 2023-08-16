@@ -121,22 +121,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData, p *schema.Pr
 	client := lookergo.NewClient(nil)
 	devClient := lookergo.NewClient(nil)
 
-	old_url := d.Get("base_url").(string)
-	var newURL string
-	if len(old_url) > 5 {
-		switch old_url[len(old_url)-4:] {
-		case "api/":
-			newURL = old_url
-		case ".com":
-			newURL = old_url + "/api/"
-		case "com/":
-			newURL = old_url + "api/"
-		case "/api":
-			newURL = old_url + "/"
-		}
-	} else {
-		newURL = old_url
-	}
+	newURL := d.Get("base_url").(string)
 
 	if err := client.SetBaseURL(newURL); err != nil {
 		diags = append(diags, diag.Diagnostic{

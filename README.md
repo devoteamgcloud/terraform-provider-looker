@@ -29,7 +29,7 @@ terraform {
 }
 
 provider "looker" {
-  base_url      = "https://org.cloud.looker.com:19999/api/" # Optionally use env var LOOKER_BASE_URL
+  base_url      = "https://org.cloud.looker.com:19999/api/" # Optionally use env var LOOKER_BASE_URL !!! use /api/ at the end of your url !!!
   client_id     = "xxxxxxxx"                                # Optionally use env var LOOKER_API_CLIENT_ID
   client_secret = "xxxxxxxx"                                # Optionally use env var LOOKER_API_CLIENT_SECRET
 }

@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"strings"
 
 	md "github.com/JohannesKaufmann/html-to-markdown"
 	"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
@@ -121,8 +122,14 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData, p *schema.Pr
 	client := lookergo.NewClient(nil)
 	devClient := lookergo.NewClient(nil)
 
-	newURL := d.Get("base_url").(string)
+	old_url := d.Get("base_url").(string)
 
+	newURL := strings.TrimSuffix(old_url, "/")
+	if !strings.HasSuffix(newURL, "/api") {
+		newURL += "/api/"
+	} else {
+		newURL += "/"
+	}
 	if err := client.SetBaseURL(newURL); err != nil {
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,

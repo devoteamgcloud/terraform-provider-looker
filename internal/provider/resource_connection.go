@@ -146,6 +146,10 @@ func resourceConnection() *schema.Resource {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
+			"user_attribute_fields": {
+				Type:     schema.TypeSet,
+				Optional: true,
+			},
 		},
 		Importer: nil,
 	}
@@ -162,6 +166,9 @@ func resourceConnectionCreate(ctx context.Context, d *schema.ResourceData, m int
 
 	if val, ok := d.GetOk("host"); ok {
 		nc.Host = val.(string)
+	}
+	if val,ok := d.GetOk("user_attribute_fields"); ok {
+		nc.UserAttributeFields = schemaSetToStringSlice(val.(*schema.Set))
 	}
 	if val, ok := d.GetOk("port"); ok {
 		nc.Port = val.(string)
@@ -284,7 +291,7 @@ func resourceConnectionRead(ctx context.Context, d *schema.ResourceData, m inter
 		return diag.FromErr(err)
 	}
 
-	if d.HasChanges("name", "host", "port", "username") {
+	if d.HasChanges("name", "host", "port", "username", "user_attribute_fields") {
 		if d.Set("name", connection.Name) != nil {
 			return diag.FromErr(err)
 		}
@@ -295,6 +302,9 @@ func resourceConnectionRead(ctx context.Context, d *schema.ResourceData, m inter
 			return diag.FromErr(err)
 		}
 		if d.Set("username", connection.Username) != nil {
+			return diag.FromErr(err)
+		}
+		if d.Set("user_attribute_fields", connection.UserAttributeFields) != nil {
 			return diag.FromErr(err)
 		}
 	}

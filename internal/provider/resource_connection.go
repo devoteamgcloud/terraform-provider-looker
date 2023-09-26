@@ -147,8 +147,11 @@ func resourceConnection() *schema.Resource {
 				Optional: true,
 			},
 			"user_attribute_fields": {
-				Type:     schema.TypeSet,
+				Type:     schema.TypeList,
 				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
 			},
 		},
 		Importer: nil,
@@ -167,8 +170,8 @@ func resourceConnectionCreate(ctx context.Context, d *schema.ResourceData, m int
 	if val, ok := d.GetOk("host"); ok {
 		nc.Host = val.(string)
 	}
-	if val,ok := d.GetOk("user_attribute_fields"); ok {
-		nc.UserAttributeFields = schemaSetToStringSlice(val.(*schema.Set))
+	if val, ok := d.GetOk("user_attribute_fields"); ok {
+		nc.UserAttributeFields = interfaceListToStringList(val.([]interface{}))
 	}
 	if val, ok := d.GetOk("port"); ok {
 		nc.Port = val.(string)

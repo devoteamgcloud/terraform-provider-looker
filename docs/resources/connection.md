@@ -18,6 +18,7 @@ resource "looker_connection" "example" {
   password        = "polite-sculpin"
   ssl             = true
   max_connections = 5
+  user_attribute_fields = []
 }
 ```
 
@@ -32,10 +33,11 @@ resource "looker_connection" "example" {
   id              = "testdummy901"
   max_connections = 5
   name            = "testdummy901"
-# password        = (sensitive value)
+  password        = (sensitive value)
   port            = "5432"
   ssl             = true
   username        = "hegdgxme"
+  user_attribute_fields = []
 }
 ```
 
@@ -340,6 +342,7 @@ resource "looker_connection" "example" {
 - `ssl` (Boolean)
 - `tmp_db_name` (String)
 - `tunnel_id` (String)
+- `user_attribute_fields` (List of String)
 - `user_db_credentials` (Boolean)
 - `username` (String)
 - `verify_ssl` (Boolean)

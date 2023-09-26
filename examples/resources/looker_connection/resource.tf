@@ -8,4 +8,5 @@ resource "looker_connection" "example" {
   password        = "polite-sculpin"
   ssl             = true
   max_connections = 5
+  user_attribute_fields = []
 }

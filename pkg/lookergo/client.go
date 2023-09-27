@@ -65,20 +65,21 @@ type Client struct {
 	mu sync.Mutex
 
 	// Resources used for communicating with the API
-	Groups          GroupsResource
-	Users           UsersResource
-	Roles           RolesResource
-	Folders         FoldersResource
-	Workspaces      WorkspacesResource
-	Projects        ProjectsResource
-	Sessions        SessionsResource
-	ModelSets       ModelSetsResource
-	Connections     ConnectionsResource
-	LookMLModel     LookMlModelsResource
-	ColorCollection ColorCollectionResource
-	PermissionSets  PermissionSetResource
-	Alerts          AlertsResource
-	UserAttributes  UserAttributesResource
+	Groups            GroupsResource
+	Users             UsersResource
+	Roles             RolesResource
+	Folders           FoldersResource
+	Workspaces        WorkspacesResource
+	Projects          ProjectsResource
+	Sessions          SessionsResource
+	ModelSets         ModelSetsResource
+	Connections       ConnectionsResource
+	LookMLModel       LookMlModelsResource
+	ColorCollection   ColorCollectionResource
+	PermissionSets    PermissionSetResource
+	Alerts            AlertsResource
+	UserAttributes    UserAttributesResource
+	EgressIpAddresses PublicEgressIpsResource
 	// TODO: Expand
 
 	// Optional function called after every successful request made to the DO APIs
@@ -153,7 +154,7 @@ func NewClient(httpClient *http.Client) *Client {
 	c.PermissionSets = &PermissionSetResourceOp{client: c}
 	c.Alerts = &AlertsResourceOp{client: c}
 	c.UserAttributes = &UserAttributesResourceOp{client: c}
-
+	c.EgressIpAddresses = &PublicEgressIpsResourceOp{client: c}
 	c.headers = make(map[string]string)
 	c.Workspace = "production"
 
@@ -554,7 +555,7 @@ func StreamToString(stream io.Reader) string {
 }
 
 type service interface {
-	Group | User | CredentialsEmail | Role | PermissionSet | Session | Project | GitBranch | Folder | UserAttribute | UserAttributeGroupValue | Alert
+	Group | User | CredentialsEmail | Role | PermissionSet | Session | Project | GitBranch | Folder | UserAttribute | UserAttributeGroupValue | Alert | EgressIpAddresses
 }
 
 // addOptions -

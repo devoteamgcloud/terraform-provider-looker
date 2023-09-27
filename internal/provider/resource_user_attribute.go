@@ -154,32 +154,30 @@ func resourceUserAttributeUpdate(ctx context.Context, d *schema.ResourceData, m 
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	if d.HasChanges() {
-		if d.HasChange("name") {
-			UserAttr.Name = d.Get("name").(string)
-		}
-		if d.HasChange("label") {
-			UserAttr.Label = d.Get("label").(string)
-		}
-		if d.HasChange("type") {
-			UserAttr.Type = d.Get("type").(string)
-		}
-		if d.HasChange("default_value") {
-			UserAttr.DefaultValue = d.Get("default_value").(string)
-		}
-		if d.HasChange("value_is_hidden") {
-			UserAttr.ValueIsHidden = boolPtr(d.Get("value_is_hidden").(bool))
-		}
-		if d.HasChange("user_can_view") {
-			UserAttr.UserCanView = boolPtr(d.Get("user_can_view").(bool))
-		}
-		if d.HasChange("user_can_edit") {
-			UserAttr.UserCanEdit = boolPtr(d.Get("user_can_edit").(bool))
-		}
+	if d.HasChange("name") {
+		UserAttr.Name = d.Get("name").(string)
+	}
+	if d.HasChange("label") {
+		UserAttr.Label = d.Get("label").(string)
+	}
+	if d.HasChange("type") {
+		UserAttr.Type = d.Get("type").(string)
+	}
+	if d.HasChange("default_value") {
+		UserAttr.DefaultValue = d.Get("default_value").(string)
+	}
+	if d.HasChange("value_is_hidden") {
+		UserAttr.ValueIsHidden = boolPtr(d.Get("value_is_hidden").(bool))
+	}
+	if d.HasChange("user_can_view") {
+		UserAttr.UserCanView = boolPtr(d.Get("user_can_view").(bool))
+	}
+	if d.HasChange("user_can_edit") {
+		UserAttr.UserCanEdit = boolPtr(d.Get("user_can_edit").(bool))
+	}
 
-		if _, _, err = c.UserAttributes.Update(ctx, ID, UserAttr); err != nil {
-			return diag.FromErr(err)
-		}
+	if _, _, err = c.UserAttributes.Update(ctx, ID, UserAttr); err != nil {
+		return diag.FromErr(err)
 	}
 
 	return resourceUserAttributeRead(ctx, d, m)

@@ -15,8 +15,9 @@ func dataSourcePublicEgressIps() *schema.Resource {
 				Computed: true,
 			},
 			"public_ips": {
-				Type:     schema.TypeList,
-				Computed: true,
+				Type:        schema.TypeList,
+				Computed:    true,
+				Description: "Egress IP addresses.",
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},

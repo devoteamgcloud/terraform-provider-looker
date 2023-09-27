@@ -1,0 +1,18 @@
+% terraform show
+# data.looker_public_ip_addresses.ips:
+data "looker_public_ip_addresses" "ips" {
+    id         = "-"
+    public_ips = [
+        "52.200.xxx.xxx",
+        "52.200.xx.xxx",
+        "34.200.xxx.xxx",
+    ]
+}
+
+# local_file.file:
+resource "local_file" "file" {
+    content              = "52.200.xxx.xxx"
+    ...
+    filename             = "test.txt"
+    id                   = "196847cc15ee92bdd41d2b078ecd7bd68780a3a2"
+}

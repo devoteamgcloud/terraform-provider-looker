@@ -72,6 +72,15 @@ func resourceUserAttribute() *schema.Resource {
 				ValidateFunc: validation.StringLenBetween(1, 255),
 				Description:  "Default value for when no value is set on the user.",
 			},
+			"hidden_value_domain_whitelist": {
+				Type:         schema.TypeString,
+				Optional:     true,
+				ValidateFunc: validation.StringLenBetween(1, 255),
+				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+					return true
+				},
+				Description:  "Destinations to which a hidden attribute may be sent. Once set, cannot be edited.",
+			},
 		},
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
@@ -103,6 +112,9 @@ func resourceUserAttributeCreate(ctx context.Context, d *schema.ResourceData, m 
 	}
 	if value, ok := d.GetOk("user_can_edit"); ok {
 		userAttr.UserCanEdit = boolPtr(value.(bool))
+	}
+	if value, ok := d.GetOk("hidden_value_domain_whitelist"); ok {
+		userAttr.HiddenValueDomainWhitelist = castToPtr[string](value.(string))
 	}
 	newAtt, _, err := c.UserAttributes.Create(ctx, userAttr)
 	if err != nil {
@@ -142,6 +154,9 @@ func resourceUserAttributeRead(ctx context.Context, d *schema.ResourceData, m in
 		return diag.FromErr(err)
 	}
 	if err = d.Set("user_can_edit", UserAttr.UserCanEdit); err != nil {
+		return diag.FromErr(err)
+	}
+	if err = d.Set("hidden_value_domain_whitelist", UserAttr.HiddenValueDomainWhitelist); err != nil {
 		return diag.FromErr(err)
 	}
 	return diags

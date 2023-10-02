@@ -52,6 +52,7 @@ func resourceUserAttribute() *schema.Resource {
 				Type:        schema.TypeBool,
 				Default:     false,
 				Optional:    true,
+				ForceNew:    true,
 				Description: "If true, users will not be able to view values of this attribute.",
 			},
 			"user_can_view": {
@@ -74,12 +75,10 @@ func resourceUserAttribute() *schema.Resource {
 			},
 			"hidden_value_domain_whitelist": {
 				Type:         schema.TypeString,
-				Optional:     true,
 				ValidateFunc: validation.StringLenBetween(1, 255),
-				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
-					return true
-				},
-				Description:  "Destinations to which a hidden attribute may be sent. Once set, cannot be edited.",
+				Optional:     true,
+				ForceNew:     true,
+				Description:  "Destinations to which a hidden attribute may be sent. Once set, cannot be edited. If updated, the user_attribute will be recreated.",
 			},
 		},
 		Importer: &schema.ResourceImporter{
@@ -106,6 +105,8 @@ func resourceUserAttributeCreate(ctx context.Context, d *schema.ResourceData, m 
 	}
 	if value, ok := d.GetOk("value_is_hidden"); ok {
 		userAttr.ValueIsHidden = boolPtr(value.(bool))
+	} else {
+		userAttr.ValueIsHidden = boolPtr(false)
 	}
 	if value, ok := d.GetOk("user_can_view"); ok {
 		userAttr.UserCanView = boolPtr(value.(bool))
@@ -114,7 +115,11 @@ func resourceUserAttributeCreate(ctx context.Context, d *schema.ResourceData, m 
 		userAttr.UserCanEdit = boolPtr(value.(bool))
 	}
 	if value, ok := d.GetOk("hidden_value_domain_whitelist"); ok {
-		userAttr.HiddenValueDomainWhitelist = castToPtr[string](value.(string))
+		if *userAttr.ValueIsHidden {
+			userAttr.HiddenValueDomainWhitelist = castToPtr[string](value.(string))
+		} else {
+			return diag.Errorf("value_is_hidden needs to be set to true in order to use hidden_value_domain_whitelist")
+		}
 	}
 	newAtt, _, err := c.UserAttributes.Create(ctx, userAttr)
 	if err != nil {

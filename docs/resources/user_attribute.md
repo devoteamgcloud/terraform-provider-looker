@@ -8,25 +8,32 @@ description: |-
 
 ## Example Usage
 ```terraform
-resource "looker_user_attribute" "default" {
+resource "looker_user_attribute" "attribute" {
   name = "attribute"
   label = "attribute label"
   type = "string"
+  default_value = "sandbox"
+  user_can_edit = false
+  user_can_view = false
+  value_is_hidden = true
+  hidden_value_domain_whitelist = "https://example.com*,localhost:9932,https://www.*.my-destination.com/*"
 }
 ```
 
 ## Example Output
 ```terraform
 % terraform show
-# looker_user_attribute.default:
-resource "looker_user_attribute" "default" {
-    id              = "18"
-    label           = "attribute label"
-    name            = "attribute"
-    type            = "string"
-    user_can_edit   = true
-    user_can_view   = true
-    value_is_hidden = false
+# looker_user_attribute.attribute:
+resource "looker_user_attribute" "attribute" {
+    default_value                 = "DEFAULT_IS_SET"
+    hidden_value_domain_whitelist = "https://example.com*,localhost:9932,https://www.*.my-destination.com/*"
+    id                            = "39"
+    label                         = "attribute"
+    name                          = "attribute"
+    type                          = "string"
+    user_can_edit                 = false
+    user_can_view                 = false
+    value_is_hidden               = true
 }
 ```
 
@@ -42,6 +49,7 @@ resource "looker_user_attribute" "default" {
 ### Optional
 
 - `default_value` (String) Default value for when no value is set on the user.
+- `hidden_value_domain_whitelist` (String) Destinations to which a hidden attribute may be sent. Once set, cannot be edited. If updated, the user_attribute will be recreated.
 - `user_can_edit` (Boolean) Users can change the value of this attribute for themselves.
 - `user_can_view` (Boolean) Non-admin users can see the values of their attributes and use them in filters.
 - `value_is_hidden` (Boolean) If true, users will not be able to view values of this attribute.

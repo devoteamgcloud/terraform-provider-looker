@@ -1,11 +1,13 @@
 % terraform show
-# looker_user_attribute.default:
-resource "looker_user_attribute" "default" {
-    id              = "18"
-    label           = "attribute label"
-    name            = "attribute"
-    type            = "string"
-    user_can_edit   = true
-    user_can_view   = true
-    value_is_hidden = false
+# looker_user_attribute.attribute:
+resource "looker_user_attribute" "attribute" {
+    default_value                 = "DEFAULT_IS_SET"
+    hidden_value_domain_whitelist = "https://example.com*,localhost:9932,https://www.*.my-destination.com/*"
+    id                            = "39"
+    label                         = "attribute"
+    name                          = "attribute"
+    type                          = "string"
+    user_can_edit                 = false
+    user_can_view                 = false
+    value_is_hidden               = true
 }

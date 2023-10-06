@@ -105,21 +105,19 @@ func resourcePermissionSetUpdate(ctx context.Context, d *schema.ResourceData, m 
 		return diag.FromErr(err)
 	}
 
-	if d.HasChanges() {
-		if d.HasChange("name") {
-			permissionSet.Name = d.Get("name").(string)
+	if d.HasChange("name") {
+		permissionSet.Name = d.Get("name").(string)
+	}
+	if d.HasChange("permissions") {
+		var value = d.Get("permissions").(*schema.Set)
+		var permission_list []string
+		for _, raw := range value.List() {
+			permission_list = append(permission_list, raw.(string))
 		}
-		if d.HasChange("permissions") {
-			var value = d.Get("permissions").(*schema.Set)
-			var permission_list []string
-			for _, raw := range value.List() {
-				permission_list = append(permission_list, raw.(string))
-			}
-			permissionSet.Permissions = permission_list
-		}
-		if _, _, err = c.PermissionSets.Update(ctx, permissionSetID, permissionSet); err != nil {
-			return diag.FromErr(err)
-		}
+		permissionSet.Permissions = permission_list
+	}
+	if _, _, err = c.PermissionSets.Update(ctx, permissionSetID, permissionSet); err != nil {
+		return diag.FromErr(err)
 	}
 
 	return resourcePermissionSetRead(ctx, d, m)

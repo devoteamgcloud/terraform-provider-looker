@@ -144,16 +144,14 @@ func resourceGroupUpdate(ctx context.Context, d *schema.ResourceData, m interfac
 		return diag.FromErr(err)
 	}
 
-	if d.HasChanges() {
-		if d.HasChange("name") {
-			group.Name = d.Get("name").(string)
-		}
-
-		if _, _, err = c.Groups.Update(ctx, groupID, group); err != nil {
-			return diag.FromErr(err)
-		}
-		d.Set("last_updated", time.Now().Format(time.RFC850))
+	if d.HasChange("name") {
+		group.Name = d.Get("name").(string)
 	}
+
+	if _, _, err = c.Groups.Update(ctx, groupID, group); err != nil {
+		return diag.FromErr(err)
+	}
+	d.Set("last_updated", time.Now().Format(time.RFC850))
 
 	return resourceGroupRead(ctx, d, m)
 }

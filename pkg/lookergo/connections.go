@@ -113,6 +113,23 @@ type DBConnection struct {
 	CostEstimateEnabled *bool `json:"cost_estimate_enabled,omitempty"`
 	// PDT builds on this connection can be kicked off and cancelled via API.
 	PdtApiControlEnabled *bool `json:"pdt_api_control_enabled,omitempty"`
+	//
+	PdtContextOverride *DBConnectionOverride `json:"pdt_context_override,omitempty"`
+}
+
+type DBConnectionOverride struct {
+	Context                *string `json:"context,omitempty"`                  // Context in which to override (`pdt` is the only allowed value)
+	Host                   *string `json:"host,omitempty"`                     // Host name/address of server
+	Port                   *string `json:"port,omitempty"`                     // Port number on server
+	Username               *string `json:"username,omitempty"`                 // Username for server authentication
+	Password               *string `json:"password,omitempty"`                 // (Write-Only) Password for server authentication
+	HasPassword            *bool   `json:"has_password,omitempty"`             // Whether or not the password is overridden in this context
+	Certificate            *string `json:"certificate,omitempty"`              // (Write-Only) Base64 encoded Certificate body for server authentication (when appropriate for dialect).
+	FileType               *string `json:"file_type,omitempty"`                // (Write-Only) Certificate keyfile type - .json or .p12
+	Database               *string `json:"database,omitempty"`                 // Database name
+	Schema                 *string `json:"schema,omitempty"`                   // Schema name
+	JdbcAdditionalParams   *string `json:"jdbc_additional_params,omitempty"`   // Additional params to add to JDBC connection string
+	AfterConnectStatements *string `json:"after_connect_statements,omitempty"` // SQL statements (semicolon separated) to issue after connecting to the database. Requires `custom_after_connect_statements` license feature
 }
 
 type DBDialect struct {

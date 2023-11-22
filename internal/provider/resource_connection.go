@@ -21,60 +21,74 @@ func resourceConnection() *schema.Resource {
 				Description: "Name of the connection. Also used as the unique identifier",
 				Type:        schema.TypeString,
 				Required:    true,
+				ForceNew:    true,
 			},
 			"host": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Description: "Host name/address of server",
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 			"port": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Description: "Port number on server",
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 			"username": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Description: "Username for server authentication",
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 			"password": {
-				Type:      schema.TypeString,
-				Optional:  true,
-				Sensitive: true,
+				Description: "(Write-Only) Password for server authentication",
+				Type:        schema.TypeString,
+				Optional:    true,
+				Sensitive:   true,
 			},
 			"certificate": {
-				Type:      schema.TypeString,
-				Optional:  true,
-				Sensitive: true,
+				Description: "(Write-Only) Base64 encoded Certificate body for server authentication (when appropriate for dialect).",
+				Type:        schema.TypeString,
+				Optional:    true,
+				Sensitive:   true,
 			},
 			"file_type": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Description: "(Write-Only) Certificate keyfile type - .json or .p12",
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 			"database": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Description: "Database name",
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 			"db_timezone": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Description: "Time zone of database",
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 			"query_timezone": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Description: "Timezone to use in queries",
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 			"schema": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Description: "Scheme name",
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 			"max_billing_gigabytes": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Description: "Maximum size of query in GBs (BigQuery only, can be a user_attribute name)",
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 			"tmp_db_name": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Description: "Name of temporary database (if used)",
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 			"jdbc_additional_params": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Description: "Additional params to add to JDBC connection string",
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 			"dialect_name": {
 				Type:        schema.TypeString,
@@ -82,68 +96,143 @@ func resourceConnection() *schema.Resource {
 				Description: dialect_names_tab,
 			},
 			"maintenance_cron": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"after_connect_statements": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Description: "Cron string specifying when maintenance such as PDT trigger checks and drops should be performed",
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 			"tunnel_id": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Description: "The Id of the ssh tunnel this connection uses",
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 			"oauth_application_id": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Description: "An External OAuth Application to use for authenticating to the database",
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 			"ssl": {
-				Type:     schema.TypeBool,
-				Optional: true,
+				Description: "Use SSL/TLS when connecting to server",
+				Type:        schema.TypeBool,
+				Optional:    true,
 			},
 			"verify_ssl": {
-				Type:     schema.TypeBool,
-				Optional: true,
+				Description: "Verify the SSL",
+				Type:        schema.TypeBool,
+				Optional:    true,
 			},
 			"user_db_credentials": {
-				Type:     schema.TypeBool,
-				Optional: true,
+				Description: "(Limited access feature) Are per user db credentials enabled. Enabling will remove previously set username and password",
+				Type:        schema.TypeBool,
+				Optional:    true,
 			},
 			"sql_runner_precache_tables": {
-				Type:     schema.TypeBool,
-				Optional: true,
+				Description: "Precache tables in the SQL Runner",
+				Type:        schema.TypeBool,
+				Optional:    true,
 			},
 			"sql_writing_with_info_schema": {
-				Type:     schema.TypeBool,
-				Optional: true,
+				Description: "Fetch Information Schema For SQL Writing",
+				Type:        schema.TypeBool,
+				Optional:    true,
 			},
 			"disable_context_comment": {
-				Type:     schema.TypeBool,
-				Optional: true,
+				Description: "When disable_context_comment is true comment will not be added to SQL",
+				Type:        schema.TypeBool,
+				Optional:    true,
 			},
 			"always_retry_failed_builds": {
-				Type:     schema.TypeBool,
-				Optional: true,
+				Description: "When true, error PDTs will be retried every regenerator cycle",
+				Type:        schema.TypeBool,
+				Optional:    true,
 			},
 			"cost_estimate_enabled": {
-				Type:     schema.TypeBool,
-				Optional: true,
+				Description: "When true, query cost estimate will be displayed in explore",
+				Type:        schema.TypeBool,
+				Optional:    true,
 			},
 			"pdt_api_control_enabled": {
-				Type:     schema.TypeBool,
-				Optional: true,
+				Description: "PDT builds on this connection can be kicked off and cancelled via API",
+				Type:        schema.TypeBool,
+				Optional:    true,
 			},
 			"max_connections": {
-				Type:     schema.TypeInt,
-				Optional: true,
+				Description: "Maximum number of concurrent connection to use",
+				Type:        schema.TypeInt,
+				Optional:    true,
 			},
 			"pool_timeout": {
-				Type:     schema.TypeInt,
-				Optional: true,
+				Description: "Connection Pool Timeout, in seconds",
+				Type:        schema.TypeInt,
+				Optional:    true,
 			},
 			"pdt_concurrency": {
-				Type:     schema.TypeInt,
+				Description: "Maximum number of threads to use to build PDTs in parallel",
+				Type:        schema.TypeInt,
+				Optional:    true,
+			},
+			"pdt_context_override": {
+				Type:     schema.TypeSet,
 				Optional: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"context": {
+							Description: "Context in which to override (`pdt` is the only allowed value)",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Default:     "pdt",
+						},
+						"host": {
+							Description: "Host name/address of server",
+							Type:        schema.TypeString,
+							Required:    true,
+						},
+						"username": {
+							Description: "Username for server authentication",
+							Type:        schema.TypeString,
+							Optional:    true,
+						},
+						"port": {
+							Description: "Port number on server",
+							Type:        schema.TypeString,
+							Optional:    true,
+						},
+						"password": {
+							Description: "(Write-Only) Password for server authentication",
+							Type:        schema.TypeString,
+							Optional:    true,
+						},
+						"has_password": {
+							Description: "Whether or not the password is overridden in this context",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Default:     false,
+						},
+						"certificate": {
+							Description: "(Write-Only) Base64 encoded Certificate body for server authentication (when appropriate for dialect)",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Sensitive:   true,
+						},
+						"file_type": {
+							Description: "(Write-Only) Certificate keyfile type - .json or .p12",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Default:     "json",
+						},
+						"jdbc_additional_params": {
+							Description: "Additional params to add to JDBC connection string",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Default:     "",
+						},
+						"after_connect_statements": {
+							Description: "SQL statements (semicolon separated) to issue after connecting to the database. Requires `custom_after_connect_statements` license feature",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Default:     "",
+						},
+					},
+				},
 			},
 			"user_attribute_fields": {
 				Type:     schema.TypeList,
@@ -259,6 +348,23 @@ func resourceConnectionCreate(ctx context.Context, d *schema.ResourceData, m int
 	if val, ok := d.GetOk("pdt_concurrency"); ok {
 		nc.PdtConcurrency = int64(val.(int))
 	}
+	if val, ok := d.GetOk("pdt_context_override"); ok {
+		obj := val.(*schema.Set).List()[0].(map[string]interface{})
+		context := obj["context"].(string)
+		username := obj["username"].(string)
+		host := obj["host"].(string)
+		port := obj["port"].(string)
+		password := obj["password"].(string)
+		certificate := obj["certificate"].(string)
+		file_type := obj["file_type"].(string)
+		jdbc_additional_params := obj["jdbc_additional_params"].(string)
+		after_connect_statements := obj["after_connect_statements"].(string)
+		pdt_connection := lookergo.DBConnectionOverride{
+			Context: &context, Username: &username, Password: &password, Certificate: &certificate, FileType: &file_type, JdbcAdditionalParams: &jdbc_additional_params,
+			AfterConnectStatements: &after_connect_statements, Host: &host, Port: &port,
+		}
+		nc.PdtContextOverride = &pdt_connection
+	}
 
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: test conf", currFuncName()))
 	validateConfig, _, err := c.Connections.ValidateConfig(ctx, nc)
@@ -292,149 +398,103 @@ func resourceConnectionRead(ctx context.Context, d *schema.ResourceData, m inter
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	if err = d.Set("name", connection.Name); err != nil {
+	if d.Set("name", connection.Name) != nil {
 		return diag.FromErr(err)
 	}
-	if err = d.Set("host", connection.Host); err != nil {
+	if d.Set("host", connection.Host) != nil {
 		return diag.FromErr(err)
 	}
-
-	if err = d.Set("user_attribute_fields", connection.UserAttributeFields); err != nil {
+	if d.Set("port", connection.Port) != nil {
 		return diag.FromErr(err)
 	}
-
-	if err = d.Set("port", connection.Port); err != nil {
+	if d.Set("file_type", connection.FileType) != nil {
 		return diag.FromErr(err)
 	}
-
-	if err = d.Set("username", connection.Username); err != nil {
+	if d.Set("database", connection.Database) != nil {
 		return diag.FromErr(err)
 	}
-
-	if err = d.Set("password", connection.Password); err != nil {
+	if d.Set("db_timezone", connection.DbTimezone) != nil {
 		return diag.FromErr(err)
 	}
-
-	if err = d.Set("certificate", connection.Certificate); err != nil {
+	if d.Set("query_timezone", connection.QueryTimezone) != nil {
 		return diag.FromErr(err)
 	}
-
-	if err = d.Set("file_type", connection.FileType); err != nil {
+	if d.Set("schema", connection.Schema) != nil {
 		return diag.FromErr(err)
 	}
-
-	if err = d.Set("database", connection.Database); err != nil {
+	if d.Set("max_billing_gigabytes", connection.MaxBillingGigabytes) != nil {
 		return diag.FromErr(err)
 	}
-
-	if err = d.Set("db_timezone", connection.DbTimezone); err != nil {
+	if d.Set("tmp_db_name", connection.TmpDbName) != nil {
 		return diag.FromErr(err)
 	}
-
-	if err = d.Set("query_timezone", connection.QueryTimezone); err != nil {
+	if d.Set("jdbc_additional_params", connection.JdbcAdditionalParams) != nil {
 		return diag.FromErr(err)
 	}
-
-	if err = d.Set("schema", connection.Schema); err != nil {
+	if d.Set("dialect_name", connection.DialectName) != nil {
 		return diag.FromErr(err)
 	}
-
-	if err = d.Set("max_billing_gigabytes", connection.MaxBillingGigabytes); err != nil {
+	if d.Set("maintenance_cron", connection.MaintenanceCron) != nil {
 		return diag.FromErr(err)
 	}
-
-	if err = d.Set("tmp_db_name", connection.TmpDbName); err != nil {
+	if d.Set("after_connect_statements", connection.AfterConnectStatements) != nil {
 		return diag.FromErr(err)
 	}
-
-	if err = d.Set("jdbc_additional_params", connection.JdbcAdditionalParams); err != nil {
+	if d.Set("tunnel_id", connection.TunnelId) != nil {
 		return diag.FromErr(err)
 	}
-
-	if err = d.Set("dialect_name", connection.DialectName); err != nil {
+	if d.Set("oauth_application_id", connection.OauthApplicationId) != nil {
 		return diag.FromErr(err)
 	}
-
-	if err = d.Set("maintenance_cron", connection.MaintenanceCron); err != nil {
+	if d.Set("ssl", connection.Ssl) != nil {
 		return diag.FromErr(err)
 	}
-
-	if err = d.Set("after_connect_statements", connection.AfterConnectStatements); err != nil {
+	if d.Set("verify_ssl", connection.VerifySsl) != nil {
 		return diag.FromErr(err)
 	}
-
-	if err = d.Set("tunnel_id", connection.TunnelId); err != nil {
+	if d.Set("user_db_credentials", connection.UserDbCredentials) != nil {
 		return diag.FromErr(err)
 	}
-
-	if err = d.Set("oauth_application_id", connection.OauthApplicationId); err != nil {
+	if d.Set("sql_runner_precache_tables", connection.SqlRunnerPrecacheTables) != nil {
 		return diag.FromErr(err)
 	}
-
-	if connection.Ssl != nil {
-		if err = d.Set("ssl", *connection.Ssl); err != nil {
-			return diag.FromErr(err)
-		}
-	}
-
-	if connection.VerifySsl != nil {
-		if err = d.Set("verify_ssl", *connection.VerifySsl); err != nil {
-			return diag.FromErr(err)
-		}
-	}
-
-	if connection.UserDbCredentials != nil {
-		if err = d.Set("user_db_credentials", *connection.UserDbCredentials); err != nil {
-			return diag.FromErr(err)
-		}
-	}
-
-	if connection.SqlRunnerPrecacheTables != nil {
-		if err = d.Set("sql_runner_precache_tables", *connection.SqlRunnerPrecacheTables); err != nil {
-			return diag.FromErr(err)
-		}
-	}
-
-	if connection.SqlWritingWithInfoSchema != nil {
-		if err = d.Set("sql_writing_with_info_schema", *connection.SqlWritingWithInfoSchema); err != nil {
-			return diag.FromErr(err)
-		}
-	}
-
-	if connection.DisableContextComment != nil {
-		if err = d.Set("disable_context_comment", *connection.DisableContextComment); err != nil {
-			return diag.FromErr(err)
-		}
-	}
-
-	if connection.AlwaysRetryFailedBuilds != nil {
-		if err = d.Set("always_retry_failed_builds", *connection.AlwaysRetryFailedBuilds); err != nil {
-			return diag.FromErr(err)
-		}
-	}
-
-	if connection.CostEstimateEnabled != nil {
-		if err = d.Set("cost_estimate_enabled", *connection.CostEstimateEnabled); err != nil {
-			return diag.FromErr(err)
-		}
-	}
-
-	if connection.PdtApiControlEnabled != nil {
-		if err = d.Set("pdt_api_control_enabled", *connection.PdtApiControlEnabled); err != nil {
-			return diag.FromErr(err)
-		}
-	}
-
-	if err = d.Set("max_connections", connection.MaxConnections); err != nil {
+	if d.Set("sql_writing_with_info_schema", connection.SqlWritingWithInfoSchema) != nil {
 		return diag.FromErr(err)
 	}
-
-	if err = d.Set("pool_timeout", connection.PoolTimeout); err != nil {
+	if d.Set("disable_context_comment", connection.DisableContextComment) != nil {
 		return diag.FromErr(err)
 	}
-
-	if err = d.Set("pdt_concurrency", connection.PdtConcurrency); err != nil {
+	if d.Set("always_retry_failed_builds", connection.AlwaysRetryFailedBuilds) != nil {
 		return diag.FromErr(err)
+	}
+	if d.Set("cost_estimate_enabled", connection.CostEstimateEnabled) != nil {
+		return diag.FromErr(err)
+	}
+	if d.Set("pdt_api_control_enabled", connection.PdtApiControlEnabled) != nil {
+		return diag.FromErr(err)
+	}
+	if d.Set("max_connections", connection.MaxConnections) != nil {
+		return diag.FromErr(err)
+	}
+	if d.Set("pool_timeout", connection.PoolTimeout) != nil {
+		return diag.FromErr(err)
+	}
+	if d.Set("pdt_concurrency", connection.PdtConcurrency) != nil {
+		return diag.FromErr(err)
+	}
+	if connection.PdtContextOverride != nil {
+		pdt := connection.PdtContextOverride
+		var items []interface{}
+		items = append(items, map[string]interface{}{
+			"context":                  pdt.Context,
+			"username":                 pdt.Username,
+			"host":                     pdt.Host,
+			"port":                     pdt.Port,
+			"has_password":             pdt.HasPassword,
+			"jdbc_additional_params":   pdt.JdbcAdditionalParams,
+			"after_connect_statements": pdt.AfterConnectStatements,
+		})
+		d.Set("pdt_context_override", items)
 	}
 	tflog.Trace(ctx, fmt.Sprintf("Fn: %v, Action: end", currFuncName()))
 	return diags
@@ -450,98 +510,112 @@ func resourceConnectionUpdate(ctx context.Context, d *schema.ResourceData, m int
 		return diag.FromErr(err)
 	}
 
-	if d.HasChange("host") {
-		connection.Host = d.Get("host").(string)
+	if val, ok := d.GetOk("host"); ok {
+		connection.Host = val.(string)
 	}
-	if d.HasChange("user_attribute_fields") {
-		connection.UserAttributeFields = interfaceListToStringList(d.Get("user_attribute_fields").([]interface{}))
+	if val, ok := d.GetOk("port"); ok {
+		connection.Port = val.(string)
 	}
-	if d.HasChange("port") {
-		connection.Port = d.Get("port").(string)
+	if val, ok := d.GetOk("username"); ok {
+		connection.Username = val.(string)
 	}
-	if d.HasChange("username") {
-		connection.Username = d.Get("username").(string)
+	if val, ok := d.GetOk("password"); ok {
+		connection.Password = val.(string)
 	}
-	if d.HasChange("password") {
-		connection.Password = d.Get("password").(string)
+	if val, ok := d.GetOk("certificate"); ok {
+		connection.Certificate = val.(string)
 	}
-	if d.HasChange("certificate") {
-		connection.Certificate = d.Get("certificate").(string)
+	if val, ok := d.GetOk("file_type"); ok {
+		connection.FileType = val.(string)
 	}
-	if d.HasChange("file_type") {
-		connection.FileType = d.Get("file_type").(string)
+	if val, ok := d.GetOk("database"); ok {
+		connection.Database = val.(string)
 	}
-	if d.HasChange("database") {
-		connection.Database = d.Get("database").(string)
+	if val, ok := d.GetOk("db_timezone"); ok {
+		connection.DbTimezone = val.(string)
 	}
-	if d.HasChange("db_timezone") {
-		connection.DbTimezone = d.Get("db_timezone").(string)
+	if val, ok := d.GetOk("query_timezone"); ok {
+		connection.QueryTimezone = val.(string)
 	}
-	if d.HasChange("query_timezone") {
-		connection.QueryTimezone = d.Get("query_timezone").(string)
+	if val, ok := d.GetOk("schema"); ok {
+		connection.Schema = val.(string)
 	}
-	if d.HasChange("schema") {
-		connection.Schema = d.Get("schema").(string)
+	if val, ok := d.GetOk("max_billing_gigabytes"); ok {
+		connection.MaxBillingGigabytes = val.(string)
 	}
-	if d.HasChange("max_billing_gigabytes") {
-		connection.MaxBillingGigabytes = d.Get("max_billing_gigabytes").(string)
+	if val, ok := d.GetOk("tmp_db_name"); ok {
+		connection.TmpDbName = val.(string)
 	}
-	if d.HasChange("tmp_db_name") {
-		connection.TmpDbName = d.Get("tmp_db_name").(string)
+	if val, ok := d.GetOk("jdbc_additional_params"); ok {
+		connection.JdbcAdditionalParams = val.(string)
 	}
-	if d.HasChange("jdbc_additional_params") {
-		connection.JdbcAdditionalParams = d.Get("jdbc_additional_params").(string)
+	if val, ok := d.GetOk("dialect_name"); ok {
+		connection.DialectName = val.(string)
 	}
-	if d.HasChange("dialect_name") {
-		connection.DialectName = d.Get("dialect_name").(string)
+	if val, ok := d.GetOk("maintenance_cron"); ok {
+		connection.MaintenanceCron = val.(string)
 	}
-	if d.HasChange("maintenance_cron") {
-		connection.MaintenanceCron = d.Get("maintenance_cron").(string)
+	if val, ok := d.GetOk("after_connect_statements"); ok {
+		connection.AfterConnectStatements = val.(string)
 	}
-	if d.HasChange("after_connect_statements") {
-		connection.AfterConnectStatements = d.Get("after_connect_statements").(string)
+	if val, ok := d.GetOk("tunnel_id"); ok {
+		connection.TunnelId = val.(string)
 	}
-	if d.HasChange("tunnel_id") {
-		connection.TunnelId = d.Get("tunnel_id").(string)
+	if val, ok := d.GetOk("oauth_application_id"); ok {
+		connection.OauthApplicationId = val.(string)
 	}
-	if d.HasChange("oauth_application_id") {
-		connection.OauthApplicationId = d.Get("oauth_application_id").(string)
+	if val, ok := d.GetOk("ssl"); ok {
+		connection.Ssl = boolPtr(val.(bool))
 	}
-	if d.HasChange("ssl") {
-		connection.Ssl = boolPtr(d.Get("ssl").(bool))
+	if val, ok := d.GetOk("verify_ssl"); ok {
+		connection.VerifySsl = boolPtr(val.(bool))
 	}
-	if d.HasChange("verify_ssl") {
-		connection.VerifySsl = boolPtr(d.Get("verify_ssl").(bool))
+	if val, ok := d.GetOk("user_db_credentials"); ok {
+		connection.UserDbCredentials = boolPtr(val.(bool))
 	}
-	if d.HasChange("user_db_credentials") {
-		connection.UserDbCredentials = boolPtr(d.Get("user_db_credentials").(bool))
+	if val, ok := d.GetOk("sql_runner_precache_tables"); ok {
+		connection.SqlRunnerPrecacheTables = boolPtr(val.(bool))
 	}
-	if d.HasChange("sql_runner_precache_tables") {
-		connection.SqlRunnerPrecacheTables = boolPtr(d.Get("sql_runner_precache_tables").(bool))
+	if val, ok := d.GetOk("sql_writing_with_info_schema"); ok {
+		connection.SqlWritingWithInfoSchema = boolPtr(val.(bool))
 	}
-	if d.HasChange("sql_writing_with_info_schema") {
-		connection.SqlWritingWithInfoSchema = boolPtr(d.Get("sql_writing_with_info_schema").(bool))
+	if val, ok := d.GetOk("disable_context_comment"); ok {
+		connection.DisableContextComment = boolPtr(val.(bool))
 	}
-	if d.HasChange("disable_context_comment") {
-		connection.DisableContextComment = boolPtr(d.Get("disable_context_comment").(bool))
+	if val, ok := d.GetOk("always_retry_failed_builds"); ok {
+		connection.AlwaysRetryFailedBuilds = boolPtr(val.(bool))
 	}
-	if d.HasChange("always_retry_failed_builds") {
-		connection.AlwaysRetryFailedBuilds = boolPtr(d.Get("always_retry_failed_builds").(bool))
+	if val, ok := d.GetOk("cost_estimate_enabled"); ok {
+		connection.CostEstimateEnabled = boolPtr(val.(bool))
 	}
-	if d.HasChange("cost_estimate_enabled") {
-		connection.CostEstimateEnabled = boolPtr(d.Get("cost_estimate_enabled").(bool))
+	if val, ok := d.GetOk("pdt_api_control_enabled"); ok {
+		connection.PdtApiControlEnabled = boolPtr(val.(bool))
 	}
-	if d.HasChange("pdt_api_control_enabled") {
-		connection.PdtApiControlEnabled = boolPtr(d.Get("pdt_api_control_enabled").(bool))
+	if val, ok := d.GetOk("max_connections"); ok {
+		connection.MaxConnections = int64(val.(int))
 	}
-	if d.HasChange("max_connections") {
-		connection.MaxConnections = int64(d.Get("max_connections").(int))
+	if val, ok := d.GetOk("pool_timeout"); ok {
+		connection.PoolTimeout = int64(val.(int))
 	}
-	if d.HasChange("pool_timeout") {
-		connection.PoolTimeout = int64(d.Get("pool_timeout").(int))
+	if val, ok := d.GetOk("pdt_concurrency"); ok {
+		connection.PdtConcurrency = int64(val.(int))
 	}
-	if d.HasChange("pdt_concurrency") {
-		connection.PdtConcurrency = int64(d.Get("pdt_concurrency").(int))
+	if val, ok := d.GetOk("pdt_context_override"); ok {
+		obj := val.(*schema.Set).List()[0].(map[string]interface{})
+		context := obj["context"].(string)
+		username := obj["username"].(string)
+		host := obj["host"].(string)
+		port := obj["port"].(string)
+		password := obj["password"].(string)
+		certificate := obj["certificate"].(string)
+		file_type := obj["file_type"].(string)
+		jdbc_additional_params := obj["jdbc_additional_params"].(string)
+		after_connect_statements := obj["after_connect_statements"].(string)
+		pdt_connection := lookergo.DBConnectionOverride{
+			Context: &context, Username: &username, Password: &password, Certificate: &certificate, FileType: &file_type, JdbcAdditionalParams: &jdbc_additional_params,
+			AfterConnectStatements: &after_connect_statements, Host: &host, Port: &port,
+		}
+		connection.PdtContextOverride = &pdt_connection
 	}
 	_, _, err = c.Connections.Update(ctx, connectionName, connection)
 	if err != nil {

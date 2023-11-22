@@ -9,16 +9,23 @@ description: |-
 ## Example Usage
 ```terraform
 resource "looker_connection" "example" {
-  name            = "testdummy901"
-  username        = "hegdgxme"
-  database        = "hegdgxme"
-  dialect_name    = "postgres"
-  port            = "5432"
-  host            = "surus.db.elephantsql.com"
-  password        = "polite-sculpin"
+  name            = "test_connection"
+  username        = "user"
+  database        = "sf"
+  dialect_name    = "snowflake"
+  db_timezone     = "Europe/Amsterdam"
+  port            = "443"
+  host            = "db.snowflake.com"
+  password        = "password"
   ssl             = true
   max_connections = 5
-  user_attribute_fields = []
+  tmp_db_name     = "temp_db"
+  pdt_context_override {
+    host = "db.snowflake.com"
+    username = "user1"
+    password = "password1"
+    jdbc_additional_params = "database=my_db&warehouse=DEMO"
+  }
 }
 ```
 
@@ -27,17 +34,22 @@ resource "looker_connection" "example" {
 % terraform show
 # looker_connection.example:
 resource "looker_connection" "example" {
-  database        = "hegdgxme"
-  dialect_name    = "postgres"
-  host            = "surus.db.elephantsql.com"
-  id              = "testdummy901"
-  max_connections = 5
-  name            = "testdummy901"
-  password        = (sensitive value)
-  port            = "5432"
-  ssl             = true
-  username        = "hegdgxme"
-  user_attribute_fields = []
+    database        = "sf"
+    db_timezone     = "Europe/Amsterdam"
+    dialect_name    = "snowflake"
+    host            = "db.snowflake.com"
+    id              = "test_connection"
+    max_connections = 5
+    name            = "test_connection"
+    password        = (sensitive value)
+    port            = "443"
+    ssl             = true
+    tmp_db_name     = "temp_db"
+    username        = "user"
+    pdt_context_override {
+      # At least one attribute in this block is (or was) sensitive,
+      # so its contents will not be displayed.
+    }
 }
 ```
 
@@ -316,37 +328,56 @@ resource "looker_connection" "example" {
 
 ### Optional
 
-- `after_connect_statements` (String)
-- `always_retry_failed_builds` (Boolean)
-- `certificate` (String, Sensitive)
-- `cost_estimate_enabled` (Boolean)
-- `database` (String)
-- `db_timezone` (String)
-- `disable_context_comment` (Boolean)
-- `file_type` (String)
-- `host` (String)
-- `jdbc_additional_params` (String)
-- `maintenance_cron` (String)
-- `max_billing_gigabytes` (String)
-- `max_connections` (Number)
-- `oauth_application_id` (String)
-- `password` (String, Sensitive)
-- `pdt_api_control_enabled` (Boolean)
-- `pdt_concurrency` (Number)
-- `pool_timeout` (Number)
-- `port` (String)
-- `query_timezone` (String)
-- `schema` (String)
-- `sql_runner_precache_tables` (Boolean)
-- `sql_writing_with_info_schema` (Boolean)
-- `ssl` (Boolean)
-- `tmp_db_name` (String)
-- `tunnel_id` (String)
+- `always_retry_failed_builds` (Boolean) When true, error PDTs will be retried every regenerator cycle
+- `certificate` (String, Sensitive) (Write-Only) Base64 encoded Certificate body for server authentication (when appropriate for dialect).
+- `cost_estimate_enabled` (Boolean) When true, query cost estimate will be displayed in explore
+- `database` (String) Database name
+- `db_timezone` (String) Time zone of database
+- `disable_context_comment` (Boolean) When disable_context_comment is true comment will not be added to SQL
+- `file_type` (String) (Write-Only) Certificate keyfile type - .json or .p12
+- `host` (String) Host name/address of server
+- `jdbc_additional_params` (String) Additional params to add to JDBC connection string
+- `maintenance_cron` (String) Cron string specifying when maintenance such as PDT trigger checks and drops should be performed
+- `max_billing_gigabytes` (String) Maximum size of query in GBs (BigQuery only, can be a user_attribute name)
+- `max_connections` (Number) Maximum number of concurrent connection to use
+- `oauth_application_id` (String) An External OAuth Application to use for authenticating to the database
+- `password` (String, Sensitive) (Write-Only) Password for server authentication
+- `pdt_api_control_enabled` (Boolean) PDT builds on this connection can be kicked off and cancelled via API
+- `pdt_concurrency` (Number) Maximum number of threads to use to build PDTs in parallel
+- `pdt_context_override` (Block Set) (see [below for nested schema](#nestedblock--pdt_context_override))
+- `pool_timeout` (Number) Connection Pool Timeout, in seconds
+- `port` (String) Port number on server
+- `query_timezone` (String) Timezone to use in queries
+- `schema` (String) Scheme name
+- `sql_runner_precache_tables` (Boolean) Precache tables in the SQL Runner
+- `sql_writing_with_info_schema` (Boolean) Fetch Information Schema For SQL Writing
+- `ssl` (Boolean) Use SSL/TLS when connecting to server
+- `tmp_db_name` (String) Name of temporary database (if used)
+- `tunnel_id` (String) The Id of the ssh tunnel this connection uses
 - `user_attribute_fields` (List of String)
-- `user_db_credentials` (Boolean)
-- `username` (String)
-- `verify_ssl` (Boolean)
+- `user_db_credentials` (Boolean) (Limited access feature) Are per user db credentials enabled. Enabling will remove previously set username and password
+- `username` (String) Username for server authentication
+- `verify_ssl` (Boolean) Verify the SSL
 
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+
+<a id="nestedblock--pdt_context_override"></a>
+### Nested Schema for `pdt_context_override`
+
+Required:
+
+- `host` (String) Host name/address of server
+
+Optional:
+
+- `after_connect_statements` (String) SQL statements (semicolon separated) to issue after connecting to the database. Requires `custom_after_connect_statements` license feature
+- `certificate` (String, Sensitive) (Write-Only) Base64 encoded Certificate body for server authentication (when appropriate for dialect)
+- `context` (String) Context in which to override (`pdt` is the only allowed value)
+- `file_type` (String) (Write-Only) Certificate keyfile type - .json or .p12
+- `has_password` (String) Whether or not the password is overridden in this context
+- `jdbc_additional_params` (String) Additional params to add to JDBC connection string
+- `password` (String) (Write-Only) Password for server authentication
+- `port` (String) Port number on server
+- `username` (String) Username for server authentication

@@ -1,15 +1,20 @@
 % terraform show
 # looker_connection.example:
 resource "looker_connection" "example" {
-  database        = "hegdgxme"
-  dialect_name    = "postgres"
-  host            = "surus.db.elephantsql.com"
-  id              = "testdummy901"
-  max_connections = 5
-  name            = "testdummy901"
-  password        = (sensitive value)
-  port            = "5432"
-  ssl             = true
-  username        = "hegdgxme"
-  user_attribute_fields = []
+    database        = "sf"
+    db_timezone     = "Europe/Amsterdam"
+    dialect_name    = "snowflake"
+    host            = "db.snowflake.com"
+    id              = "test_connection"
+    max_connections = 5
+    name            = "test_connection"
+    password        = (sensitive value)
+    port            = "443"
+    ssl             = true
+    tmp_db_name     = "temp_db"
+    username        = "user"
+    pdt_context_override {
+      # At least one attribute in this block is (or was) sensitive,
+      # so its contents will not be displayed.
+    }
 }

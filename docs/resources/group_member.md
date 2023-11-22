@@ -13,7 +13,7 @@ data "looker_group" "group_two" {
 }
 
 resource "looker_group_member" "member_binding" {
-  group_id = data.looker_group.group_two.id
+  target_group_id = data.looker_group.group_two.id
 
   user {
     id = "1"
@@ -25,7 +25,7 @@ resource "looker_group_member" "member_binding" {
 }
 
 resource "looker_group_member" "member_binding_secundo" {
-  group_id = data.looker_group.group_two.id
+  target_group_id = data.looker_group.group_two.id
 
   user {
     id = "4"
@@ -57,8 +57,8 @@ data "looker_group" "group_one" {
 
 # looker_group_member.member_binding:
 resource "looker_group_member" "member_binding" {
-  group_id = "4"
-  id       = "-"
+  target_group_id = "4"
+  id              = "-"
 
   user {
     first_name = "Kermit"
@@ -74,8 +74,8 @@ resource "looker_group_member" "member_binding" {
 
 # looker_group_member.member_binding_secundo:
 resource "looker_group_member" "member_binding_secundo" {
-  group_id = "4"
-  id       = "-"
+  target_group_id = "4"
+  id              = "-"
 
   group {
     id   = "3"

@@ -80,6 +80,7 @@ type Client struct {
 	Alerts            AlertsResource
 	UserAttributes    UserAttributesResource
 	EgressIpAddresses PublicEgressIpsResource
+	Themes            ThemesResource
 	// TODO: Expand
 
 	// Optional function called after every successful request made to the DO APIs
@@ -155,6 +156,7 @@ func NewClient(httpClient *http.Client) *Client {
 	c.Alerts = &AlertsResourceOp{client: c}
 	c.UserAttributes = &UserAttributesResourceOp{client: c}
 	c.EgressIpAddresses = &PublicEgressIpsResourceOp{client: c}
+	c.Themes = &ThemesResourceOp{client: c}
 	c.headers = make(map[string]string)
 	c.Workspace = "production"
 
@@ -555,7 +557,7 @@ func StreamToString(stream io.Reader) string {
 }
 
 type service interface {
-	Group | User | CredentialsEmail | Role | PermissionSet | Session | Project | GitBranch | Folder | UserAttribute | UserAttributeGroupValue | Alert | EgressIpAddresses
+	Group | User | CredentialsEmail | Role | PermissionSet | Session | Project | GitBranch | Folder | UserAttribute | UserAttributeGroupValue | Alert | EgressIpAddresses | Theme
 }
 
 // addOptions -

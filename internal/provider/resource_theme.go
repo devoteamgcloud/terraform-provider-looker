@@ -102,20 +102,6 @@ func resourceTheme() *schema.Resource {
 							Optional:    true,
 							Description: "Source specification for font",
 						},
-						"info_button_color": {
-							Type:        schema.TypeString,
-							Optional:    true,
-							Description: "(DEPRECATED) Info button color",
-							ValidateDiagFunc: validation.ToDiagFunc(
-								validation.StringMatch(
-									func() *regexp.Regexp {
-										ret, _ := regexp.Compile("#(?i)(?:[0-9A-F]{2}){2,4}")
-										return ret
-									}(),
-									"color must be a valid color hex code",
-								),
-							),
-						},
 						"primary_button_color": {
 							Type:        schema.TypeString,
 							Optional:    true,
@@ -200,20 +186,6 @@ func resourceTheme() *schema.Resource {
 							Type:        schema.TypeString,
 							Required:    true,
 							Description: "Color for titles",
-							ValidateDiagFunc: validation.ToDiagFunc(
-								validation.StringMatch(
-									func() *regexp.Regexp {
-										ret, _ := regexp.Compile("#(?i)(?:[0-9A-F]{2}){2,4}")
-										return ret
-									}(),
-									"color must be a valid color hex code",
-								),
-							),
-						},
-						"warn_button_color": {
-							Type:        schema.TypeString,
-							Optional:    true,
-							Description: "(DEPRECATED) Warning button color",
 							ValidateDiagFunc: validation.ToDiagFunc(
 								validation.StringMatch(
 									func() *regexp.Regexp {
@@ -397,7 +369,6 @@ func populateSettings(settingsMap map[string]interface{}) *lookergo.ThemeSetting
 		FontColor:                castToPtr(settingsMap["font_color"].(string)),
 		FontFamily:               castToPtr(settingsMap["font_family"].(string)),
 		FontSource:               castToPtr(settingsMap["font_source"].(string)),
-		InfoButtonColor:          castToPtr(settingsMap["info_button_color"].(string)),
 		PrimaryButtonColor:       castToPtr(settingsMap["primary_button_color"].(string)),
 		ShowFiltersBar:           boolPtr(settingsMap["show_filters_bar"].(bool)),
 		ShowTitle:                boolPtr(settingsMap["show_title"].(bool)),
@@ -406,7 +377,6 @@ func populateSettings(settingsMap map[string]interface{}) *lookergo.ThemeSetting
 		TextTileBackgroundColor:  castToPtr(settingsMap["text_tile_background_color"].(string)),
 		TileTextColor:            castToPtr(settingsMap["tile_text_color"].(string)),
 		TitleColor:               castToPtr(settingsMap["title_color"].(string)),
-		WarnButtonColor:          castToPtr(settingsMap["warn_button_color"].(string)),
 		TileTitleAlignment:       castToPtr(settingsMap["tile_title_alignment"].(string)),
 		TileShadow:               boolPtr(settingsMap["tile_shadow"].(bool)),
 		ShowLastUpdatedIndicator: boolPtr(settingsMap["show_last_updated_indicator"].(bool)),
@@ -475,62 +445,52 @@ func flattenThemeSettings(settings *lookergo.ThemeSettings) map[string]interface
 	if settings == nil {
 		return nil
 	}
-	result := make(map[string]interface{})
-
-	result["background_color"] = getValueOrDefault(settings.BackgroundColor)
-	result["base_font_size"] = getValueOrDefault(settings.BaseFontSize)
-	result["color_collection_id"] = getValueOrDefault(settings.ColorCollectionId)
-	result["font_color"] = getValueOrDefault(settings.FontColor)
-	result["font_family"] = getValueOrDefault(settings.FontFamily)
-	result["font_source"] = getValueOrDefault(settings.FontSource)
-	result["info_button_color"] = getValueOrDefault(settings.InfoButtonColor)
-	result["primary_button_color"] = getValueOrDefault(settings.PrimaryButtonColor)
-	result["show_filters_bar"] = getValueOrDefault(settings.ShowFiltersBar)
-	result["show_title"] = getValueOrDefault(settings.ShowTitle)
-	result["text_tile_text_color"] = getValueOrDefault(settings.TextTileTextColor)
-	result["tile_background_color"] = getValueOrDefault(settings.TileBackgroundColor)
-	result["text_tile_background_color"] = getValueOrDefault(settings.TextTileBackgroundColor)
-	result["tile_text_color"] = getValueOrDefault(settings.TileTextColor)
-	result["title_color"] = getValueOrDefault(settings.TitleColor)
-	result["warn_button_color"] = getValueOrDefault(settings.WarnButtonColor)
-	result["tile_title_alignment"] = getValueOrDefault(settings.TileTitleAlignment)
-	result["tile_shadow"] = getValueOrDefault(settings.TileShadow)
-	result["show_last_updated_indicator"] = getValueOrDefault(settings.ShowLastUpdatedIndicator)
-	result["show_reload_data_icon"] = getValueOrDefault(settings.ShowReloadDataIcon)
-	result["show_dashboard_menu"] = getValueOrDefault(settings.ShowDashboardMenu)
-	result["show_filters_toggle"] = getValueOrDefault(settings.ShowFiltersToggle)
-	result["show_dashboard_header"] = getValueOrDefault(settings.ShowDashboardHeader)
-	result["center_dashboard_title"] = getValueOrDefault(settings.CenterDashboardTitle)
-	result["dashboard_title_font_size"] = getValueOrDefault(settings.DashboardTitleFontSize)
-	result["box_shadow"] = getValueOrDefault(settings.BoxShadow)
-	result["page_margin_top"] = getValueOrDefault(settings.PageMarginTop)
-	result["page_margin_bottom"] = getValueOrDefault(settings.PageMarginBottom)
-	result["page_margin_sides"] = getValueOrDefault(settings.PageMarginSides)
-	result["show_explore_header"] = getValueOrDefault(settings.ShowExploreHeader)
-	result["show_explore_title"] = getValueOrDefault(settings.ShowExploreTitle)
-	result["show_explore_last_run"] = getValueOrDefault(settings.ShowExploreLastRun)
-	result["show_explore_timezone"] = getValueOrDefault(settings.ShowExploreTimezone)
-	result["show_explore_run_stop_button"] = getValueOrDefault(settings.ShowExploreRunStopButton)
-	result["show_explore_actions_button"] = getValueOrDefault(settings.ShowExploreActionsButton)
-	result["show_look_header"] = getValueOrDefault(settings.ShowLookHeader)
-	result["show_look_title"] = getValueOrDefault(settings.ShowLookTitle)
-	result["show_look_last_run"] = getValueOrDefault(settings.ShowLookLastRun)
-	result["show_look_timezone"] = getValueOrDefault(settings.ShowLookTimezone)
-	result["show_look_run_stop_button"] = getValueOrDefault(settings.ShowLookRunStopButton)
-	result["show_look_actions_button"] = getValueOrDefault(settings.ShowLookActionsButton)
-	result["tile_title_font_size"] = getValueOrDefault(settings.TileTitleFontSize)
-	result["column_gap_size"] = getValueOrDefault(settings.ColumnGapSize)
-	result["row_gap_size"] = getValueOrDefault(settings.RowGapSize)
-	result["border_radius"] = getValueOrDefault(settings.BorderRadius)
-
-	return result
-}
-
-func getValueOrDefault(value interface{}) interface{} {
-	if value == nil {
-		return nil
+	result := map[string]interface{}{
+		"background_color":             settings.BackgroundColor,
+		"base_font_size":               settings.BaseFontSize,
+		"color_collection_id":          settings.ColorCollectionId,
+		"font_color":                   settings.FontColor,
+		"font_family":                  settings.FontFamily,
+		"font_source":                  settings.FontSource,
+		"primary_button_color":         settings.PrimaryButtonColor,
+		"show_filters_bar":             settings.ShowFiltersBar,
+		"show_title":                   settings.ShowTitle,
+		"text_tile_text_color":         settings.TextTileTextColor,
+		"tile_background_color":        settings.TileBackgroundColor,
+		"text_tile_background_color":   settings.TextTileBackgroundColor,
+		"tile_text_color":              settings.TileTextColor,
+		"title_color":                  settings.TitleColor,
+		"tile_title_alignment":         settings.TileTitleAlignment,
+		"tile_shadow":                  settings.TileShadow,
+		"show_last_updated_indicator":  settings.ShowLastUpdatedIndicator,
+		"show_reload_data_icon":        settings.ShowReloadDataIcon,
+		"show_dashboard_menu":          settings.ShowDashboardMenu,
+		"show_filters_toggle":          settings.ShowFiltersToggle,
+		"show_dashboard_header":        settings.ShowDashboardHeader,
+		"center_dashboard_title":       settings.CenterDashboardTitle,
+		"dashboard_title_font_size":    settings.DashboardTitleFontSize,
+		"box_shadow":                   settings.BoxShadow,
+		"page_margin_top":              settings.PageMarginTop,
+		"page_margin_bottom":           settings.PageMarginBottom,
+		"page_margin_sides":            settings.PageMarginSides,
+		"show_explore_header":          settings.ShowExploreHeader,
+		"show_explore_title":           settings.ShowExploreTitle,
+		"show_explore_last_run":        settings.ShowExploreLastRun,
+		"show_explore_timezone":        settings.ShowExploreTimezone,
+		"show_explore_run_stop_button": settings.ShowExploreRunStopButton,
+		"show_explore_actions_button":  settings.ShowExploreActionsButton,
+		"show_look_header":             settings.ShowLookHeader,
+		"show_look_title":              settings.ShowLookTitle,
+		"show_look_last_run":           settings.ShowLookLastRun,
+		"show_look_timezone":           settings.ShowLookTimezone,
+		"show_look_run_stop_button":    settings.ShowLookRunStopButton,
+		"show_look_actions_button":     settings.ShowLookActionsButton,
+		"tile_title_font_size":         settings.TileTitleFontSize,
+		"column_gap_size":              settings.ColumnGapSize,
+		"row_gap_size":                 settings.RowGapSize,
+		"border_radius":                settings.BorderRadius,
 	}
-	return value
+	return result
 }
 
 func resourceThemeRead(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
@@ -553,13 +513,10 @@ func resourceThemeRead(ctx context.Context, d *schema.ResourceData, m interface{
 	// 		return diag.FromErr(err)
 	// 	}
 	// }
-	if theme.Settings != nil {
-		var settingsItems []interface{}
-		settingsItems = append(settingsItems, flattenThemeSettings(theme.Settings))
-		if err = d.Set("settings", settingsItems); err != nil {
-			return diag.FromErr(err)
-		}
-	}
+
+	var settingsItems []interface{}
+	settingsItems = append(settingsItems, flattenThemeSettings(theme.Settings))
+	d.Set("settings", settingsItems)
 	return diags
 }
 
@@ -583,10 +540,12 @@ func resourceThemeUpdate(ctx context.Context, d *schema.ResourceData, m interfac
 	if value, ok := d.GetOk("name"); ok {
 		theme.Name = castToPtr(value.(string))
 	}
-	if value, ok := d.GetOk("settings"); ok {
-		for _, raw := range value.(*schema.Set).List() {
-			settingsMap := raw.(map[string]interface{})
-			theme.Settings = populateSettings(settingsMap)
+	if d.HasChange("settings") {
+		if value, ok := d.GetOk("settings"); ok {
+			for _, raw := range value.(*schema.Set).List() {
+				settingsMap := raw.(map[string]interface{})
+				theme.Settings = populateSettings(settingsMap)
+			}
 		}
 	}
 	_, _, err = c.Themes.Update(ctx, id, theme)

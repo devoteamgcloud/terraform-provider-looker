@@ -2,12 +2,11 @@ package provider
 
 import (
 	"context"
-	"time"
-	"regexp"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
+	"regexp"
 )
 
 func resourceTheme() *schema.Resource {
@@ -19,16 +18,17 @@ func resourceTheme() *schema.Resource {
 		UpdateContext: resourceThemeUpdate,
 		DeleteContext: resourceThemeDelete,
 		Schema: map[string]*schema.Schema{
-			"begin_at": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "Timestamp for when this theme becomes active. Null=always",
-			},
-			"end_at": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "Timestamp for when this theme expires. Null=never",
-			},
+			// TODO
+			// "begin_at": {
+			// 	Type:        schema.TypeString,
+			// 	Optional:    true,
+			// 	Description: "Timestamp for when this theme becomes active. Null=always",
+			// },
+			// "end_at": {
+			// 	Type:        schema.TypeString,
+			// 	Optional:    true,
+			// 	Description: "Timestamp for when this theme expires. Null=never",
+			// },
 			"id": {
 				Type:        schema.TypeString,
 				Computed:    true,
@@ -231,7 +231,7 @@ func resourceTheme() *schema.Resource {
 							ValidateDiagFunc: validation.ToDiagFunc(
 								validation.StringMatch(
 									func() *regexp.Regexp {
-										ret, _ := regexp.Compile("^(center|left|right)$")
+										ret, _ := regexp.Compile("^(?i)(center|left|right)$")
 										return ret
 									}(),
 									"Invalid value for alignment. Allowed values are 'center', 'left', or 'right'.",
@@ -389,68 +389,78 @@ func resourceTheme() *schema.Resource {
 	}
 }
 
+func populateSettings(settingsMap map[string]interface{}) *lookergo.ThemeSettings {
+	settings := &lookergo.ThemeSettings{
+		BackgroundColor:          castToPtr(settingsMap["background_color"].(string)),
+		BaseFontSize:             castToPtr(settingsMap["base_font_size"].(string)),
+		ColorCollectionId:        castToPtr(settingsMap["color_collection_id"].(string)),
+		FontColor:                castToPtr(settingsMap["font_color"].(string)),
+		FontFamily:               castToPtr(settingsMap["font_family"].(string)),
+		FontSource:               castToPtr(settingsMap["font_source"].(string)),
+		InfoButtonColor:          castToPtr(settingsMap["info_button_color"].(string)),
+		PrimaryButtonColor:       castToPtr(settingsMap["primary_button_color"].(string)),
+		ShowFiltersBar:           boolPtr(settingsMap["show_filters_bar"].(bool)),
+		ShowTitle:                boolPtr(settingsMap["show_title"].(bool)),
+		TextTileTextColor:        castToPtr(settingsMap["text_tile_text_color"].(string)),
+		TileBackgroundColor:      castToPtr(settingsMap["tile_background_color"].(string)),
+		TextTileBackgroundColor:  castToPtr(settingsMap["text_tile_background_color"].(string)),
+		TileTextColor:            castToPtr(settingsMap["tile_text_color"].(string)),
+		TitleColor:               castToPtr(settingsMap["title_color"].(string)),
+		WarnButtonColor:          castToPtr(settingsMap["warn_button_color"].(string)),
+		TileTitleAlignment:       castToPtr(settingsMap["tile_title_alignment"].(string)),
+		TileShadow:               boolPtr(settingsMap["tile_shadow"].(bool)),
+		ShowLastUpdatedIndicator: boolPtr(settingsMap["show_last_updated_indicator"].(bool)),
+		ShowReloadDataIcon:       boolPtr(settingsMap["show_reload_data_icon"].(bool)),
+		ShowDashboardMenu:        boolPtr(settingsMap["show_dashboard_menu"].(bool)),
+		ShowFiltersToggle:        boolPtr(settingsMap["show_filters_toggle"].(bool)),
+		ShowDashboardHeader:      boolPtr(settingsMap["show_dashboard_header"].(bool)),
+		CenterDashboardTitle:     boolPtr(settingsMap["center_dashboard_title"].(bool)),
+		DashboardTitleFontSize:   castToPtr(settingsMap["dashboard_title_font_size"].(string)),
+		BoxShadow:                castToPtr(settingsMap["box_shadow"].(string)),
+		PageMarginTop:            castToPtr(settingsMap["page_margin_top"].(string)),
+		PageMarginBottom:         castToPtr(settingsMap["page_margin_bottom"].(string)),
+		PageMarginSides:          castToPtr(settingsMap["page_margin_sides"].(string)),
+		ShowExploreHeader:        boolPtr(settingsMap["show_explore_header"].(bool)),
+		ShowExploreTitle:         boolPtr(settingsMap["show_explore_title"].(bool)),
+		ShowExploreLastRun:       boolPtr(settingsMap["show_explore_last_run"].(bool)),
+		ShowExploreTimezone:      boolPtr(settingsMap["show_explore_timezone"].(bool)),
+		ShowExploreRunStopButton: boolPtr(settingsMap["show_explore_run_stop_button"].(bool)),
+		ShowExploreActionsButton: boolPtr(settingsMap["show_explore_actions_button"].(bool)),
+		ShowLookHeader:           boolPtr(settingsMap["show_look_header"].(bool)),
+		ShowLookTitle:            boolPtr(settingsMap["show_look_title"].(bool)),
+		ShowLookLastRun:          boolPtr(settingsMap["show_look_last_run"].(bool)),
+		ShowLookTimezone:         boolPtr(settingsMap["show_look_timezone"].(bool)),
+		ShowLookRunStopButton:    boolPtr(settingsMap["show_look_run_stop_button"].(bool)),
+		ShowLookActionsButton:    boolPtr(settingsMap["show_look_actions_button"].(bool)),
+		TileTitleFontSize:        castToPtr(settingsMap["tile_title_font_size"].(string)),
+		ColumnGapSize:            castToPtr(settingsMap["column_gap_size"].(string)),
+		RowGapSize:               castToPtr(settingsMap["row_gap_size"].(string)),
+		BorderRadius:             castToPtr(settingsMap["border_radius"].(string)),
+	}
+	return settings
+}
+
 func resourceThemeCreate(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
 	c := m.(*Config).Api // .(*lookergo.Client)
 	theme := &lookergo.Theme{}
-	if value, ok := d.GetOk("begin_at"); ok {
-		theme.BeginAt = value.(*time.Time)
-	}
-	if value, ok := d.GetOk("end_at"); ok {
-		theme.EndAt = value.(*time.Time)
-	}
+	// if value, ok := d.GetOk("begin_at"); ok {
+	// 	parsedTime, err := time.Parse("2006-01-02 15:04:05",value.(string))
+	// 	if err != nil {
+	// 		fmt.Println("Error parsing time:", err)
+	// 		return
+	// 	}
+	// 	theme.BeginAt = &parsedTime
+	// }
+	// if value, ok := d.GetOk("end_at"); ok {
+	// 	theme.EndAt = value.(*time.Time)
+	// }
 	if value, ok := d.GetOk("name"); ok {
 		theme.Name = castToPtr(value.(string))
 	}
 	if value, ok := d.GetOk("settings"); ok {
 		for _, raw := range value.(*schema.Set).List() {
 			settingsMap := raw.(map[string]interface{})
-			theme.Settings = &lookergo.ThemeSettings{
-				BackgroundColor:          castToPtr(settingsMap["background_color"].(string)),
-				BaseFontSize:             castToPtr(settingsMap["base_font_size"].(string)),
-				ColorCollectionId:        castToPtr(settingsMap["color_collection_id"].(string)),
-				FontColor:                castToPtr(settingsMap["font_color"].(string)),
-				FontFamily:               castToPtr(settingsMap["font_family"].(string)),
-				FontSource:               castToPtr(settingsMap["font_source"].(string)),
-				InfoButtonColor:          castToPtr(settingsMap["info_button_color"].(string)),
-				PrimaryButtonColor:       castToPtr(settingsMap["primary_button_color"].(string)),
-				ShowFiltersBar:           boolPtr(settingsMap["show_filters_bar"].(bool)),
-				ShowTitle:                boolPtr(settingsMap["show_title"].(bool)),
-				TextTileTextColor:        castToPtr(settingsMap["text_tile_text_color"].(string)),
-				TileBackgroundColor:      castToPtr(settingsMap["tile_background_color"].(string)),
-				TextTileBackgroundColor:  castToPtr(settingsMap["text_tile_background_color"].(string)),
-				TileTextColor:            castToPtr(settingsMap["tile_text_color"].(string)),
-				TitleColor:               castToPtr(settingsMap["title_color"].(string)),
-				WarnButtonColor:          castToPtr(settingsMap["warn_button_color"].(string)),
-				TileTitleAlignment:       castToPtr(settingsMap["tile_title_alignment"].(string)),
-				TileShadow:               boolPtr(settingsMap["tile_shadow"].(bool)),
-				ShowLastUpdatedIndicator: boolPtr(settingsMap["show_last_updated_indicator"].(bool)),
-				ShowReloadDataIcon:       boolPtr(settingsMap["show_reload_data_icon"].(bool)),
-				ShowDashboardMenu:        boolPtr(settingsMap["show_dashboard_menu"].(bool)),
-				ShowFiltersToggle:        boolPtr(settingsMap["show_filters_toggle"].(bool)),
-				ShowDashboardHeader:      boolPtr(settingsMap["show_dashboard_header"].(bool)),
-				CenterDashboardTitle:     boolPtr(settingsMap["center_dashboard_title"].(bool)),
-				DashboardTitleFontSize:   castToPtr(settingsMap["dashboard_title_font_size"].(string)),
-				BoxShadow:                castToPtr(settingsMap["box_shadow"].(string)),
-				PageMarginTop:            castToPtr(settingsMap["page_margin_top"].(string)),
-				PageMarginBottom:         castToPtr(settingsMap["page_margin_bottom"].(string)),
-				PageMarginSides:          castToPtr(settingsMap["page_margin_sides"].(string)),
-				ShowExploreHeader:        boolPtr(settingsMap["show_explore_header"].(bool)),
-				ShowExploreTitle:         boolPtr(settingsMap["show_explore_title"].(bool)),
-				ShowExploreLastRun:       boolPtr(settingsMap["show_explore_last_run"].(bool)),
-				ShowExploreTimezone:      boolPtr(settingsMap["show_explore_timezone"].(bool)),
-				ShowExploreRunStopButton: boolPtr(settingsMap["show_explore_run_stop_button"].(bool)),
-				ShowExploreActionsButton: boolPtr(settingsMap["show_explore_actions_button"].(bool)),
-				ShowLookHeader:           boolPtr(settingsMap["show_look_header"].(bool)),
-				ShowLookTitle:            boolPtr(settingsMap["show_look_title"].(bool)),
-				ShowLookLastRun:          boolPtr(settingsMap["show_look_last_run"].(bool)),
-				ShowLookTimezone:         boolPtr(settingsMap["show_look_timezone"].(bool)),
-				ShowLookRunStopButton:    boolPtr(settingsMap["show_look_run_stop_button"].(bool)),
-				ShowLookActionsButton:    boolPtr(settingsMap["show_look_actions_button"].(bool)),
-				TileTitleFontSize:        castToPtr(settingsMap["tile_title_font_size"].(string)),
-				ColumnGapSize:            castToPtr(settingsMap["column_gap_size"].(string)),
-				RowGapSize:               castToPtr(settingsMap["row_gap_size"].(string)),
-				BorderRadius:             castToPtr(settingsMap["border_radius"].(string)),
-			}
+			theme.Settings = populateSettings(settingsMap)
 		}
 	}
 	new_theme, _, err := c.Themes.Create(ctx, theme)
@@ -465,7 +475,6 @@ func flattenThemeSettings(settings *lookergo.ThemeSettings) map[string]interface
 	if settings == nil {
 		return nil
 	}
-
 	result := make(map[string]interface{})
 
 	result["background_color"] = getValueOrDefault(settings.BackgroundColor)
@@ -524,7 +533,6 @@ func getValueOrDefault(value interface{}) interface{} {
 	return value
 }
 
-
 func resourceThemeRead(ctx context.Context, d *schema.ResourceData, m interface{}) (diags diag.Diagnostics) {
 	c := m.(*Config).Api // .(*lookergo.Client)
 	id := d.Id()
@@ -535,21 +543,23 @@ func resourceThemeRead(ctx context.Context, d *schema.ResourceData, m interface{
 	if err = d.Set("name", *theme.Name); err != nil {
 		return diag.FromErr(err)
 	}
-	if theme.BeginAt != nil {
-		if err = d.Set("begin_at", theme.BeginAt.String()); err != nil {
-			return diag.FromErr(err)
-		}
-	}
-	if theme.EndAt != nil {
-		if err = d.Set("end_at", theme.EndAt); err != nil {
-			return diag.FromErr(err)
-		}
-	}
-	// if theme.Settings != nil {
-	// 	if err = d.Set("settings", theme.Settings); err != nil {
+	// if theme.BeginAt != nil {
+	// 	if err = d.Set("begin_at", theme.BeginAt.String()); err != nil {
 	// 		return diag.FromErr(err)
 	// 	}
 	// }
+	// if theme.EndAt != nil {
+	// 	if err = d.Set("end_at", theme.EndAt); err != nil {
+	// 		return diag.FromErr(err)
+	// 	}
+	// }
+	if theme.Settings != nil {
+		var settingsItems []interface{}
+		settingsItems = append(settingsItems, flattenThemeSettings(theme.Settings))
+		if err = d.Set("settings", settingsItems); err != nil {
+			return diag.FromErr(err)
+		}
+	}
 	return diags
 }
 
@@ -560,65 +570,23 @@ func resourceThemeUpdate(ctx context.Context, d *schema.ResourceData, m interfac
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	if value, ok := d.GetOk("begin_at"); ok {
-		theme.BeginAt = value.(*time.Time)
-	}
-	if value, ok := d.GetOk("end_at"); ok {
-		theme.EndAt = value.(*time.Time)
-	}
+	// if d.HasChange("begin_at") {
+	// 	if value, ok := d.GetOk("begin_at"); ok {
+	// 		theme.BeginAt = value.(*time.Time)
+	// 	}
+	// }
+	// if d.HasChange("end_at") {
+	// 	if value, ok := d.GetOk("end_at"); ok {
+	// 		theme.EndAt = value.(*time.Time)
+	// 	}
+	// }
 	if value, ok := d.GetOk("name"); ok {
 		theme.Name = castToPtr(value.(string))
 	}
 	if value, ok := d.GetOk("settings"); ok {
 		for _, raw := range value.(*schema.Set).List() {
 			settingsMap := raw.(map[string]interface{})
-			theme.Settings = &lookergo.ThemeSettings{
-				BackgroundColor:          castToPtr(settingsMap["background_color"].(string)),
-				BaseFontSize:             castToPtr(settingsMap["base_font_size"].(string)),
-				ColorCollectionId:        castToPtr(settingsMap["color_collection_id"].(string)),
-				FontColor:                castToPtr(settingsMap["font_color"].(string)),
-				FontFamily:               castToPtr(settingsMap["font_family"].(string)),
-				FontSource:               castToPtr(settingsMap["font_source"].(string)),
-				InfoButtonColor:          castToPtr(settingsMap["info_button_color"].(string)),
-				PrimaryButtonColor:       castToPtr(settingsMap["primary_button_color"].(string)),
-				ShowFiltersBar:           boolPtr(settingsMap["show_filters_bar"].(bool)),
-				ShowTitle:                boolPtr(settingsMap["show_title"].(bool)),
-				TextTileTextColor:        castToPtr(settingsMap["text_tile_text_color"].(string)),
-				TileBackgroundColor:      castToPtr(settingsMap["tile_background_color"].(string)),
-				TextTileBackgroundColor:  castToPtr(settingsMap["text_tile_background_color"].(string)),
-				TileTextColor:            castToPtr(settingsMap["tile_text_color"].(string)),
-				TitleColor:               castToPtr(settingsMap["title_color"].(string)),
-				WarnButtonColor:          castToPtr(settingsMap["warn_button_color"].(string)),
-				TileTitleAlignment:       castToPtr(settingsMap["tile_title_alignment"].(string)),
-				TileShadow:               boolPtr(settingsMap["tile_shadow"].(bool)),
-				ShowLastUpdatedIndicator: boolPtr(settingsMap["show_last_updated_indicator"].(bool)),
-				ShowReloadDataIcon:       boolPtr(settingsMap["show_reload_data_icon"].(bool)),
-				ShowDashboardMenu:        boolPtr(settingsMap["show_dashboard_menu"].(bool)),
-				ShowFiltersToggle:        boolPtr(settingsMap["show_filters_toggle"].(bool)),
-				ShowDashboardHeader:      boolPtr(settingsMap["show_dashboard_header"].(bool)),
-				CenterDashboardTitle:     boolPtr(settingsMap["center_dashboard_title"].(bool)),
-				DashboardTitleFontSize:   castToPtr(settingsMap["dashboard_title_font_size"].(string)),
-				BoxShadow:                castToPtr(settingsMap["box_shadow"].(string)),
-				PageMarginTop:            castToPtr(settingsMap["page_margin_top"].(string)),
-				PageMarginBottom:         castToPtr(settingsMap["page_margin_bottom"].(string)),
-				PageMarginSides:          castToPtr(settingsMap["page_margin_sides"].(string)),
-				ShowExploreHeader:        boolPtr(settingsMap["show_explore_header"].(bool)),
-				ShowExploreTitle:         boolPtr(settingsMap["show_explore_title"].(bool)),
-				ShowExploreLastRun:       boolPtr(settingsMap["show_explore_last_run"].(bool)),
-				ShowExploreTimezone:      boolPtr(settingsMap["show_explore_timezone"].(bool)),
-				ShowExploreRunStopButton: boolPtr(settingsMap["show_explore_run_stop_button"].(bool)),
-				ShowExploreActionsButton: boolPtr(settingsMap["show_explore_actions_button"].(bool)),
-				ShowLookHeader:           boolPtr(settingsMap["show_look_header"].(bool)),
-				ShowLookTitle:            boolPtr(settingsMap["show_look_title"].(bool)),
-				ShowLookLastRun:          boolPtr(settingsMap["show_look_last_run"].(bool)),
-				ShowLookTimezone:         boolPtr(settingsMap["show_look_timezone"].(bool)),
-				ShowLookRunStopButton:    boolPtr(settingsMap["show_look_run_stop_button"].(bool)),
-				ShowLookActionsButton:    boolPtr(settingsMap["show_look_actions_button"].(bool)),
-				TileTitleFontSize:        castToPtr(settingsMap["tile_title_font_size"].(string)),
-				ColumnGapSize:            castToPtr(settingsMap["column_gap_size"].(string)),
-				RowGapSize:               castToPtr(settingsMap["row_gap_size"].(string)),
-				BorderRadius:             castToPtr(settingsMap["border_radius"].(string)),
-			}
+			theme.Settings = populateSettings(settingsMap)
 		}
 	}
 	_, _, err = c.Themes.Update(ctx, id, theme)

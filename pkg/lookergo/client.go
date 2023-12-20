@@ -251,6 +251,7 @@ func (c *Client) SetRequestHeaders(headers map[string]string) error {
 	return nil
 }
 
+// DisableTLSVerification updates underlying HTTP client config and disables verification of TLS. It is useful when upstream Looker Core instance is running an enterprise license with Private IP and the associated DNS FQDN certificate is not trusted. Ideally this function should not be called. It is included for the sake of complete
 func (c *Client) DisableTLSVerification() error {
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},

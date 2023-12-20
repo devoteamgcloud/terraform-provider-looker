@@ -3,16 +3,18 @@ package lookergo
 import (
 	"bytes"
 	"context"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
-	"github.com/beefsack/go-rate"
-	"github.com/google/go-querystring/query"
-	"golang.org/x/oauth2"
-	"golang.org/x/oauth2/clientcredentials"
 	"path"
 	"reflect"
 	"strings"
 	"time"
+
+	"github.com/beefsack/go-rate"
+	"github.com/google/go-querystring/query"
+	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/clientcredentials"
 
 	"io"
 	"io/ioutil"
@@ -249,6 +251,13 @@ func (c *Client) SetRequestHeaders(headers map[string]string) error {
 	return nil
 }
 
+func (c *Client) DisableTLSVerification() error {
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+	c.client.Transport = tr
+	return nil
+}
 func (c *Client) SetOauthCredentials(ctx context.Context, clientId string, clientSecret string) error {
 	var loginUrl url.URL
 	if c.BaseURL != nil {

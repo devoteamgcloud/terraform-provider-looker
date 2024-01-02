@@ -25,12 +25,15 @@ type ContentMetaGroupUser struct {
 	UserId            string          `json:"user_id"`             // ID of associated user
 }
 
+// Ensuring ContentMetaGroupUserResourceOp implements ContentMetaGroupUserResource
 var _ ContentMetaGroupUserResource = &ContentMetaGroupUserResourceOp{}
 
+// ContentMetaGroupUserResourceOp is a struct that implements ContentMetaGroupUserResource and has an internal http client for sending API calls
 type ContentMetaGroupUserResourceOp struct {
 	client *Client
 }
 
+// ListByID implements ContentMetaGroupUserResource. it is primarily meant to be used against Looker folders. It lists out all permissions a folder has.
 func (s *ContentMetaGroupUserResourceOp) ListByID(ctx context.Context, contentMetadataId string, opt *ListOptions) ([]ContentMetaGroupUser, *Response, error) {
 	if contentMetadataId == "" {
 		return nil, nil, &ArgError{arg: "contentMetadataId", reason: "has to be non-empty"}

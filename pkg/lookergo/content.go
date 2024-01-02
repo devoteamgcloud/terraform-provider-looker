@@ -2,6 +2,7 @@ package lookergo
 
 import (
 	"context"
+	"net/url"
 )
 
 // ContentMetaGroupUserBasePath is the API call URI suffix for content metadata access
@@ -22,4 +23,19 @@ type ContentMetaGroupUser struct {
 	PermissionType    string          `json:"permission_type"`     // Type of permission: "view" or "edit" Valid values are: "view", "edit"
 	GroupId           string          `json:"group_id"`            // ID of associated group
 	UserId            string          `json:"user_id"`             // ID of associated user
+}
+
+var _ ContentMetaGroupUserResource = &ContentMetaGroupUserResourceOp{}
+
+type ContentMetaGroupUserResourceOp struct {
+	client *Client
+}
+
+func (s *ContentMetaGroupUserResourceOp) ListByID(ctx context.Context, contentMetadataId string, opt *ListOptions) ([]ContentMetaGroupUser, *Response, error) {
+	if contentMetadataId == "" {
+		return nil, nil, &ArgError{arg: "contentMetadataId", reason: "has to be non-empty"}
+	}
+	qs := url.Values{}
+	qs.Add("content_metadata_id", contentMetadataId)
+	return doListByX(ctx, s.client, ContentMetaGroupUserBasePath, opt, new([]ContentMetaGroupUser), qs)
 }

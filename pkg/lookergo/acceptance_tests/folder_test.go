@@ -6,6 +6,8 @@ import (
 	"testing"
 
 	lookergo "github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/acctest"
+	"github.com/k0kubun/pp/v3"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -39,7 +41,7 @@ func TestFolder(t *testing.T) {
 		assert.NotNil(t, folder)
 	})
 	t.Run("create", func(t *testing.T) {
-		folderName := randomString(8) + "_" + t.Name()
+		folderName := acctest.RandomWithPrefix("test-" + t.Name())
 		folder := &lookergo.Folder{
 			Name:     folderName,
 			ParentId: "1",
@@ -55,15 +57,16 @@ func TestFolder(t *testing.T) {
 	t.Run("get_permissions", func(t *testing.T) {
 		// NOTE: this simple tests assumes that the 'Shared' folder has permissions
 		// set on it which should be the default
-		metadata, resp, err := client.ContentMetaGroupUser.ListByID(ctx, "1", nil)
+		metadata, resp, err := client.ContentMetaGroupUser.ListByID(ctx, "10", nil)
 		assert.NoError(t, err)
 		assert.NotNil(t, resp)
 		assert.NotNil(t, metadata)
+		pp.Print(metadata)
 	})
-	t.Run("get_permissions_empty", func(t *testing.T) {
+	t.Run("get-permissions-empty", func(t *testing.T) {
 		// NOTE: this simple tests assumes that the 'Shared' folder has permissions
 		// set on it which should be the default
-		folderName := randomString(8) + "_" + t.Name()
+		folderName := acctest.RandomWithPrefix("test-" + t.Name())
 		folder := &lookergo.Folder{
 			Name:     folderName,
 			ParentId: "1",

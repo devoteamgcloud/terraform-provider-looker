@@ -14,6 +14,8 @@
 
 * Ensure the PR description clearly describes the problem and solution. Include the relevant issue number if applicable.
 
+* Before submitting your pull request, please make sure to create your branch based on the 'acceptance' branch of this repository. This is where we accept contributions.
+
 #### **Did you fix whitespace, format code, or make a purely cosmetic patch?**
 
 Changes that are cosmetic in nature and do not add anything substantial to the stability, functionality, or testability of the provider will generally not be accepted.

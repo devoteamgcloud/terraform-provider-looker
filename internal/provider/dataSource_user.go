@@ -5,6 +5,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"golang.org/x/net/context"
+	"fmt"
 )
 
 var (
@@ -63,6 +64,9 @@ func dataSourceUserRead(ctx context.Context, d *schema.ResourceData, m interface
 		localUser, _, err := c.Users.ListByEmail(ctx, email.(string), &lookergo.ListOptions{})
 		if err != nil {
 			return diag.FromErr(err)
+		}
+		if len(localUser) == 0 {
+			return diag.FromErr(fmt.Errorf("User with email %s does not exist.", email))
 		}
 		user = lookergo.User(localUser[0])
 	}

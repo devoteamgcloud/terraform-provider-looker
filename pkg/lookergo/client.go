@@ -3,16 +3,18 @@ package lookergo
 import (
 	"bytes"
 	"context"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
-	"github.com/beefsack/go-rate"
-	"github.com/google/go-querystring/query"
-	"golang.org/x/oauth2"
-	"golang.org/x/oauth2/clientcredentials"
 	"path"
 	"reflect"
 	"strings"
 	"time"
+
+	"github.com/beefsack/go-rate"
+	"github.com/google/go-querystring/query"
+	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/clientcredentials"
 
 	"io"
 	"io/ioutil"
@@ -65,22 +67,23 @@ type Client struct {
 	mu sync.Mutex
 
 	// Resources used for communicating with the API
-	Groups            GroupsResource
-	Users             UsersResource
-	Roles             RolesResource
-	Folders           FoldersResource
-	Workspaces        WorkspacesResource
-	Projects          ProjectsResource
-	Sessions          SessionsResource
-	ModelSets         ModelSetsResource
-	Connections       ConnectionsResource
-	LookMLModel       LookMlModelsResource
-	ColorCollection   ColorCollectionResource
-	PermissionSets    PermissionSetResource
-	Alerts            AlertsResource
-	UserAttributes    UserAttributesResource
-	EgressIpAddresses PublicEgressIpsResource
-	Themes            ThemesResource
+	Groups               GroupsResource
+	Users                UsersResource
+	Roles                RolesResource
+	Folders              FoldersResource
+	ContentMetaGroupUser ContentMetaGroupUserResource
+	Workspaces           WorkspacesResource
+	Projects             ProjectsResource
+	Sessions             SessionsResource
+	ModelSets            ModelSetsResource
+	Connections          ConnectionsResource
+	LookMLModel          LookMlModelsResource
+	ColorCollection      ColorCollectionResource
+	PermissionSets       PermissionSetResource
+	Alerts               AlertsResource
+	UserAttributes       UserAttributesResource
+	EgressIpAddresses    PublicEgressIpsResource
+	Themes               ThemesResource
 	// TODO: Expand
 
 	// Optional function called after every successful request made to the DO APIs
@@ -145,6 +148,7 @@ func NewClient(httpClient *http.Client) *Client {
 	c.Users = &UsersResourceOp{client: c}
 	c.Roles = &RolesResourceOp{client: c}
 	c.Folders = &FoldersResourceOp{client: c}
+	c.ContentMetaGroupUser = &ContentMetaGroupUserResourceOp{client: c}
 	c.Workspaces = &WorkspacesResourceOp{client: c}
 	c.Projects = &ProjectsResourceOp{client: c}
 	c.Sessions = &SessionsResourceOp{client: c}
@@ -249,6 +253,14 @@ func (c *Client) SetRequestHeaders(headers map[string]string) error {
 	return nil
 }
 
+// DisableTLSVerification updates underlying HTTP client config and disables verification of TLS. It is useful when upstream Looker Core instance is running an enterprise license with Private IP and the associated DNS FQDN certificate is not trusted. Ideally this function should not be called. It is included for the sake of complete
+func (c *Client) DisableTLSVerification() error {
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+	c.client.Transport = tr
+	return nil
+}
 func (c *Client) SetOauthCredentials(ctx context.Context, clientId string, clientSecret string) error {
 	var loginUrl url.URL
 	if c.BaseURL != nil {
@@ -557,7 +569,7 @@ func StreamToString(stream io.Reader) string {
 }
 
 type service interface {
-	Group | User | CredentialsEmail | Role | PermissionSet | Session | Project | GitBranch | Folder | UserAttribute | UserAttributeGroupValue | Alert | EgressIpAddresses | Theme
+	Group | User | CredentialsEmail | Role | PermissionSet | Session | Project | GitBranch | Folder | ContentMetaGroupUser | UserAttribute | UserAttributeGroupValue | Alert | EgressIpAddresses | Theme
 }
 
 // addOptions -

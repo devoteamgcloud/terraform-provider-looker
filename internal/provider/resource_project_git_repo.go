@@ -38,6 +38,16 @@ func resourceProjectGitRepo() *schema.Resource {
 					"skip this option and create project_git_deploy_key resource.",
 				Sensitive: true,
 			},
+			"git_username_user_attribute": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "User attribute name for username in per-user HTTPS authentication.",
+			},
+			"git_password_user_attribute": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "User attribute name for password in per-user HTTPS authentication.",
+			},
 			"use_git_cookie_auth": {
 				Type: schema.TypeBool, Optional: true,
 				Description: "If true, the project uses a git cookie for authentication.",
@@ -134,6 +144,8 @@ func resourceProjectGitRepoRead(ctx context.Context, d *schema.ResourceData, m i
 
 	d.Set("git_remote_url", project.GitRemoteUrl)
 	d.Set("git_username", project.GitUsername)
+	d.Set("git_username_user_attribute", project.GitUsernameUserAttribute)
+	d.Set("git_password_user_attribute", project.GitPasswordUserAttribute)
 	d.Set("use_git_cookie_auth", project.UseGitCookieAuth)
 	d.Set("git_service_name", project.GitServiceName)
 	d.Set("pull_request_mode", project.PullRequestMode)
@@ -164,9 +176,6 @@ func resourceProjectGitRepoCreate(ctx context.Context, d *schema.ResourceData, m
 	if value, ok := d.GetOk("git_remote_url"); ok {
 		projectGitRepoUpdate.GitRemoteUrl = value.(string)
 	}
-	if value, ok := d.GetOk("git_username"); ok {
-		projectGitRepoUpdate.GitUsername = value.(string)
-	}
 	if value, ok := d.GetOk("use_git_cookie_auth"); ok {
 		projectGitRepoUpdate.UseGitCookieAuth = boolPtr(value.(bool))
 	}
@@ -191,13 +200,24 @@ func resourceProjectGitRepoCreate(ctx context.Context, d *schema.ResourceData, m
 	if value, ok := d.GetOk("deploy_secret"); ok {
 		projectGitRepoUpdate.DeploySecret = value.(string)
 	}
-
-	if value, ok := d.GetOk("git_password"); ok {
+	if value, ok := d.GetOk("git_username"); ok {
 		payload := lookergo.Project{}
+		payload.GitUsername = value.(string)
+		if value, ok := d.GetOk("git_password"); ok {
+			payload.GitPassword = value.(string)
+		} else {
+			return diag.Errorf("git_username requires git_password")
+		}
+		if value, ok := d.GetOk("git_username_user_attribute"); ok {
+			payload.GitUsernameUserAttribute = value.(string)
+			if value, ok := d.GetOk("git_password_user_attribute"); ok {
+				payload.GitPasswordUserAttribute = value.(string)
+			} else {
+				return diag.Errorf("git_username_user_attribute requires git_password_user_attribute")
+			}
+		}
 		payload.GitRemoteUrl = projectGitRepoUpdate.GitRemoteUrl
-		projectGitRepoUpdate.GitPassword = value.(string)
-		payload.GitUsername = projectGitRepoUpdate.GitUsername
-		payload.GitPassword = projectGitRepoUpdate.GitPassword
+		projectGitRepoUpdate.GitPassword = payload.GitPassword
 		payload.GitServiceName = projectGitRepoUpdate.GitServiceName
 		if !strings.HasPrefix(projectGitRepoUpdate.GitRemoteUrl, "https://") {
 			return diag.Errorf("HTTPS Authentication requires URL starts with http://..")
@@ -259,9 +279,6 @@ func resourceProjectGitRepoUpdate(ctx context.Context, d *schema.ResourceData, m
 	if value, ok := d.GetOk("git_remote_url"); ok {
 		projectGitRepoUpdate.GitRemoteUrl = value.(string)
 	}
-	if value, ok := d.GetOk("git_username"); ok {
-		projectGitRepoUpdate.GitUsername = value.(string)
-	}
 	if value, ok := d.GetOk("use_git_cookie_auth"); ok {
 		projectGitRepoUpdate.UseGitCookieAuth = boolPtr(value.(bool))
 	}
@@ -280,14 +297,26 @@ func resourceProjectGitRepoUpdate(ctx context.Context, d *schema.ResourceData, m
 	if value, ok := d.GetOk("validation_required"); ok {
 		projectGitRepoUpdate.ValidationRequired = boolPtr(value.(bool))
 	}
-
 	if value, ok := d.GetOk("git_release_mgmt_enabled"); ok {
 		projectGitRepoUpdate.GitReleaseMgmtEnabled = boolPtr(value.(bool))
 	}
 	if value, ok := d.GetOk("deploy_secret"); ok {
 		projectGitRepoUpdate.DeploySecret = value.(string)
 	}
-	if value, ok := d.GetOk("git_password"); ok {
+	if value, ok := d.GetOk("git_username"); ok {
+		if value, ok := d.GetOk("git_password"); ok {
+			projectGitRepoUpdate.GitUsername = value.(string)
+		} else {
+			return diag.Errorf("git_username requires git_password")
+		}
+		if value, ok := d.GetOk("git_username_user_attribute"); ok {
+			projectGitRepoUpdate.GitUsernameUserAttribute = value.(string)
+			if value, ok := d.GetOk("git_password_user_attribute"); ok {
+				projectGitRepoUpdate.GitPasswordUserAttribute = value.(string)
+			} else {
+				return diag.Errorf("git_password requires git_password_user_attribute")
+			}
+		}
 		projectGitRepoUpdate.GitPassword = value.(string)
 		if !strings.HasPrefix(projectGitRepoUpdate.GitRemoteUrl, "https://") {
 			return diag.Errorf("HTTPS Authentication requires URL starts with http://..")
@@ -295,6 +324,10 @@ func resourceProjectGitRepoUpdate(ctx context.Context, d *schema.ResourceData, m
 			if !strings.HasPrefix(projectGitRepoUpdate.GitRemoteUrl, "git@") && !strings.HasPrefix(projectGitRepoUpdate.GitRemoteUrl, "ssh://") {
 				return diag.Errorf("SSH Authentication requires URL starts with git@.. or ssh://..")
 			}
+		}
+	} else {
+		if !strings.HasPrefix(projectGitRepoUpdate.GitRemoteUrl, "git@") && !strings.HasPrefix(projectGitRepoUpdate.GitRemoteUrl, "ssh://") {
+			return diag.Errorf("SSH Authentication requires URL starts with git@.. or ssh://..")
 		}
 	}
 

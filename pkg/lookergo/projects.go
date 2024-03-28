@@ -148,41 +148,41 @@ func (s *ProjectsResourceOp) Get(ctx context.Context, projectName string) (*Proj
 }
 
 /*
-	Create Project
+Create Project
 
-	Create A Project
+# Create A Project
 
-	dev mode required.
+dev mode required.
 
-	Call update_session to select the 'dev' workspace.
-	name is required. git_remote_url is not allowed. To configure Git for the newly created project, follow the instructions in update_project.
+Call update_session to select the 'dev' workspace.
+name is required. git_remote_url is not allowed. To configure Git for the newly created project, follow the instructions in update_project.
 */
 func (s *ProjectsResourceOp) Create(ctx context.Context, proj *Project) (*Project, *Response, error) {
 	return doCreate(ctx, s.client, projectsBasePath, proj, new(Project))
 }
 
 /*
-	Update Project
+Update Project
 
-	Update Project Configuration
+# Update Project Configuration
 
-	Apply changes to a project's configuration.
+Apply changes to a project's configuration.
 
-	Configuring Git for a Project
+# Configuring Git for a Project
 
-	To set up a Looker project with a remote git repository, follow these steps:
+To set up a Looker project with a remote git repository, follow these steps:
 
-	Call update_session to select the 'dev' workspace.
-	Call create_git_deploy_key to create a new deploy key for the project
-	Copy the deploy key text into the remote git repository's ssh key configuration
-	Call update_project to set project's git_remote_url ()and git_service_name, if necessary).
-	When you modify a project's git_remote_url, Looker connects to the remote repository to fetch metadata.
-	The remote git repository MUST be configured with the Looker-generated deploy key for this project prior to setting the project's git_remote_url.
+Call update_session to select the 'dev' workspace.
+Call create_git_deploy_key to create a new deploy key for the project
+Copy the deploy key text into the remote git repository's ssh key configuration
+Call update_project to set project's git_remote_url ()and git_service_name, if necessary).
+When you modify a project's git_remote_url, Looker connects to the remote repository to fetch metadata.
+The remote git repository MUST be configured with the Looker-generated deploy key for this project prior to setting the project's git_remote_url.
 
-	To set up a Looker project with a git repository residing on the Looker server (a 'bare' git repo):
+To set up a Looker project with a git repository residing on the Looker server (a 'bare' git repo):
 
-	Call update_session to select the 'dev' workspace.
-	Call update_project setting git_remote_url to null and git_service_name to "bare".
+Call update_session to select the 'dev' workspace.
+Call update_project setting git_remote_url to null and git_service_name to "bare".
 */
 func (s *ProjectsResourceOp) Update(ctx context.Context, projectName string, proj *Project) (*Project, *Response, error) {
 	return doUpdate(ctx, s.client, projectsBasePath, projectName, proj, new(Project))

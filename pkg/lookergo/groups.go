@@ -11,7 +11,8 @@ const groupBasePath = "4.0/groups"
 
 // GroupsResource is an interface for interfacing with the Group resource endpoints of the API.
 // Ref: https://developers.looker.com/api/explorer/4.0/methods/Group
-//      https://blob.b-cdn.net/looker_api4.0_ref-1652781627.html#operation/group
+//
+//	https://blob.b-cdn.net/looker_api4.0_ref-1652781627.html#operation/group
 type GroupsResource interface {
 	List(context.Context, *ListOptions) ([]Group, *Response, error)
 	ListByName(context.Context, string, *ListOptions) ([]Group, *Response, error)

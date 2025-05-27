@@ -5,14 +5,15 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/beefsack/go-rate"
-	"github.com/google/go-querystring/query"
-	"golang.org/x/oauth2"
-	"golang.org/x/oauth2/clientcredentials"
 	"path"
 	"reflect"
 	"strings"
 	"time"
+
+	"github.com/beefsack/go-rate"
+	"github.com/google/go-querystring/query"
+	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/clientcredentials"
 
 	"io"
 	"io/ioutil"
@@ -81,6 +82,7 @@ type Client struct {
 	UserAttributes    UserAttributesResource
 	EgressIpAddresses PublicEgressIpsResource
 	Themes            ThemesResource
+	Setting           SettingResource
 	// TODO: Expand
 
 	// Optional function called after every successful request made to the DO APIs
@@ -157,6 +159,7 @@ func NewClient(httpClient *http.Client) *Client {
 	c.UserAttributes = &UserAttributesResourceOp{client: c}
 	c.EgressIpAddresses = &PublicEgressIpsResourceOp{client: c}
 	c.Themes = &ThemesResourceOp{client: c}
+	c.Setting = &SettingResourceOp{client: c}
 	c.headers = make(map[string]string)
 	c.Workspace = "production"
 
@@ -734,7 +737,11 @@ func doUpdate[T any, U any](ctx context.Context, client *Client, basePath string
 		}
 		path = fmt.Sprintf("%s/%d%s", basePath, id.(int), strings.Join(append([]string{""}, pathSuffix...), "/"))
 	case string:
-		path = fmt.Sprintf("%s/%s%s", basePath, id.(string), strings.Join(append([]string{""}, pathSuffix...), "/"))
+		if id == "" {
+			path = basePath
+		} else {
+			path = fmt.Sprintf("%s/%s%s", basePath, id.(string), strings.Join(append([]string{""}, pathSuffix...), "/"))
+		}
 	default:
 		panic("Invalid type for ID. Has to be either int or string")
 	}
@@ -846,4 +853,12 @@ func doDeleteX(ctx context.Context, client *Client, path string) (*Response, err
 
 func boolPtr(b bool) *bool {
 	return &b
+}
+
+func stringPtr(s string) *string {
+	return &s
+}
+
+func castToPtr[T any](v T) *T {
+	return &v
 }

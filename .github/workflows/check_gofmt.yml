@@ -1,0 +1,29 @@
+name: Check Go Formatting
+
+on:
+  pull_request:
+    paths:
+      - '**/*.go'  # Only run if Go files are changed
+
+jobs:
+  gofmt-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.24.3'
+
+      - name: Check gofmt formatting
+        run: |
+          # Check formatting on all .go files
+          fmt_errors=$(gofmt -l .)
+          if [ -n "$fmt_errors" ]; then
+            echo "The following files are not properly formatted:"
+            echo "$fmt_errors"
+            exit 1
+          fi

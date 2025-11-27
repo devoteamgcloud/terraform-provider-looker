@@ -3,11 +3,12 @@ package provider
 import (
 	"context"
 	"fmt"
+	"strings"
+
 	"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"strings"
 )
 
 func resourceProjectGitRepo() *schema.Resource {
@@ -201,42 +202,24 @@ func resourceProjectGitRepoCreate(ctx context.Context, d *schema.ResourceData, m
 		projectGitRepoUpdate.DeploySecret = value.(string)
 	}
 	if value, ok := d.GetOk("git_username"); ok {
-		payload := lookergo.Project{}
-		payload.GitUsername = value.(string)
+		projectGitRepoUpdate.GitUsername = value.(string)
 		if value, ok := d.GetOk("git_password"); ok {
-			payload.GitPassword = value.(string)
+			projectGitRepoUpdate.GitPassword = value.(string)
 		} else {
 			return diag.Errorf("git_username requires git_password")
 		}
 		if value, ok := d.GetOk("git_username_user_attribute"); ok {
-			payload.GitUsernameUserAttribute = value.(string)
+			projectGitRepoUpdate.GitUsernameUserAttribute = value.(string)
 			if value, ok := d.GetOk("git_password_user_attribute"); ok {
-				payload.GitPasswordUserAttribute = value.(string)
+				projectGitRepoUpdate.GitPasswordUserAttribute = value.(string)
 			} else {
 				return diag.Errorf("git_username_user_attribute requires git_password_user_attribute")
 			}
 		}
-		payload.GitRemoteUrl = projectGitRepoUpdate.GitRemoteUrl
-		projectGitRepoUpdate.GitPassword = payload.GitPassword
-		payload.GitServiceName = projectGitRepoUpdate.GitServiceName
 		if !strings.HasPrefix(projectGitRepoUpdate.GitRemoteUrl, "https://") {
 			return diag.Errorf("HTTPS Authentication requires URL starts with http://..")
 		}
-		_, _, err = dc.Projects.Update(ctx, projectName, &payload)
-		if err != nil {
-			return diag.FromErr(err)
-		}
-	} else {
-		payload := lookergo.Project{GitRemoteUrl: projectGitRepoUpdate.GitRemoteUrl}
-		if !strings.HasPrefix(projectGitRepoUpdate.GitRemoteUrl, "git@") && !strings.HasPrefix(payload.GitRemoteUrl, "ssh://") {
-			return diag.Errorf("SSH Authentication requires URL starts with git@.. or ssh://..")
-		}
-		_, _, err = dc.Projects.Update(ctx, projectName, &payload)
-		if err != nil {
-			return diag.FromErr(err)
-		}
 	}
-
 	_, _, err = dc.Projects.Update(ctx, projectName, &projectGitRepoUpdate)
 	if err != nil {
 		return diag.FromErr(err)
@@ -304,8 +287,9 @@ func resourceProjectGitRepoUpdate(ctx context.Context, d *schema.ResourceData, m
 		projectGitRepoUpdate.DeploySecret = value.(string)
 	}
 	if value, ok := d.GetOk("git_username"); ok {
+		projectGitRepoUpdate.GitUsername = value.(string)
 		if value, ok := d.GetOk("git_password"); ok {
-			projectGitRepoUpdate.GitUsername = value.(string)
+			projectGitRepoUpdate.GitPassword = value.(string)
 		} else {
 			return diag.Errorf("git_username requires git_password")
 		}
@@ -317,13 +301,8 @@ func resourceProjectGitRepoUpdate(ctx context.Context, d *schema.ResourceData, m
 				return diag.Errorf("git_password requires git_password_user_attribute")
 			}
 		}
-		projectGitRepoUpdate.GitPassword = value.(string)
 		if !strings.HasPrefix(projectGitRepoUpdate.GitRemoteUrl, "https://") {
-			return diag.Errorf("HTTPS Authentication requires URL starts with http://..")
-		} else {
-			if !strings.HasPrefix(projectGitRepoUpdate.GitRemoteUrl, "git@") && !strings.HasPrefix(projectGitRepoUpdate.GitRemoteUrl, "ssh://") {
-				return diag.Errorf("SSH Authentication requires URL starts with git@.. or ssh://..")
-			}
+			return diag.Errorf("HTTPS Authentication requires URL starts with https://..")
 		}
 	} else {
 		if !strings.HasPrefix(projectGitRepoUpdate.GitRemoteUrl, "git@") && !strings.HasPrefix(projectGitRepoUpdate.GitRemoteUrl, "ssh://") {

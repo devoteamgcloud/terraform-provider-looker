@@ -33,7 +33,7 @@ type PermissionSet struct {
 	Url         string          `json:"url,omitempty"` // Link to get this item
 }
 
-// List -
+// List -.
 func (s *PermissionSetResourceOp) List(ctx context.Context, opt *ListOptions) ([]PermissionSet, *Response, error) {
 	return doList(ctx, s.client, permissionSetBasePath, opt, new([]PermissionSet))
 }

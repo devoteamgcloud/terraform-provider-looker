@@ -48,12 +48,12 @@ type RolesResourceOp struct {
 
 var _ RolesResource = &RolesResourceOp{}
 
-// List -
+// List -.
 func (s *RolesResourceOp) List(ctx context.Context, opt *ListOptions) ([]Role, *Response, error) {
 	return doList(ctx, s.client, roleBasePath, opt, new([]Role))
 }
 
-// ListByName -
+// ListByName -.
 func (s *RolesResourceOp) ListByName(ctx context.Context, name string, opt *ListOptions) ([]Role, *Response, error) {
 	if name == "" {
 		return nil, nil, NewArgError("name", "has to be non-empty")
@@ -64,42 +64,42 @@ func (s *RolesResourceOp) ListByName(ctx context.Context, name string, opt *List
 	return doListByX(ctx, s.client, path, opt, new([]Role), qs)
 }
 
-// Get -
+// Get -.
 func (s *RolesResourceOp) Get(ctx context.Context, id int) (*Role, *Response, error) {
 	return doGetById(ctx, s.client, roleBasePath, id, new(Role))
 }
 
-// Create -
+// Create -.
 func (s *RolesResourceOp) Create(ctx context.Context, createReq *Role) (*Role, *Response, error) {
 	return doCreate(ctx, s.client, roleBasePath, createReq, new(Role))
 }
 
-// Update -
+// Update -.
 func (s *RolesResourceOp) Update(ctx context.Context, id int, updateReq *Role) (*Role, *Response, error) {
 	return doUpdate(ctx, s.client, roleBasePath, id, updateReq, new(Role))
 }
 
-// Delete -
+// Delete -.
 func (s *RolesResourceOp) Delete(ctx context.Context, id int) (*Response, error) {
 	return doDelete(ctx, s.client, roleBasePath, id)
 }
 
-// RoleGroupsList -
+// RoleGroupsList -.
 func (s *RolesResourceOp) RoleGroupsList(ctx context.Context, id int, opt *ListOptions) ([]Group, *Response, error) {
 	return doList(ctx, s.client, roleBasePath, opt, new([]Group), strconv.Itoa(id), "groups")
 }
 
-// RoleGroupsSet -
+// RoleGroupsSet -.
 func (s *RolesResourceOp) RoleGroupsSet(ctx context.Context, id int, groupIds []string) ([]Group, *Response, error) {
 	return doSet(ctx, s.client, roleBasePath, groupIds, new([]Group), strconv.Itoa(id), "groups")
 }
 
-// RoleUsersList -
+// RoleUsersList -.
 func (s *RolesResourceOp) RoleUsersList(ctx context.Context, id int, opt *ListOptions) ([]User, *Response, error) {
 	return doList(ctx, s.client, roleBasePath, opt, new([]User), strconv.Itoa(id), "users")
 }
 
-// RoleUsersSet -
+// RoleUsersSet -.
 func (s *RolesResourceOp) RoleUsersSet(ctx context.Context, id int, userIds []string) ([]User, *Response, error) {
 	return doSet(ctx, s.client, roleBasePath, userIds, new([]User), strconv.Itoa(id), "users")
 }

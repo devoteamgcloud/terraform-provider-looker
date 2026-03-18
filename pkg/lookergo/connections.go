@@ -26,7 +26,7 @@ type ConnectionsResourceOp struct {
 var _ ConnectionsResource = &ConnectionsResourceOp{}
 
 // <editor-fold desc="type_structs">
-// DBConnection struct for DBConnection
+// DBConnection struct for DBConnection.
 type DBConnection struct {
 	// Name of the connection. Also used as the unique identifier
 	Name    string     `json:"name,omitempty"`
@@ -230,7 +230,7 @@ func (s ConnectionsResourceOp) ValidateConfig(ctx context.Context, connection *D
 }
 
 // ValidateConnection -
-// Possible for most db's: first do connect test; next do kill,query test
+// Possible for most db's: first do connect test; next do kill,query test.
 func (s ConnectionsResourceOp) ValidateConnection(ctx context.Context, connectionName string, tests []string) (dbcv []DBConnectionValidation, resp *Response, err error) {
 	if len(tests) == 0 {
 		tests = []string{"connect"}

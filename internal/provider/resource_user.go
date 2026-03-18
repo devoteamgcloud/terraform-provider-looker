@@ -3,14 +3,15 @@ package provider
 import (
 	"context"
 	"fmt"
+	"strconv"
+	"strings"
+	"time"
+
 	"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
-	"strconv"
-	"strings"
-	"time"
 )
 
 var (
@@ -186,7 +187,7 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}
 	c := m.(*Config).Api // .(*lookergo.Client)
 	var diags diag.Diagnostics
 	if _, err := strconv.Atoi(d.Id()); err != nil {
-		return diag.Errorf(fmt.Sprintf("Cannot convert %s to int.", d.Id()))
+		return diag.Errorf("%s", fmt.Sprintf("Cannot convert %s to int.", d.Id()))
 	}
 	if d.Get("already_exists_ok") == true {
 		user, _, err := c.Users.Get(ctx, d.Id())

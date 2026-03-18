@@ -9,7 +9,7 @@ import (
 
 var timestampType = reflect.TypeOf(Timestamp{})
 
-// Stringify attempts to create a string representation of DigitalOcean types
+// Stringify attempts to create a string representation of DigitalOcean types.
 func Stringify(message interface{}) string {
 	var buf bytes.Buffer
 	v := reflect.ValueOf(message)
@@ -17,7 +17,7 @@ func Stringify(message interface{}) string {
 	return buf.String()
 }
 
-// stringifyValue was graciously cargoculted from the goprotubuf library
+// stringifyValue was graciously cargoculted from the goprotubuf library.
 func stringifyValue(w io.Writer, val reflect.Value) {
 	if val.Kind() == reflect.Ptr && val.IsNil() {
 		_, _ = w.Write([]byte("<nil>"))

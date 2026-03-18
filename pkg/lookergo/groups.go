@@ -11,7 +11,8 @@ const groupBasePath = "4.0/groups"
 
 // GroupsResource is an interface for interfacing with the Group resource endpoints of the API.
 // Ref: https://developers.looker.com/api/explorer/4.0/methods/Group
-//      https://blob.b-cdn.net/looker_api4.0_ref-1652781627.html#operation/group
+//
+//	https://blob.b-cdn.net/looker_api4.0_ref-1652781627.html#operation/group
 type GroupsResource interface {
 	List(context.Context, *ListOptions) ([]Group, *Response, error)
 	ListByName(context.Context, string, *ListOptions) ([]Group, *Response, error)
@@ -50,7 +51,7 @@ type Group struct {
 	RoleIds                 SliceStringInts `json:"role_ids,omitempty"`
 }
 
-// List all groups
+// List all groups.
 func (s *GroupsResourceOp) List(ctx context.Context, opt *ListOptions) ([]Group, *Response, error) {
 	return doList(ctx, s.client, groupBasePath, opt, new([]Group))
 }
@@ -126,7 +127,7 @@ type NewGroupMemberGroup struct {
 	GroupID int `json:"group_id"`
 }
 
-// AddMemberGroup -
+// AddMemberGroup -.
 func (s *GroupsResourceOp) AddMemberGroup(ctx context.Context, parentID int, memberID int) (*Group, *Response, error) {
 	if parentID < 1 || memberID < 1 {
 		return nil, nil, NewArgError("id", "cannot be less than 1")
@@ -137,7 +138,7 @@ func (s *GroupsResourceOp) AddMemberGroup(ctx context.Context, parentID int, mem
 	return doAddMember(ctx, s.client, path, new(Group), NewGroupMemberGroup{GroupID: memberID})
 }
 
-// RemoveMemberGroup -
+// RemoveMemberGroup -.
 func (s *GroupsResourceOp) RemoveMemberGroup(ctx context.Context, parentID int, memberID int) (*Response, error) {
 	if parentID < 1 || memberID < 1 {
 		return nil, NewArgError("id", "cannot be less than 1")
@@ -163,7 +164,7 @@ type NewGroupMemberUser struct {
 	UserID int `json:"user_id"`
 }
 
-// AddMemberUser -
+// AddMemberUser -.
 func (s *GroupsResourceOp) AddMemberUser(ctx context.Context, parentID int, memberID int) (*User, *Response, error) {
 	if parentID < 1 || memberID < 1 {
 		return nil, nil, NewArgError("id", "cannot be less than 1")
@@ -174,7 +175,7 @@ func (s *GroupsResourceOp) AddMemberUser(ctx context.Context, parentID int, memb
 	return doAddMember(ctx, s.client, path, new(User), NewGroupMemberUser{UserID: memberID})
 }
 
-// RemoveMemberUser -
+// RemoveMemberUser -.
 func (s *GroupsResourceOp) RemoveMemberUser(ctx context.Context, parentID int, memberID int) (*Response, error) {
 	if parentID < 1 || memberID < 1 {
 		return nil, NewArgError("id", "cannot be less than 1")

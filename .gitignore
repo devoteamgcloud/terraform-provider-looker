@@ -15,4 +15,4 @@ deploy.sh
 dev_test/**
 test/
 terraform-provider-looker
-build
+dist

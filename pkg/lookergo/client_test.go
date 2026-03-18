@@ -3,16 +3,17 @@ package lookergo
 import (
 	"context"
 	"fmt"
-	"github.com/google/go-cmp/cmp"
-	"github.com/k0kubun/pp/v3"
-	_ "github.com/stretchr/testify/assert"
-	"golang.org/x/oauth2"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"os"
 	"reflect"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
+	"github.com/k0kubun/pp/v3"
+	_ "github.com/stretchr/testify/assert"
+	"golang.org/x/oauth2"
 )
 
 var (
@@ -40,33 +41,6 @@ func teardown() {
 func testMethod(t *testing.T, r *http.Request, expected string) {
 	if expected != r.Method {
 		t.Errorf("Request method = %v, expected %v", r.Method, expected)
-	}
-}
-
-type values map[string]string
-
-func testFormValues(t *testing.T, r *http.Request, values values) {
-	expected := url.Values{}
-	for k, v := range values {
-		expected.Add(k, v)
-	}
-
-	err := r.ParseForm()
-	if err != nil {
-		t.Fatalf("parseForm(): %v", err)
-	}
-
-	if !reflect.DeepEqual(expected, r.Form) {
-		t.Errorf("Request parameters = %v, expected %v", r.Form, expected)
-	}
-}
-
-func testURLParseError(t *testing.T, err error) {
-	if err == nil {
-		t.Errorf("Expected error to be returned")
-	}
-	if err, ok := err.(*url.Error); !ok || err.Op != "parse" {
-		t.Errorf("Expected URL parse error, got %+v", err)
 	}
 }
 

@@ -28,12 +28,12 @@ type Session struct {
 	SudoUserId  *int   `json:"sudo_user_id,string,omitempty"`
 }
 
-// Get -
+// Get -.
 func (s *SessionsResourceOp) Get(ctx context.Context) (*Session, *Response, error) {
 	return doGet(ctx, s.client, sessionBasePath, new(Session))
 }
 
-// SetWorkspaceId -
+// SetWorkspaceId -.
 func (s *SessionsResourceOp) SetWorkspaceId(ctx context.Context, workspaceId string) (session *Session, resp *Response, err error) {
 	updateReq := Session{WorkspaceId: workspaceId}
 	req, err := s.client.NewRequest(ctx, http.MethodPatch, sessionBasePath, updateReq)
@@ -49,12 +49,12 @@ func (s *SessionsResourceOp) SetWorkspaceId(ctx context.Context, workspaceId str
 	return
 }
 
-// GetCurrentUser -
+// GetCurrentUser -.
 func (s *SessionsResourceOp) GetCurrentUser(ctx context.Context) (*User, *Response, error) {
 	return doGet(ctx, s.client, "4.0/user", new(User))
 }
 
-// GetLoginUserToken -
+// GetLoginUserToken -.
 func (s *SessionsResourceOp) GetLoginUserToken(ctx context.Context, userId string) (*oauth2.Token, *Response, error) {
 	path := fmt.Sprintf("4.0/login/%s", userId)
 

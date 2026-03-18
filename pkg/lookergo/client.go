@@ -5,17 +5,17 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/beefsack/go-rate"
-	"github.com/google/go-querystring/query"
-	"golang.org/x/oauth2"
-	"golang.org/x/oauth2/clientcredentials"
 	"path"
 	"reflect"
 	"strings"
 	"time"
 
+	"github.com/beefsack/go-rate"
+	"github.com/google/go-querystring/query"
+	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/clientcredentials"
+
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"sync"
@@ -93,7 +93,7 @@ type Client struct {
 	Workspace string
 }
 
-// RequestCompletionCallback defines the type of the request callback function
+// RequestCompletionCallback defines the type of the request callback function.
 type RequestCompletionCallback func(*http.Request, *http.Response)
 
 // ListOptions specifies the optional parameters to various List methods that
@@ -120,7 +120,7 @@ type Error struct {
 	DocumentationUrl string `json:"documentation_url"`
 }
 
-// An ErrorResponse reports the error caused by an API request
+// An ErrorResponse reports the error caused by an API request.
 type ErrorResponse struct {
 	// HTTP response that caused this error
 	Response *http.Response
@@ -132,7 +132,7 @@ type ErrorResponse struct {
 	Errors []Error `json:"errors,omitempty"`
 }
 
-// NewClient -
+// NewClient -.
 func NewClient(httpClient *http.Client) *Client {
 	if httpClient == nil {
 		httpClient = http.DefaultClient
@@ -163,7 +163,7 @@ func NewClient(httpClient *http.Client) *Client {
 	return c
 }
 
-// ApiConfig -
+// ApiConfig -.
 type ApiConfig struct {
 	ClientId     string
 	ClientSecret string
@@ -171,16 +171,15 @@ type ApiConfig struct {
 	ClientCtx    context.Context
 }
 
-// AuthToken -
+// AuthToken -.
 type AuthToken struct {
 	AccessToken  string  `json:"access_token"`
 	TokenType    string  `json:"token_type,omitempty"`
 	ExpiresIn    int     `json:"expires_in,omitempty"` // Differs from oauth2.Token{}: `json:"expiry,omitempty"
 	RefreshToken *string `json:"refresh_token,omitempty"`
-	raw          interface{}
 }
 
-// NewFromApiv3Creds -
+// NewFromApiv3Creds -.
 func NewFromApiv3Creds(config ApiConfig) *Client {
 	if config.BaseURL == "" {
 		config.BaseURL = defaultBaseURL
@@ -406,12 +405,12 @@ func (c *Client) NewRequest(ctx context.Context, method, urlStr string, body int
 	return req, nil
 }
 
-// OnRequestCompleted sets the DO API request completion callback
+// OnRequestCompleted sets the DO API request completion callback.
 func (c *Client) OnRequestCompleted(rc RequestCompletionCallback) {
 	c.onRequestCompleted = rc
 }
 
-// newResponse creates a new Response for the provided http.Response
+// newResponse creates a new Response for the provided http.Response.
 func newResponse(r *http.Response) *Response {
 	response := Response{Response: r}
 
@@ -459,7 +458,7 @@ func (c *Client) Do(ctx context.Context, req *http.Request, v interface{}) (*Res
 		// won't reuse it anyway.
 		const maxBodySlurpSize = 2 << 10
 		if resp.ContentLength == -1 || resp.ContentLength <= maxBodySlurpSize {
-			_, _ = io.CopyN(ioutil.Discard, resp.Body, maxBodySlurpSize)
+			_, _ = io.CopyN(io.Discard, resp.Body, maxBodySlurpSize)
 		}
 
 		if rerr := resp.Body.Close(); err == nil {
@@ -509,7 +508,7 @@ func CheckResponse(r *http.Response) error {
 	}
 
 	errorResponse := &ErrorResponse{Response: r}
-	data, err := ioutil.ReadAll(r.Body)
+	data, err := io.ReadAll(r.Body)
 	if err == nil && len(data) > 0 {
 		err := json.Unmarshal(data, errorResponse)
 		if err != nil {
@@ -549,7 +548,7 @@ func Bool(v bool) *bool {
 	return p
 }
 
-// StreamToString converts a reader to a string
+// StreamToString converts a reader to a string.
 func StreamToString(stream io.Reader) string {
 	buf := new(bytes.Buffer)
 	_, _ = buf.ReadFrom(stream)
@@ -560,7 +559,7 @@ type service interface {
 	Group | User | CredentialsEmail | Role | PermissionSet | Session | Project | GitBranch | Folder | UserAttribute | UserAttributeGroupValue | Alert | EgressIpAddresses | Theme
 }
 
-// addOptions -
+// addOptions -.
 func addOptions(s string, opt interface{}) (string, error) {
 	v := reflect.ValueOf(opt)
 
@@ -588,7 +587,7 @@ func addOptions(s string, opt interface{}) (string, error) {
 	return origURL.String(), nil
 }
 
-// doList is a generic list lookup
+// doList is a generic list lookup.
 func doList[T any](ctx context.Context, client *Client, basePath string, opt *ListOptions, svc *[]T, pathSuffix ...string) ([]T, *Response, error) {
 	path := fmt.Sprintf("%s%s", basePath, strings.Join(append([]string{""}, pathSuffix...), "/"))
 	path, err := addOptions(path, opt)
@@ -626,9 +625,9 @@ func doGet[T any](ctx context.Context, client *Client, basePath string, svc *T, 
 }
 
 func doGetById[T any](ctx context.Context, client *Client, basePath string, id any, svc *T) (*T, *Response, error) {
-	switch id.(type) {
+	switch id := id.(type) {
 	case int:
-		if id.(int) < 1 {
+		if id < 1 {
 			return nil, nil, NewArgError("id", "cannot be less than 1")
 		}
 	case string:
@@ -727,14 +726,14 @@ func doEmptyPost[N service](ctx context.Context, client *Client, basePath string
 func doUpdate[T any, U any](ctx context.Context, client *Client, basePath string, id any, svc *T, uSvc *U, pathSuffix ...string) (*U, *Response, error) {
 	var path string
 
-	switch id.(type) {
+	switch id := id.(type) {
 	case int:
-		if id.(int) < 1 {
+		if id < 1 {
 			return nil, nil, NewArgError("id", "cannot be less than 1")
 		}
-		path = fmt.Sprintf("%s/%d%s", basePath, id.(int), strings.Join(append([]string{""}, pathSuffix...), "/"))
+		path = fmt.Sprintf("%s/%d%s", basePath, id, strings.Join(append([]string{""}, pathSuffix...), "/"))
 	case string:
-		path = fmt.Sprintf("%s/%s%s", basePath, id.(string), strings.Join(append([]string{""}, pathSuffix...), "/"))
+		path = fmt.Sprintf("%s/%s%s", basePath, id, strings.Join(append([]string{""}, pathSuffix...), "/"))
 	default:
 		panic("Invalid type for ID. Has to be either int or string")
 	}
@@ -774,14 +773,14 @@ func doSet[T any](ctx context.Context, client *Client, basePath string, ids []st
 func doDelete(ctx context.Context, client *Client, basePath string, id any, pathSuffix ...string) (*Response, error) {
 	var path string
 
-	switch id.(type) {
+	switch id := id.(type) {
 	case int:
-		if id.(int) < 1 {
+		if id < 1 {
 			return nil, NewArgError("id", "cannot be less than 1")
 		}
-		path = fmt.Sprintf("%s/%d%s", basePath, id.(int), strings.Join(append([]string{""}, pathSuffix...), "/"))
+		path = fmt.Sprintf("%s/%d%s", basePath, id, strings.Join(append([]string{""}, pathSuffix...), "/"))
 	case string:
-		path = fmt.Sprintf("%s/%s%s", basePath, id.(string), strings.Join(append([]string{""}, pathSuffix...), "/"))
+		path = fmt.Sprintf("%s/%s%s", basePath, id, strings.Join(append([]string{""}, pathSuffix...), "/"))
 	default:
 		panic("Invalid type for ID. Has to be either int or string")
 	}
@@ -827,21 +826,6 @@ func doAddValue[T service](ctx context.Context, client *Client, path string, svc
 	}
 
 	return svc, resp, err
-}
-
-func doDeleteX(ctx context.Context, client *Client, path string) (*Response, error) {
-
-	req, err := client.NewRequest(ctx, http.MethodDelete, path, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := client.Do(ctx, req, nil)
-	if err != nil {
-		return resp, err
-	}
-
-	return resp, err
 }
 
 func boolPtr(b bool) *bool {

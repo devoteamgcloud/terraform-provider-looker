@@ -1,19 +1,23 @@
-ifeq ($(OS), Windows_NT)
-	export VERSION=$(shell type VERSION)
-else
-	export VERSION=$(shell cat VERSION)
-endif
-export BASE_BINARY_NAME=terraform-provider-looker
-export ORG=devoteamgcloud
+default: fmt lint build generate_docs
 
-.PHONY: build
-build: ## build binary
-	@go build -o build/$(ORG)/$(VERSION)/$(BASE_BINARY_NAME) .
+dev:
+	goreleaser build --id $(shell go env GOOS) --single-target --snapshot --clean
 
-.PHONY: format
-format: ## format all the go files
-	@gofmt -l -s -w .
+snapshot:
+	goreleaser release --snapshot --clean
 
-.PHONY: docs
-docs: ## generate documentation
-	@go run github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs
+build: dev
+
+lint:
+	golangci-lint run
+
+generate_docs:
+	go tool tfplugindocs
+
+fmt:
+	gofmt -s -w -e .
+
+testacc:
+	go test -v -cover -timeout=120s -parallel=10 ./...
+
+.PHONY: dev snapshot build lint generate_docs fmt testacc

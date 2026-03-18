@@ -1,7 +1,5 @@
 package lookergo
 
-const workspacesSetBasePath = "4.0/workspaces"
-
 type WorkspacesResource interface {
 }
 

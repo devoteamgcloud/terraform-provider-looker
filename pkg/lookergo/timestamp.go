@@ -29,7 +29,7 @@ func (t *Timestamp) UnmarshalJSON(data []byte) error {
 	return err
 }
 
-// Equal reports whether t and u are equal based on time.Equal
+// Equal reports whether t and u are equal based on time.Equal.
 func (t Timestamp) Equal(u Timestamp) bool {
 	return t.Time.Equal(u.Time)
 }

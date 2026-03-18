@@ -3,6 +3,7 @@ package lookergo
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/url"
 	"strconv"
@@ -10,7 +11,7 @@ import (
 
 const userBasePath = "4.0/users"
 
-// CredentialsEmail -
+// CredentialsEmail -.
 type CredentialsEmail struct {
 	Can                            map[string]bool `json:"can,omitempty"`                                 // Operations the current user is able to perform on this object
 	CreatedAt                      string          `json:"created_at,omitempty"`                          // Timestamp for the creation of this credential
@@ -114,7 +115,11 @@ func (c *SliceStringInts) UnmarshalJSON(b []byte) error {
 	for _, item := range nums {
 		switch value := item.(type) {
 		case int:
-			n = append(n, item.(int))
+			i, ok := item.(int)
+			if !ok {
+				return errors.New("i is not of type int")
+			}
+			n = append(n, i)
 		case float64:
 			n = append(n, int(value))
 		case string:
@@ -176,7 +181,7 @@ type UsersResourceOp struct {
 	client *Client
 }
 
-// List all users
+// List all users.
 func (s *UsersResourceOp) List(ctx context.Context, opt *ListOptions) ([]User, *Response, error) {
 	return doList(ctx, s.client, userBasePath, opt, new([]User))
 }
@@ -216,64 +221,64 @@ func (s *UsersResourceOp) ListByEmail(ctx context.Context, email string, opt *Li
 	return doListByX(ctx, s.client, path, opt, new([]User), qs)
 }
 
-// Get -
+// Get -.
 func (s *UsersResourceOp) Get(ctx context.Context, id string) (*User, *Response, error) {
 	return doGetById(ctx, s.client, userBasePath, id, new(User))
 }
 
-// Create -
+// Create -.
 func (s *UsersResourceOp) Create(ctx context.Context, createReq *User) (*User, *Response, error) {
 	return doCreate(ctx, s.client, userBasePath, createReq, new(User))
 }
 
-// Update -
+// Update -.
 func (s *UsersResourceOp) Update(ctx context.Context, id string, updateReq *User) (*User, *Response, error) {
 	return doUpdate(ctx, s.client, userBasePath, id, updateReq, new(User))
 }
 
-// Delete -
+// Delete -.
 func (s *UsersResourceOp) Delete(ctx context.Context, id string) (*Response, error) {
 	return doDelete(ctx, s.client, userBasePath, id)
 }
 
-// CreateEmail -
+// CreateEmail -.
 func (s *UsersResourceOp) CreateEmail(ctx context.Context, id string, createReq *CredentialsEmail) (*CredentialsEmail, *Response, error) {
 	return doCreate(ctx, s.client, userBasePath, createReq, new(CredentialsEmail), id, "credentials_email")
 }
 
-// GetEmail -
+// GetEmail -.
 func (s *UsersResourceOp) GetEmail(ctx context.Context, id string) (*CredentialsEmail, *Response, error) {
 	return doGet(ctx, s.client, userBasePath, new(CredentialsEmail), id, "credentials_email")
 }
 
-// UpdateEmail -
+// UpdateEmail -.
 func (s *UsersResourceOp) UpdateEmail(ctx context.Context, id string, updateReq *CredentialsEmail) (*CredentialsEmail, *Response, error) {
 	return doUpdate(ctx, s.client, userBasePath, id, updateReq, new(CredentialsEmail), "credentials_email")
 }
 
-// DeleteEmail -
+// DeleteEmail -.
 func (s *UsersResourceOp) DeleteEmail(ctx context.Context, id string) (*Response, error) {
 	return doDelete(ctx, s.client, userBasePath, id, "credentials_email")
 }
 
-// CreatePasswordReset -
+// CreatePasswordReset -.
 func (s *UsersResourceOp) CreatePasswordReset(ctx context.Context, id string) (*CredentialsEmail, *Response, error) {
 	return doEmptyPost(ctx, s.client, userBasePath, new(CredentialsEmail),
 		id, "credentials_email", "password_reset")
 }
 
-// SendPasswordReset -
+// SendPasswordReset -.
 func (s *UsersResourceOp) SendPasswordReset(ctx context.Context, id string) (*CredentialsEmail, *Response, error) {
 	return doEmptyPost(ctx, s.client, userBasePath, new(CredentialsEmail),
 		id, "credentials_email", "send_password_reset")
 }
 
-// GetRoles -
+// GetRoles -.
 func (s *UsersResourceOp) GetRoles(ctx context.Context, id string) ([]Role, *Response, error) {
 	return doList(ctx, s.client, userBasePath, nil, new([]Role), id, "roles")
 }
 
-// SetRoles -
+// SetRoles -.
 func (s *UsersResourceOp) SetRoles(ctx context.Context, id string, roleIds []string) ([]Role, *Response, error) {
 	return doSet(ctx, s.client, userBasePath, roleIds, new([]Role), id, "roles")
 }

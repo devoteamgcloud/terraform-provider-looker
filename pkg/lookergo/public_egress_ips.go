@@ -18,8 +18,6 @@ type PublicEgressIpsResourceOp struct {
 	client *Client
 }
 
-var _PublicEgressIpsResource = &PublicEgressIpsResourceOp{}
-
 func (s PublicEgressIpsResourceOp) Get(ctx context.Context) (*EgressIpAddresses, *Response, error) {
 	return doGet(ctx, s.client, publicEgressIpsBasePath, new(EgressIpAddresses))
 }

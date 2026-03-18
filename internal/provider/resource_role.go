@@ -3,12 +3,13 @@ package provider
 import (
 	"context"
 	"fmt"
+	"net/http"
+	"strconv"
+
 	"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"net/http"
-	"strconv"
 )
 
 func resourceRole() *schema.Resource {
@@ -58,7 +59,7 @@ func resourceRoleRead(ctx context.Context, d *schema.ResourceData, m interface{}
 	c := m.(*Config).Api // .(*lookergo.Client)
 	logTrace(ctx, "query role", "role_id", d.Id())
 	if _, err := strconv.Atoi(d.Id()); err != nil {
-		return diag.Errorf(fmt.Sprintf("Cannot convert %s to int.", d.Id()))
+		return diag.Errorf("%s", fmt.Sprintf("Cannot convert %s to int.", d.Id()))
 	}
 	role, response, err := c.Roles.Get(ctx, idAsInt(d.Id()))
 	if response.StatusCode == 404 {

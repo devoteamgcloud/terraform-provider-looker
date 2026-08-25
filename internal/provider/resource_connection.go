@@ -45,14 +45,19 @@ func resourceConnection() *schema.Resource {
 				Sensitive:   true,
 			},
 			"certificate": {
-				Description: "(Write-Only) Base64 encoded Certificate body for server authentication (when appropriate for dialect).",
+				Description: "(Write-Only) Base64 encoded Certificate body for server authentication (when appropriate for dialect). For Snowflake key pair authentication, this holds the base64 encoded p8 private key",
 				Type:        schema.TypeString,
 				Optional:    true,
 				Sensitive:   true,
 			},
 			"file_type": {
-				Description: "(Write-Only) Certificate keyfile type - .json or .p12",
+				Description: "(Write-Only) Certificate keyfile type - .json, .p8 or .p12",
 				Type:        schema.TypeString,
+				Optional:    true,
+			},
+			"uses_key_pair_auth": {
+				Description: "Whether the connection uses key pair authentication (Snowflake only). Requires `certificate` to contain the base64 encoded p8 private key and `file_type` to be `.p8`. For an encrypted private key, set `password` to the key decryption passphrase",
+				Type:        schema.TypeBool,
 				Optional:    true,
 			},
 			"database": {
@@ -276,6 +281,9 @@ func resourceConnectionCreate(ctx context.Context, d *schema.ResourceData, m int
 	if val, ok := d.GetOk("file_type"); ok {
 		nc.FileType = val.(string)
 	}
+	if val, ok := d.GetOk("uses_key_pair_auth"); ok {
+		nc.UsesKeyPairAuth = boolPtr(val.(bool))
+	}
 	if val, ok := d.GetOk("database"); ok {
 		nc.Database = val.(string)
 	}
@@ -410,6 +418,9 @@ func resourceConnectionRead(ctx context.Context, d *schema.ResourceData, m inter
 	if d.Set("file_type", connection.FileType) != nil {
 		return diag.FromErr(err)
 	}
+	if d.Set("uses_key_pair_auth", connection.UsesKeyPairAuth) != nil {
+		return diag.FromErr(err)
+	}
 	if d.Set("database", connection.Database) != nil {
 		return diag.FromErr(err)
 	}
@@ -527,6 +538,9 @@ func resourceConnectionUpdate(ctx context.Context, d *schema.ResourceData, m int
 	}
 	if val, ok := d.GetOk("file_type"); ok {
 		connection.FileType = val.(string)
+	}
+	if val, ok := d.GetOk("uses_key_pair_auth"); ok {
+		connection.UsesKeyPairAuth = boolPtr(val.(bool))
 	}
 	if val, ok := d.GetOk("database"); ok {
 		connection.Database = val.(string)

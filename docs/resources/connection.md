@@ -27,6 +27,21 @@ resource "looker_connection" "example" {
     jdbc_additional_params = "database=my_db&warehouse=DEMO"
   }
 }
+
+# Snowflake connection using key pair authentication
+resource "looker_connection" "key_pair_example" {
+  name               = "test_connection_key_pair"
+  username           = "user"
+  database           = "sf"
+  dialect_name       = "snowflake"
+  port               = "443"
+  host               = "db.snowflake.com"
+  uses_key_pair_auth = true
+  certificate        = filebase64("rsa_key.p8")
+  file_type          = ".p8"
+  # For an encrypted private key, set password to the decryption passphrase
+  # password         = "passphrase"
+}
 ```
 
 ## Example Output
@@ -329,12 +344,12 @@ resource "looker_connection" "example" {
 ### Optional
 
 - `always_retry_failed_builds` (Boolean) When true, error PDTs will be retried every regenerator cycle
-- `certificate` (String, Sensitive) (Write-Only) Base64 encoded Certificate body for server authentication (when appropriate for dialect).
+- `certificate` (String, Sensitive) (Write-Only) Base64 encoded Certificate body for server authentication (when appropriate for dialect). For Snowflake key pair authentication, this holds the base64 encoded p8 private key
 - `cost_estimate_enabled` (Boolean) When true, query cost estimate will be displayed in explore
 - `database` (String) Database name
 - `db_timezone` (String) Time zone of database
 - `disable_context_comment` (Boolean) When disable_context_comment is true comment will not be added to SQL
-- `file_type` (String) (Write-Only) Certificate keyfile type - .json or .p12
+- `file_type` (String) (Write-Only) Certificate keyfile type - .json, .p8 or .p12
 - `host` (String) Host name/address of server
 - `jdbc_additional_params` (String) Additional params to add to JDBC connection string
 - `maintenance_cron` (String) Cron string specifying when maintenance such as PDT trigger checks and drops should be performed
@@ -357,6 +372,7 @@ resource "looker_connection" "example" {
 - `user_attribute_fields` (List of String)
 - `user_db_credentials` (Boolean) (Limited access feature) Are per user db credentials enabled. Enabling will remove previously set username and password
 - `username` (String) Username for server authentication
+- `uses_key_pair_auth` (Boolean) Whether the connection uses key pair authentication (Snowflake only). Requires `certificate` to contain the base64 encoded p8 private key and `file_type` to be `.p8`. For an encrypted private key, set `password` to the key decryption passphrase
 - `verify_ssl` (Boolean) Verify the SSL
 
 ### Read-Only

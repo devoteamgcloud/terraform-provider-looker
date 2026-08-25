@@ -45,9 +45,11 @@ type DBConnection struct {
 	Password string `json:"password,omitempty"`
 	// Whether the connection uses OAuth for authentication.
 	UsesOauth *bool `json:"uses_oauth,omitempty"`
+	// Whether the connection uses key-pair for authentication.
+	UsesKeyPairAuth *bool `json:"uses_key_pair_auth,omitempty"`
 	// (Write-Only) Base64 encoded Certificate body for server authentication (when appropriate for dialect).
 	Certificate string `json:"certificate,omitempty"`
-	// (Write-Only) Certificate keyfile type - .json or .p12
+	// (Write-Only) Certificate keyfile type - .json, .p8 or .p12
 	FileType string `json:"file_type,omitempty"`
 	// Database name
 	Database string `json:"database,omitempty"`

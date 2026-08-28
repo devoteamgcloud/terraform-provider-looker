@@ -58,12 +58,21 @@ func New(version string) func() *schema.Provider {
 					Sensitive:   true,
 					DefaultFunc: schema.EnvDefaultFunc("LOOKER_API_CLIENT_SECRET", nil),
 				},
+				"allow_unverified_ssl": {
+					Type:        schema.TypeBool,
+					Optional:    true,
+					DefaultFunc: schema.EnvDefaultFunc("LOOKER_ALLOW_UNVERIFIED_SSL", false),
+					Description: "Boolean that can be set to true to disable SSL certificate verification. This should be used with care as it could allow an attacker to intercept your credentials.",
+				},
+
+				// DisableTLSVerification
 			},
 			DataSourcesMap: map[string]*schema.Resource{
 				"looker_user":                dataSourceUser(),
 				"looker_group":               dataSourceGroup(),
 				"looker_project":             dataSourceProject(),
 				"looker_folder":              dataSourceFolder(),
+				"looker_folder_permissions":  dataSourceFolderPermissions(),
 				"looker_permission_set":      dataSourcePermissionSet(),
 				"looker_role":                dataSourceRole(),
 				"looker_user_attribute":      dataSourceUserAttribute(),
@@ -123,6 +132,11 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData, p *schema.Pr
 
 	client := lookergo.NewClient(nil)
 	devClient := lookergo.NewClient(nil)
+	insecure := d.Get("allow_unverified_ssl").(bool)
+	if insecure {
+		client.DisableTLSVerification()
+		devClient.DisableTLSVerification()
+	}
 
 	old_url := d.Get("base_url").(string)
 
